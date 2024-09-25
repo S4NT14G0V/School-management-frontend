@@ -1,0 +1,14 @@
+.sidebar {
+  background-color: white;
+  max-width: 312px;
+  max-height: 100dvh;
+  height: 100dvh;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 25px 20px 25px 20px;
+  box-sizing: border-box;
+}
