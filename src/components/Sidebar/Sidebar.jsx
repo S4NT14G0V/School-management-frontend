@@ -1,7 +1,7 @@
 import React from "react";
 import "./Sidebar.css";
-import AcademicInfo from "./AcademicInfo";
-import UserInfo from "./UserInfo";
+import AcademicInfo from "../AcademicInfo/AcademicInfo";
+import UserInfo from "../UserInfo/UserInfo";
 import SidebarMenu from "./SidebarMenu";
 
 export default function Sidebar() {

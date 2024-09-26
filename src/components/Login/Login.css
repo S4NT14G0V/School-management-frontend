@@ -44,10 +44,11 @@ form{
     color: black;
     border: none;
     border-radius: 15px;
-    width: 100%;
+    width: fit-content;
     word-break: break-word;
     justify-content: center;
     align-items: center;
+    padding-inline: 10%;
 
     &:hover, &:active{
         border: none;

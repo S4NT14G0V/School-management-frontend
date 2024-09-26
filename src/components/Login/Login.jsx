@@ -1,6 +1,6 @@
 import React from "react";
 import "./Login.css";
-import AcademicInfo from "../Sidebar/AcademicInfo";
+import AcademicInfo from "../AcademicInfo/AcademicInfo";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/userContext";
