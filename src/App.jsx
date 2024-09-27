@@ -5,6 +5,7 @@ import Login from "./pages/LoginPage/LoginPage";
 import Classes from "./pages/ClassesPage/ClassesPage";
 import { UserProvider } from "./context/userContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import Register from "./pages/RegisterPage/RegisterPage"
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/classes" element={<ProtectedRoute><Classes /></ProtectedRoute>} />
+          <Route path="/register" element={<ProtectedRoute><Register /></ProtectedRoute>} />
         </Routes>
       </Router>
     </UserProvider>

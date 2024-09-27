@@ -1,46 +1,38 @@
 import React from "react";
 import "./Login.css";
 import AcademicInfo from "../AcademicInfo/AcademicInfo";
-import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/userContext";
-
+import { apiUrls } from "../../routes/ApiUrls";
+import { useGoogleAuth } from "../../hooks/useGoogleAuth";
+import { createUser } from "../../services/useService";
 export default function Login() {
 
-  const { user, login } = useUser(); // Usamos el login y el estado del usuario desde UserContext
-  const navigate = useNavigate(); // Creamos el hook useNavigate
+  const googleLogin = useGoogleAuth();
   
-  const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        // Usar el access_token para obtener la información del usuario
-        const response = await fetch(
-          "https://www.googleapis.com/oauth2/v3/userinfo",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            }
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Error fetching user info");
-        }
-        const userData = await response.json()
-        
-        // Llamamos a login para almacenar la información del usuario en el contexto y en localStorage
-        login({
-          name: userData.name,
-          email: userData.email,
-          picture: userData.picture,
-          token: tokenResponse.access_token, // También puedes guardar el token si lo necesitas
-        });
-
-        navigate("/classes");
-      } catch (error) {
-        console.error("Error processing token or fetching user info: ", error);
-      }
-    }
-  });
+  const rol3 = {
+    id: 1,
+    name: "Student",
+  };
+  const userInfo = {
+    name: "Juan",
+    lastname: "Pérez",
+    birthday: "2000-01-01", // Formato de fecha (AAAA-MM-DD)
+    gender: "Masculino",
+    address: "Calle Falsa 123",
+    phone: "123456789",
+    email: "juan.perrz@example.com",
+    document_type: "DNI",
+    document_number: "12345678",
+    rol: rol3,
+  };
+  
+  //createUser(userInfo)
+/*
+  createUser(userInfo)
+    .then((data) => console.log("Usuario creado:", data))
+    .catch((error) => console.error("Error:", error));
+*/
 
   return (
     <div className="login-container">

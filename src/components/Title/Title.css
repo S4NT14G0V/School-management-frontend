@@ -1,0 +1,16 @@
+.title{
+    width: 100%;
+    text-align: center;
+    color: #2F1B41;
+    text-shadow: 
+    17px 2px 5px rgba(128, 0, 128, 0.02),   /* Morado oscuro */
+    6px 4px 8px rgba(153, 50, 204, 0.02),  /* Morado medianamente oscuro */
+    0 5px 9px rgba(186, 85, 211, 0.02), /* Morado claro */
+    10px 2px 28px rgba(128, 0, 128, 0.02), 
+    32px 4px 8px rgba(153, 50, 204, 0.02), 
+    0 1px 22px rgba(186, 85, 211, 0.02), 
+    0 2px 5px rgba(128, 0, 128, 0.02), 
+    15px 4px 8px rgba(153, 50, 204, 0.02), 
+    0 3px 12px rgba(186, 85, 211, 0.02);
+    margin-top: 5%;
+}

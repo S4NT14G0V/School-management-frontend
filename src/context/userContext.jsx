@@ -1,5 +1,6 @@
 // src/context/UserContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { createUser } from '../services/useService';
 
 // Creamos el contexto
 const UserContext = createContext();
@@ -34,6 +35,8 @@ export const UserProvider = ({ children }) => {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+
+  
 
   return (
     <UserContext.Provider value={{ user, login, logout }}>
