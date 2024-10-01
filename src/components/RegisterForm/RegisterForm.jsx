@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./RegisterForm.css";
 import { apiUrls } from "../../routes/ApiUrls";
+import { useNavigate } from "react-router-dom";
+import { getPublicRoles } from "../../services/rolService";
+import { getUserByEmail, updateUser,getUsers } from "../../services/userService";
+import { useUser } from "../../context/userContext";
 
 export default function RegisterForm() {
+  const { authToken, auth } = useUser();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,18 +21,72 @@ export default function RegisterForm() {
     document_number: "",
     rol: null, // Inicialmente null
   });
+  const navigate = useNavigate();
+  const [roleOptions, setRoleOptions] = useState([]);
+  const [loading, setLoading] = useState(true); // Para manejar la carga de roles
+  const [error, setError] = useState(null); // Para manejar errores
+  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      setFormData((prevData) => ({
-        ...prevData,
-        name: user.name || "",
-        email: user.email || "",
-        lastname: user.lastname || "",
-      }));
+    const query = new URLSearchParams(window.location.search);
+    const token = query.get("token");
+    
+    if (!isTokenProcessed && token) {
+      auth(token); // Guardar el token en el contexto
+      setIsTokenProcessed(true); // Marcar como procesado
     }
-  }, []);
+
+    const fetchUsers = async () => {
+      try {
+        const users = await getUsers();
+        console.log("Usuarios:", users);   
+      } catch (error) {
+        setError("Error fetching user data: " + error.message);
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const user = await getUserByEmail(authToken);
+        if (user) {
+          setFormData((prevData) => ({
+            ...prevData,
+            name: user.name || "",
+            email: user.email || "",
+            lastname: user.lastname || "",
+          }));
+        } else {
+          throw new Error("User not found.");
+        }
+      } catch (error) {
+        setError("Error fetching user data: " + error.message);
+      }
+    };
+    
+
+    const fetchRoles = async () => {
+      try {
+        const roles = await getPublicRoles();
+        const roleOptions = roles.map((role) => ({
+          value: { id: role.id, name: role.name },
+          label: role.name === "Student" ? "Estudiante" : "Padre / Acudiente",
+        }));
+        setRoleOptions(roleOptions);
+      } catch (error) {
+        setError("Error fetching roles.");
+      } finally {
+        setLoading(false); // Actualiza el estado de carga
+      }
+    };
+
+    if (authToken) {
+      fetchUserData();
+      fetchRoles();
+      fetchUsers();
+    } else {
+      setLoading(false); // Si no hay token, se puede detener la carga
+    }
+  }, [auth, navigate, isTokenProcessed, authToken]);
 
   const typeDocumentOptions = [
     { value: "CC", label: "Cédula de Ciudadanía" },
@@ -38,11 +98,6 @@ export default function RegisterForm() {
     { value: "Masculino", label: "Masculino" },
     { value: "Femenino", label: "Femenino" },
     { value: "Otros", label: "Otros" },
-  ];
-
-  const roleOptions = [
-    { value: { id: 1, name: "Student" }, label: "Estudiante" },
-    { value: { id: 2, name: "Parent" }, label: "Padre / Acudiente" },
   ];
 
   const handleChange = (e) => {
@@ -64,29 +119,8 @@ export default function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Datos del formulario:", formData);
-
-    try {
-      const response = await fetch(apiUrls.user.create, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error al registrar el usuario");
-      }
-
-      const result = await response.json();
-      console.log("Usuario registrado con éxito:", result);
-      alert("Usuario registrado con éxito");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al registrar usuario");
-    }
+    updateUser(authToken, formData);
   };
-
   return (
     <div className="register-form">
       <form onSubmit={handleSubmit} className="form-grid">
@@ -189,7 +223,7 @@ export default function RegisterForm() {
             </option>
             {roleOptions.map((option) => (
               <option
-                key={option.value.id_role}
+                key={option.value.id}
                 value={JSON.stringify(option.value)}
               >
                 {option.label}

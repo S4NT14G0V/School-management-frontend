@@ -1,44 +1,36 @@
-import React from "react";
-import "./Login.css";
-import AcademicInfo from "../AcademicInfo/AcademicInfo";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/userContext";
-import { apiUrls } from "../../routes/ApiUrls";
-import { useGoogleAuth } from "../../hooks/useGoogleAuth";
-import { createUser } from "../../services/useService";
+import AcademicInfo from "../AcademicInfo/AcademicInfo";
+import { getPublicRoles } from "../../services/rolService";
+import "./Login.css";
+
 export default function Login() {
+  const navigate = useNavigate();
 
-  const googleLogin = useGoogleAuth();
-  
-  const rol3 = {
-    id: 1,
-    name: "Student",
-  };
-  const userInfo = {
-    name: "Juan",
-    lastname: "Pérez",
-    birthday: "2000-01-01", // Formato de fecha (AAAA-MM-DD)
-    gender: "Masculino",
-    address: "Calle Falsa 123",
-    phone: "123456789",
-    email: "juan.perrz@example.com",
-    document_type: "DNI",
-    document_number: "12345678",
-    rol: rol3,
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://backend-hogwarts.onrender.com/oauth2/authorization/google';
   };
   
-  //createUser(userInfo)
-/*
-  createUser(userInfo)
-    .then((data) => console.log("Usuario creado:", data))
-    .catch((error) => console.error("Error:", error));
-*/
+  const [roles, setRoles] = useState([]);
+  const fetchRoles = async () => {
+    try {
+      const rol = await getPublicRoles();
+      setRoles(rol);
+      console.log(roles[0].name)
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }  
+  };
 
+
+  useEffect(() => {
+    fetchRoles();
+  },[]);
   return (
     <div className="login-container">
       <AcademicInfo login />
-      <button className="login-button" onClick={googleLogin}>
-        <img src="src/assets/google-icon.svg" alt="" />
+      <button className="login-button" onClick={handleGoogleLogin}>
+        <img src="src/assets/google-icon.svg" alt="Google Icon" />
         Continue with Google
       </button>
     </div>

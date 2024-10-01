@@ -25,3 +25,25 @@
         word-break: break-word;
     }
 }
+
+.login-info{
+    color: #2F1B41;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    width: 100%;
+
+    img{
+        width: 90%;
+    }
+
+    h1{
+        padding: 0;
+        margin: 0;
+        font-size: 2.5em;
+        width: 100%;
+        text-wrap: wrap;
+        word-break: break-word;
+        text-shadow: 0 4px 10px rgba(255,255,255,0.7), 5px 10px 20px rgba(57, 60, 255, 0.5), 25px 38px 40px rgba(36, 39, 221, 0.6), -25px -28px 40px rgba(17, 20, 192, 0.6);
+    }
+}

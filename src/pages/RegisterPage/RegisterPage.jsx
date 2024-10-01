@@ -7,7 +7,7 @@ export default function RegisterPage() {
   return (
     <div className="register-page">
       <div className="register-form-container">
-        <Title>Completa la Siguiente Información</Title>
+        <Title> Información Adicional</Title>
         <hr className="register-divider" />
         <RegisterForm />
       </div>

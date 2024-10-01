@@ -6,6 +6,7 @@ import Classes from "./pages/ClassesPage/ClassesPage";
 import { UserProvider } from "./context/userContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Register from "./pages/RegisterPage/RegisterPage"
+import Table from "./components/Table/Table";
 
 function App() {
   return (
@@ -13,8 +14,9 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/classes" element={<ProtectedRoute><Classes /></ProtectedRoute>} />
-          <Route path="/register" element={<ProtectedRoute><Register /></ProtectedRoute>} />
+          <Route path="/classes" element={<Classes />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/table" element={<Table />} />
         </Routes>
       </Router>
     </UserProvider>
