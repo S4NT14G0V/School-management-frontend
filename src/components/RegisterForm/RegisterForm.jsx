@@ -119,7 +119,8 @@ export default function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Datos del formulario:", formData);
-    updateUser(authToken, formData);
+    await updateUser(authToken, formData);
+    navigate(`/classes?token=${authToken}`);
   };
   return (
     <div className="register-form">

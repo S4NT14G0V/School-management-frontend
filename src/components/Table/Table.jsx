@@ -2,10 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, Tag, Modal } from "antd";
 import { useUser } from "../../context/userContext";
-import {
-  getListUserInfo,
-  deleteUser,
-} from "../../services/userService";
+import { getListUserInfo, deleteUser } from "../../services/userService";
 import RoleModal from "../Modal/Modal";
 import { editRolByEmail } from "../../services/userService";
 
@@ -42,7 +39,7 @@ const App = () => {
     }
 
     fetchUsers(token);
-  }, []);
+  }, [isModalOpen]);
 
   const handleDelete = async (email) => {
     console.log("email delete: ", email);
@@ -255,7 +252,10 @@ const App = () => {
           <a className="table-edit" onClick={() => openModal(record.email)}>
             Editar
           </a>
-          <a className="table-delete" onClick={() => handleDelete(record.email)}>
+          <a
+            className="table-delete"
+            onClick={() => handleDelete(record.email)}
+          >
             Eliminar
           </a>
         </Space>
@@ -265,11 +265,26 @@ const App = () => {
 
   return (
     <div style={{ width: "100%", overflowX: "auto" }}>
-       <RoleModal
+      <RoleModal
         email={selectedEmail}
         isModalOpen={isModalOpen}
         closeModal={closeModal}
       />
+      <div style={{display:"flex", justifyContent:"end", alignItems:"center", width:"100%"}}>
+        <button
+          className="reload"
+          onClick={() => fetchUsers(authToken)}
+          style={{
+            width: "120px",
+            height: "35px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Actualizar
+        </button>
+      </div>
       <Table
         columns={columns}
         dataSource={data}
