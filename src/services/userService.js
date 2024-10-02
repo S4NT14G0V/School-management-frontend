@@ -17,10 +17,11 @@ export const createUser = async (userInfo) => {
   return data;
 };
 
-export const validateEmail = async (authToken) => {
+
+export const validateUser = async (authToken) => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
-    const response = await fetch(apiUrls.user.validateEmail, {
+    const response = await fetch(apiUrls.user.validateUser, {
       method: "GET", // Cambia a GET
       headers: {
         "authorization": `Bearer ${authToken}`
@@ -43,6 +44,34 @@ export const validateEmail = async (authToken) => {
     return false; // En caso de error, devolvemos false o puedes manejarlo de otra manera
   }
 };
+
+export const validateAdmin = async (authToken) => {
+  try {
+    // Enviar la solicitud GET con el email como parámetro de consulta
+    const response = await fetch(apiUrls.user.validateAdmin, {
+      method: "GET", // Cambia a GET
+      headers: {
+        "authorization": `Bearer ${authToken}`
+      },
+      credentials: 'include',
+    });
+
+    // Verifica si la respuesta no es OK (4xx o 5xx)
+    if (!response.ok) {
+      throw new Error("Error en la validación del correo");
+    }
+
+    // Parsear el resultado (que será un booleano)
+    const data = await response.json();
+
+    // Devolver el valor booleano directamente
+    return data; // Aquí devolvemos el booleano (true/false)
+  } catch (error) {
+    console.error("Error:", error);
+    return false; // En caso de error, devolvemos false o puedes manejarlo de otra manera
+  }
+};
+
 
 export const getUserByEmail = async (authToken) => {
   try {
@@ -85,12 +114,13 @@ export const updateUser = async (token, userInfo) => {
   }
 }
 
-export const getUsers = async () => {
+export const getUsers = async (token) => {
   alert("funcion get users");
   try {
     const response = await fetch(apiUrls.user.all, {
       method: "GET",
       headers: {
+        "authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -132,7 +162,6 @@ export const getUsers = async () => {
 }
 
 export const getListUserInfo = async (authToken) => {
-  alert("funcion get users");
   try {
     const response = await fetch(apiUrls.user.listUserInfo, {
       method: "GET",
@@ -152,21 +181,45 @@ export const getListUserInfo = async (authToken) => {
     console.error("Error:", error);
   }
 };
-
-const deleteUser = async (id) => {
+export const deleteUser = async (authToken,email) => {
   try {
-    const response = await fetch(`${apiUrls.user.delete}/${id}`, {
+    const response = await fetch(apiUrls.user.delete, {
       method: "DELETE",
+      headers: {
+        "authorization": `Bearer ${authToken}`,
+        "user": email,
+        "Content-Type": "application/json",
+      },
     });
+     const success = await response.json(); // La respuesta es un booleano
 
-    if (!response.ok) {
+    if (!response.ok || !success) {
       throw new Error("Error al eliminar el usuario");
     }
 
-    // Opcional: Manejo de respuesta si es necesario
-    console.log("Usuario eliminado con éxito");
+    return { success: true }; // Si es exitoso
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error al eliminar el usuario:", error.message);
+    return { success: false, message: error.message };
   }
 };
 
+export const editRolByEmail = async (token, email, rol) => {
+  try {
+    const response = await fetch(`${apiUrls.user.editRolByEmail}`, {
+      method: "PUT",
+      credentials: 'include',
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "user": email,
+        "role": rol,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error al editar el usuario");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}

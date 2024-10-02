@@ -4,12 +4,14 @@ export const apiUrls = {
   user: {
     all: `${baseUrl}/user/getAll`,
     create: `${baseUrl}/user/create`,
-    validateEmail:`${baseUrl}/user/validateEmail`,
+    validateEmail:`${baseUrl}/user/validateUser`,
     getByEmail:`${baseUrl}/user/getByEmail`,
-    delete:`${baseUrl}/user/delete`,
+    delete:`${baseUrl}/user/deleteUserByEmail`,
     updateByEmail:`${baseUrl}/user/updateByEmail`,
     getInfo:`${baseUrl}/user/getInfoByEmail`,
     listUserInfo:`${baseUrl}/user/listUserInfo`,
+    validateAdmin:`${baseUrl}/user/validateAdmin`,
+    editRolByEmail:`${baseUrl}/user/editRolByEmail`,
   },
 
   rol:{

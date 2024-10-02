@@ -8,7 +8,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://backend-hogwarts.onrender.com/oauth2/authorization/google';
+    window.location.href = 'https://backend-hogwarts.onrender.com/oauth2/authorization/google';
   };
   
   const [roles, setRoles] = useState([]);

@@ -1,0 +1,23 @@
+.table-edit{
+    color: rgb(255, 94, 0);
+}
+
+.table-delete{
+    color: rgb(255, 0, 0);
+}
+
+.table-delete:hover{
+    color: rgb(255, 30, 30);
+} 
+
+.table-edit:hover{
+    color: rgb(255, 112, 30);
+}
+
+.table-edit:link{
+    text-decoration: none;
+}
+
+.table-delete:link{
+    text-decoration: none;
+}
