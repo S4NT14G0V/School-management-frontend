@@ -19,6 +19,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
+  const [tokenVar, setTokenVar] = useState(null)
 
   const fetchUsers = async (token) => {
     try {
@@ -36,6 +37,7 @@ const App = () => {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const token = query.get("token");
+    setTokenVar(token)
 
     if (!isTokenProcessed && token) {
       auth(token); // Guardar el token en el contexto
@@ -275,8 +277,7 @@ const App = () => {
       <div style={{display:"flex", justifyContent:"end", alignItems:"center", width:"100%"}}>
         <button
           className="reload"
-          id="reload"
-          onClick={() => fetchUsers(authToken)}
+          onClick={() => fetchUsers(tokenVar)}
           style={{
             width: "120px",
             height: "35px",
