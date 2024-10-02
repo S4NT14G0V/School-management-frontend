@@ -3,7 +3,7 @@ import "./RegisterForm.css";
 import { apiUrls } from "../../routes/ApiUrls";
 import { useNavigate } from "react-router-dom";
 import { getPublicRoles } from "../../services/rolService";
-import { getUserByEmail, updateUser,getUsers } from "../../services/userService";
+import { getUserByEmail, updateUser } from "../../services/userService";
 import { useUser } from "../../context/userContext";
 
 export default function RegisterForm() {
@@ -36,14 +36,7 @@ export default function RegisterForm() {
       setIsTokenProcessed(true); // Marcar como procesado
     }
 
-    const fetchUsers = async () => {
-      try {
-        const users = await getUsers();
-        console.log("Usuarios:", users);   
-      } catch (error) {
-        setError("Error fetching user data: " + error.message);
-      }
-    };
+    
 
     const fetchUserData = async () => {
       try {
@@ -82,7 +75,6 @@ export default function RegisterForm() {
     if (authToken) {
       fetchUserData();
       fetchRoles();
-      fetchUsers();
     } else {
       setLoading(false); // Si no hay token, se puede detener la carga
     }

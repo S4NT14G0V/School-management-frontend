@@ -11,21 +11,6 @@ export default function Login() {
     window.location.href = 'https://backend-hogwarts.onrender.com/oauth2/authorization/google';
   };
   
-  const [roles, setRoles] = useState([]);
-  const fetchRoles = async () => {
-    try {
-      const rol = await getPublicRoles();
-      setRoles(rol);
-      console.log(roles[0].name)
-    } catch (error) {
-      console.error("Error fetching roles:", error);
-    }  
-  };
-
-
-  useEffect(() => {
-    fetchRoles();
-  },[]);
   return (
     <div className="login-container">
       <AcademicInfo login />

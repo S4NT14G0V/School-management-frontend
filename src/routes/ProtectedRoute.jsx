@@ -1,34 +1,40 @@
 import { useUser } from "../context/userContext";
-import { Navigate } from "react-router-dom";
-import { validateUser } from "../services/userService";
-import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { validateAdmin } from "../services/userService";
+import React, { useEffect, useState } from "react";
 
 function ProtectedRoute({ children }) {
-  const { authToken, auth, validateUser, validationUser } = useUser();
+  const { authToken, setAuthToken, auth, validateUser, validationUser } = useUser();
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const fetchValidateUser = async () => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
+  useEffect(() => {
+    const fetchValidateAdmin = async () => {
+      const query = new URLSearchParams(window.location.search);
+      const token = query.get("token");
+  
+      if (token) {
+        setAuthToken(token); // Guardar el token en el contexto
+      }
+  
+      try {
+        const validationUser = await validateAdmin(token);
+        if (!validationUser && (token != null)) {
+          return navigate(`/classes?token=${token}`);
+        } //reiniciando celular
+        else if(validationUser && (token != null)){
+        }
+        else{
+          return window.location.href = 'http://localhost:5173/';
+        }
 
-    if (token) {
-      auth(token); // Guardar el token en el contexto
-    }
-
-    try {
-      const validationUser = await validateUser(authToken);
-      validateUser(validationUser);
-    } catch (error) {
-      setError("Error fetching user data: " + error.message);
-      alert("Error al validar el usuario");
-    }
-  };
-
-  fetchValidateUser();
-
-  if (!validateUser) {
-    return <Navigate to="/" />; // Redirige al login si el usuario no está logueado
-  }
+      } catch (error) {
+        setError("Error fetching user data: " + error.message);
+      }
+    };
+  
+    fetchValidateAdmin();
+  }, []);
 
   return children;
 }

@@ -7,7 +7,7 @@ export default function ClassesPage() {
     <div className='classes-page'>
       <Sidebar/>
       <div className="main-container">
-        TEST
+        Classes
       </div>
     </div>
   )

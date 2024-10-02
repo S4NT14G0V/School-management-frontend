@@ -23,7 +23,11 @@ const App = () => {
   const fetchUsers = async (token) => {
     try {
       const users = await getListUserInfo(token);
-      setData(users);
+      const usersWithKeys = users.map((user) => ({
+        ...user,
+        key: user.email, // Usa una propiedad única como key
+      }));
+      setData(usersWithKeys);
     } catch (error) {
       setError("Error fetching user data: " + error.message);
     }
@@ -42,10 +46,8 @@ const App = () => {
   }, [isModalOpen]);
 
   const handleDelete = async (email) => {
-    console.log("email delete: ", email);
     try {
       const response = await deleteUser(authToken, email); // Ejemplo de servicio
-      console.log("Response object:", response); // Verifica la respuesta del servidor
       if (response.success) {
         // Refresca los datos de la tabla si el borrado fue exitoso
         fetchUsers(authToken);
@@ -273,6 +275,7 @@ const App = () => {
       <div style={{display:"flex", justifyContent:"end", alignItems:"center", width:"100%"}}>
         <button
           className="reload"
+          id="reload"
           onClick={() => fetchUsers(authToken)}
           style={{
             width: "120px",

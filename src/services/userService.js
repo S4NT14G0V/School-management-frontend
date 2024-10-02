@@ -17,16 +17,15 @@ export const createUser = async (userInfo) => {
   return data;
 };
 
-
 export const validateUser = async (authToken) => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.validateUser, {
       method: "GET", // Cambia a GET
       headers: {
-        "authorization": `Bearer ${authToken}`
+        authorization: `Bearer ${authToken}`,
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     // Verifica si la respuesta no es OK (4xx o 5xx)
@@ -51,9 +50,9 @@ export const validateAdmin = async (authToken) => {
     const response = await fetch(apiUrls.user.validateAdmin, {
       method: "GET", // Cambia a GET
       headers: {
-        "authorization": `Bearer ${authToken}`
+        authorization: `Bearer ${authToken}`,
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     // Verifica si la respuesta no es OK (4xx o 5xx)
@@ -72,16 +71,15 @@ export const validateAdmin = async (authToken) => {
   }
 };
 
-
 export const getUserByEmail = async (authToken) => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.getByEmail, {
       method: "GET",
       headers: {
-        "authorization": `Bearer ${authToken}`
+        authorization: `Bearer ${authToken}`,
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -93,15 +91,15 @@ export const getUserByEmail = async (authToken) => {
   } catch (error) {
     return null; // Puedes devolver null o manejar el error de otra manera
   }
-}
+};
 
 export const updateUser = async (token, userInfo) => {
   try {
     const response = await fetch(`${apiUrls.user.updateByEmail}`, {
       method: "PUT",
-      credentials: 'include',
+      credentials: "include",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userInfo),
@@ -112,67 +110,64 @@ export const updateUser = async (token, userInfo) => {
   } catch (error) {
     console.error("Error:", error);
   }
-}
+};
 
 export const getUsers = async (token) => {
-  alert("funcion get users");
   try {
     const response = await fetch(apiUrls.user.all, {
       method: "GET",
       headers: {
-        "authorization": `Bearer ${token}`,
+        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-    console.log("Response object:", response); // Verifica la respuesta del servidor
+    console.log("Respuesta de Users:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
-      const errorMessage = await response.text(); 
+      const errorMessage = await response.text();
       throw new Error("Error al obtener los usuarios");
     }
 
-  
-    console.log("Data recibida:", response); // Verifica los datos recibidos
-    
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
     return [];
   }
+};
 
-};export const getInfo = async (authToken) => {
+export const getInfo = async (authToken) => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.getInfo, {
       method: "GET",
       headers: {
-        "authorization": `Bearer ${authToken}`
+        authorization: `Bearer ${authToken}`,
       },
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
       return null; // Devuelve null si la respuesta no es OK
     }
-    
+
     const data = await response.json();
     return data;
   } catch (error) {
     return null; // Puedes devolver null o manejar el error de otra manera
   }
-}
+};
 
 export const getListUserInfo = async (authToken) => {
   try {
     const response = await fetch(apiUrls.user.listUserInfo, {
       method: "GET",
       headers: {
-        "authorization": `Bearer ${authToken}`,
+        authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
     });
-    console.log("Response object:", response); // Verifica la respuesta del servidor
+    console.log("Respuesta de Users para Editar:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
-      const errorMessage = await response.text(); 
+      const errorMessage = await response.text();
       throw new Error("Error al obtener los usuarios");
     }
     console.log("Data recibida:", response); // Verifica los datos recibidos
@@ -181,17 +176,17 @@ export const getListUserInfo = async (authToken) => {
     console.error("Error:", error);
   }
 };
-export const deleteUser = async (authToken,email) => {
+export const deleteUser = async (authToken, email) => {
   try {
     const response = await fetch(apiUrls.user.delete, {
       method: "DELETE",
       headers: {
-        "authorization": `Bearer ${authToken}`,
-        "user": email,
+        authorization: `Bearer ${authToken}`,
+        user: email,
         "Content-Type": "application/json",
       },
     });
-     const success = await response.json(); // La respuesta es un booleano
+    const success = await response.json(); // La respuesta es un booleano
 
     if (!response.ok || !success) {
       throw new Error("Error al eliminar el usuario");
@@ -208,11 +203,11 @@ export const editRolByEmail = async (token, email, rol) => {
   try {
     const response = await fetch(`${apiUrls.user.editRolByEmail}`, {
       method: "PUT",
-      credentials: 'include',
+      credentials: "include",
       headers: {
-        "Authorization": `Bearer ${token}`,
-        "user": email,
-        "role": rol,
+        Authorization: `Bearer ${token}`,
+        user: email,
+        role: rol,
         "Content-Type": "application/json",
       },
     });
@@ -222,4 +217,4 @@ export const editRolByEmail = async (token, email, rol) => {
   } catch (error) {
     console.error("Error:", error);
   }
-}
+};

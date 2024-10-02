@@ -40,11 +40,7 @@ export default function RoleModal({ email, isModalOpen, closeModal }) {
   // Enviar los cambios al backend
   const handleEdit = async () => {
     try {
-      console.log("Rol:", formData.rol);
-      console.log("email:", formData.rol);
-      console.log("authToken:", formData.rol);
       editRolByEmail(authToken, email, formData.rol); // Ejemplo de servicio
-
       closeModal(); // Cerrar el modal después de actualizar
     } catch (error) {
       console.error("Error actualizando el rol", error);

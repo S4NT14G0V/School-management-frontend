@@ -14,7 +14,7 @@ export default function UserInfo() {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const token = query.get("token") || authToken; // Intenta obtener el token de la URL o del contexto
-    console.log(token)
+    console.log("Token:",token)
     // Si no hay token y `authToken` aún no está disponible, no hagas nada
     if (!token && !authToken) {
       setLoading(false); // Evita quedarse en estado de carga indefinido
@@ -26,7 +26,7 @@ export default function UserInfo() {
       try {
         const data = await getInfo(token); // Llama al servicio para obtener la info del usuario
         setUserInfo(data); // Almacena la información del usuario en el estado
-        console.log(data);
+        console.log("Data UserInfo:",data);
       } catch (error) {
         console.error("Error fetching user data:", error);
         setError("Error fetching user data");
@@ -45,7 +45,7 @@ export default function UserInfo() {
 
   // Maneja el logout y la navegación
   const handleLogout = () => {
-    logout(); // Llama a la función de logout
+    auth(null);
     navigate('/'); // Redirige a la página de inicio o a donde desees
   };
 
