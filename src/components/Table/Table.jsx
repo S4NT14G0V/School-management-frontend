@@ -4,22 +4,28 @@ import { Button, Input, Space, Table, Tag, Modal } from "antd";
 import { useUser } from "../../context/userContext";
 import { getListUserInfo, deleteUser } from "../../services/userService";
 import RoleModal from "../Modal/Modal";
-import { editRolByEmail } from "../../services/userService";
-
+import DeleteModal from "../Modal/DeleteModal";
+import { notification } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Table.css";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth } = useUser();
+  const { authToken, auth, email, admin } = useUser();
   const [data, setData] = useState([]);
   const [isTokenProcessed, setIsTokenProcessed] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [tokenVar, setTokenVar] = useState(null)
+  const [tokenVar, setTokenVar] = useState(null);
+  const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [notificationEdit, setNotificationEdit] = useState(false);
+  const [notificationDelete, setNotificationDelete] = useState(false);
 
   const fetchUsers = async (token) => {
     try {
@@ -35,9 +41,20 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (notificationEdit) {
+      showNotificationEdit();
+      setNotificationEdit(false);
+    }
+    if (notificationDelete) {
+      showNotificationDelete();
+      setNotificationDelete(false);
+    }
+  }, [notificationEdit, notificationDelete]);
+
+  useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const token = query.get("token");
-    setTokenVar(token)
+    setTokenVar(token);
 
     if (!isTokenProcessed && token) {
       auth(token); // Guardar el token en el contexto
@@ -45,20 +62,17 @@ const App = () => {
     }
 
     fetchUsers(token);
-  }, [isModalOpen]);
+  }, [isModalOpen, isModalDeleteOpen]);
 
-  const handleDelete = async (email) => {
-    try {
-      const response = await deleteUser(authToken, email); // Ejemplo de servicio
-      if (response.success) {
-        // Refresca los datos de la tabla si el borrado fue exitoso
-        fetchUsers(authToken);
-      } else {
-        console.error("Error al eliminar usuario:", response.message);
-      }
-    } catch (error) {
-      console.error("Error eliminando el usuario:", error);
-    }
+  const showNotification = (message, description) => {
+      notification.success({
+        message: message,
+        description: description,
+        placement: "bottom",
+        showProgress: true,
+        style: { backgroundColor: "#f4fcf2"},
+        pauseOnHover: false
+      });
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -72,16 +86,36 @@ const App = () => {
     setSearchText("");
   };
 
-  // Función para abrir el modal
   const openModal = (email) => {
+    if (email === admin) return; // Si es el administrador, no abre el modal
     setSelectedEmail(email); // Establece el email del usuario seleccionado
     setIsModalOpen(true); // Abre el modal
+  };
+
+  const openModalDelete = (email) => {
+    if (email === admin) return; // Si es el administrador, no abre el modal
+    setSelectedEmail(email); // Establece el email del usuario seleccionado
+    setIsModalDeleteOpen(true); // Abre el modal
+  };
+
+  const showNotificationDelete = () => {
+    showNotification("Success", "User deleted successfully");
+    fetchUsers(authToken);
+  };
+
+  const showNotificationEdit = () => {
+    showNotification("Success", "User edited successfully");
+    fetchUsers(authToken);
   };
 
   const closeModal = () => {
     setIsModalOpen(false); // Cierra el modal
     setSelectedEmail(null); // Limpia el email seleccionado
-    fetchUsers(authToken);
+  };
+
+  const closeModalDelete = () => {
+    setIsModalDeleteOpen(false);
+    setSelectedEmail(null); // Limpia el email seleccionado
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -253,12 +287,17 @@ const App = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a className="table-edit" onClick={() => openModal(record.email)}>
+          <a
+            className="table-edit"
+            disabled={record.email === admin}
+            onClick={() => openModal(record.email)}
+          >
             Editar
           </a>
           <a
             className="table-delete"
-            onClick={() => handleDelete(record.email)}
+            disabled={record.email === admin}
+            onClick={() => openModalDelete(record.email)}
           >
             Eliminar
           </a>
@@ -268,13 +307,15 @@ const App = () => {
   ];
 
   return (
-    <div style={{ width: "100%", overflowX: "auto" }}>
-      <RoleModal
-        email={selectedEmail}
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-      />
-      <div style={{display:"flex", justifyContent:"end", alignItems:"center", width:"100%"}}>
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
         <button
           className="reload"
           onClick={() => fetchUsers(tokenVar)}
@@ -286,16 +327,31 @@ const App = () => {
             alignItems: "center",
           }}
         >
-          Actualizar
+          Refresh
         </button>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 7, position: ["topCenter"] }} // Configura la paginación con 10 elementos por página
-        scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
-      />
-    </div>
+      <div style={{ width: "100%", overflowX: "auto" }}>
+        <RoleModal
+          email={selectedEmail}
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          notification={setNotificationEdit}
+        />
+        <DeleteModal
+          email={selectedEmail}
+          isModalOpen={isModalDeleteOpen}
+          closeModal={closeModalDelete}
+          notification={setNotificationDelete}
+        />
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{ pageSize, position: ["topCenter"] }} // Usamos el pageSize dinámico
+          scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
+        />
+      </div>
+    </>
   );
 };
+
 export default App;

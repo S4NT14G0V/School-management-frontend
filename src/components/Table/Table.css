@@ -21,3 +21,8 @@
 .table-delete:link{
     text-decoration: none;
 }
+
+.ant-table-wrapper{
+    width: calc(100dvw - 275px - 60px);
+    height: 100%;
+}

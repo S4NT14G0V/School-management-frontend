@@ -1,14 +1,10 @@
-import React from 'react'
-import Sidebar from '../../components/Sidebar/Sidebar'
-import './ClassesPage.css'
+import React from "react";
+import "./ClassesPage.css";
 
 export default function ClassesPage() {
   return (
-    <div className='classes-page'>
-      <Sidebar/>
-      <div className="main-container">
-        Classes
-      </div>
+    <div className="main-container">
+      <h3 className="classes-title">Classes</h3>
     </div>
-  )
+  );
 }

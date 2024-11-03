@@ -4,7 +4,7 @@ import { getRoles } from "../../services/rolService"; // Tu servicio para obtene
 import { useUser } from "../../context/userContext"; // Importa el contexto de usuario
 import { editRolByEmail } from "../../services/userService";
 
-export default function RoleModal({ email, isModalOpen, closeModal }) {
+export default function RoleModal({ email, isModalOpen, closeModal, notification }) {
   const { authToken } = useUser(); // Obtén el token de autenticación del contexto
   const [roleOptions, setRoleOptions] = useState([]); // Lista de roles
   const [formData, setFormData] = useState({ rol: "" }); // Formulario para manejar los datos
@@ -40,7 +40,8 @@ export default function RoleModal({ email, isModalOpen, closeModal }) {
   // Enviar los cambios al backend
   const handleEdit = async () => {
     try {
-      editRolByEmail(authToken, email, formData.rol); // Ejemplo de servicio
+      const result = await editRolByEmail(authToken, email, formData.rol); // Ejemplo de servicio
+      notification(true); // Marcar para mostrar notificación
       closeModal(); // Cerrar el modal después de actualizar
     } catch (error) {
       console.error("Error actualizando el rol", error);
@@ -55,6 +56,7 @@ export default function RoleModal({ email, isModalOpen, closeModal }) {
         open={isModalOpen}
         onCancel={closeModal}
         footer={null}
+        width={400}
       >
         <div className="form-group">
           <label>Rol</label>
@@ -74,8 +76,6 @@ export default function RoleModal({ email, isModalOpen, closeModal }) {
             ))}
           </select>
         </div>
-        {loading && <p>Cargando roles...</p>}
-        {error && <p>{error}</p>}
         <div
           style={{
             display: "flex",
@@ -90,7 +90,7 @@ export default function RoleModal({ email, isModalOpen, closeModal }) {
           >
             Cancelar
           </Button>
-          <Button key="submit" type="primary" onClick={handleEdit}>
+          <Button key="submit" style={{backgroundColor: "#2f1b41", color: "white"}} onClick={handleEdit}>
             Guardar Cambios
           </Button>
         </div>

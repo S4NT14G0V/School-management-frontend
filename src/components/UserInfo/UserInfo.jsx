@@ -1,64 +1,74 @@
-import React, { useState, useEffect } from "react";
-import './UserInfo.css';
-import { useUser } from '../../context/userContext';
-import { useNavigate } from 'react-router-dom';
-import { getInfo } from "../../services/userService";
+import React, { useState, useRef, useEffect } from "react";
+import "./UserInfo.css";
+import { useNavigate } from "react-router-dom";
 
-export default function UserInfo() {
-  const { authToken, auth } = useUser(); // Asegúrate de tener la función `logout` en `useUser`
-  const [userInfo, setUserInfo] = useState(null); // Estado para almacenar la información del usuario
-  const [loading, setLoading] = useState(true); // Estado para manejar la carga de datos
-  const [error, setError] = useState(null); // Estado para manejar los errores
+export default function UserInfo({ userInfo }) {
+  const [actionsVisible, setActionsVisible] = useState(false);
+  const [rotateIcon, setRotateIcon] = useState(false);
   const navigate = useNavigate();
+  const actionsRef = useRef(null); // Crear un ref para el menú de acciones
+  const buttonRef = useRef(null); // Ref para el botón de acciones
 
+  const handleLogout = () => {
+    navigate("/");
+  };
+
+  const handleActionsToggle = (e) => {
+    e.stopPropagation(); // Detiene la propagación del clic al documento
+    setRotateIcon((prev) => !prev); // Cambia el estado de rotación
+    setActionsVisible((prev) => !prev); // Alterna la visibilidad de las acciones
+  };
+
+  // Manejar clics fuera del componente
   useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token") || authToken; // Intenta obtener el token de la URL o del contexto
-    console.log("Token:",token)
-    // Si no hay token y `authToken` aún no está disponible, no hagas nada
-    if (!token && !authToken) {
-      setLoading(false); // Evita quedarse en estado de carga indefinido
-      return;
-    }
-  
-    // Función asincrónica para obtener los datos del usuario
-    const fetchUserInfo = async () => {
-      try {
-        const data = await getInfo(token); // Llama al servicio para obtener la info del usuario
-        setUserInfo(data); // Almacena la información del usuario en el estado
-        console.log("Data UserInfo:",data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        setError("Error fetching user data");
-      } finally {
-        setLoading(false); // Finaliza el estado de carga
+    const handleClickOutside = (event) => {
+      if (
+        actionsVisible && // Solo cerrar si el menú está visible
+        actionsRef.current && 
+        !actionsRef.current.contains(event.target) && // Clic fuera del menú
+        !buttonRef.current.contains(event.target) // Y fuera del botón
+      ) {
+        setActionsVisible(false); // Cerrar el menú de acciones si se hace clic fuera
+        setRotateIcon(false); // Restablecer la rotación del icono
       }
     };
-  
-    fetchUserInfo(); // Llama a la función si el token está disponible
-  }, [authToken]); // El efecto depende del token de autenticación
-  
-  if (loading) {
-    return <div>Loading user data...</div>; // Muestra un mensaje mientras los datos se cargan
-  }
-  // Verifica si la información del usuario está cargada
 
-  // Maneja el logout y la navegación
-  const handleLogout = () => {
-    auth(null);
-    navigate('/'); // Redirige a la página de inicio o a donde desees
-  };
+    // Agregar el evento de clic
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Limpiar el evento al desmontar
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [actionsVisible]);
+
+  if (!userInfo) return null;
 
   return (
     <div className="user-info">
-      <img src={userInfo.picture} alt="user-icon" />
+      <div ref={actionsRef} className={`user-info-actions ${actionsVisible ? "visible" : ""}`}>
+        <button className="actions-button logout-button" style={!actionsVisible ? {visibility:"hidden"} : {}} onClick={handleLogout}>
+          <img src="src/assets/logout-rounded-icon.svg" alt="Cerrar Sesión" />
+          Logout
+        </button>
+      </div>
+
+      <div className="image-container">
+        {userInfo.picture && <img src={userInfo.picture} className="image-icon" alt="user-icon" />}
+      </div>
       <div className="user-details">
-        <h3>{userInfo.name + " " + userInfo.lastname}</h3>
+        <h3>{`${userInfo.name} ${userInfo.lastname}`}</h3>
         <h4 className="role">{userInfo.rol.name}</h4>
       </div>
-      <button className="logout-button" onClick={handleLogout}>
-        <img src="src/assets/logout-rounded-icon.svg" alt="logout-icon" />
-      </button>
+      <div className="user-actions">
+        <button ref={buttonRef} className="user-actions-button" onClick={handleActionsToggle}>
+          <img
+            src="src/assets/arrow_down.svg"
+            className={rotateIcon ? "rotated" : ""}
+            alt="Toggle actions"
+          />
+        </button>
+      </div>
     </div>
   );
 }

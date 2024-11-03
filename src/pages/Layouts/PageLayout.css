@@ -1,0 +1,26 @@
+.page-layout{
+    box-sizing: border-box;
+    width: 100dvw;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    display: flex;
+    background-color: white;
+}
+
+.page-container{
+    max-height: 100dvh;
+    overflow: hidden;
+    flex: 1;
+    display: flex;
+    padding: 30px;
+    gap: 5%;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    background-color: white;
+
+    h1{
+        font-size: 2rem;
+    }
+}
+
