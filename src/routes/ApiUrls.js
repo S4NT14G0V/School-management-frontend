@@ -18,5 +18,11 @@ export const apiUrls = {
     all: `${baseUrl}/rol/getAll`,
     create: `${baseUrl}/rol/create`,
     getPublic: `${baseUrl}/rol/getPublicRoles`
-  }
+  },
+  subject:{
+    all: `${baseUrl}/subject/getAll`,
+    create: `${baseUrl}/subject/create`,
+    delete: `${baseUrl}/subject/delete`,
+    update: `${baseUrl}/subject/update`,
+  }  
 };

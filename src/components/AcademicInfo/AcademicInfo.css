@@ -1,49 +1,58 @@
-.academic-info{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.academic-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  height: fit-content;
+  overflow: hidden;
+  padding-bottom: 10px;
+  color: #2f1b41;
+
+  img {
+    width: 50%;
+    height: 80%;
+    flex: 2;
+  }
+
+  h2 {
+    flex: 1;
+    padding: 0;
+    margin: 0;
     width: 100%;
     height: 100%;
-    height: fit-content;
-    overflow: hidden;
-    padding-bottom: 25px;
-    color: #2F1B41;
-
-    img{
-        width: 50%;
-        height: 80%;
-        flex: 2;
-    }
-
-    h2{
-        flex: 1;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        text-wrap: wrap;
-        word-break: break-word;
-    }
+    text-wrap: wrap;
+    word-break: break-word;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
 }
 
-.login-info{
-    color: #2F1B41;
-    justify-content: center;
-    align-items: center;
-    height: auto;
+.login-info {
+  color: #2f1b41;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+
+  img {
+    width: 90%;
+  }
+
+  h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 2.5em;
     width: 100%;
-
-    img{
-        width: 90%;
-    }
-
-    h1{
-        padding: 0;
-        margin: 0;
-        font-size: 2.5em;
-        width: 100%;
-        text-wrap: wrap;
-        word-break: break-word;
-        text-shadow: 0 4px 10px rgba(255,255,255,0.7), 5px 10px 20px rgba(57, 60, 255, 0.5), 25px 38px 40px rgba(36, 39, 221, 0.6), -25px -28px 40px rgba(17, 20, 192, 0.6);
-    }
+    text-wrap: wrap;
+    word-break: break-word;
+    background: linear-gradient(
+      to right,
+      rgb(111, 0, 255),
+      rgb(22, 22, 255)
+    ); /* Gradiente de fondo */
+    -webkit-background-clip: text; /* Clipping en WebKit */
+    background-clip: text;
+    color: transparent;
+  }
 }

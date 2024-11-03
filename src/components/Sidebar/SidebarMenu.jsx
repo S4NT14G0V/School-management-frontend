@@ -13,7 +13,7 @@ export default function SidebarMenu({menuItems}) {
           <li
             key={index}
             className={`sidebar-menu-item ${
-              location.pathname.includes(item.href.split("?")[0])
+              location.pathname === item.href.split("?")[0]
                 ? "item-active"
                 : ""
             }`} // Activa el botón si coincide la ruta

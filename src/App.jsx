@@ -7,6 +7,7 @@ import { UserProvider } from "./context/userContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Register from "./pages/RegisterPage/RegisterPage";
 import AdminPage from "./pages/AdminPage/AdminPage";
+import AdminSubject from "./pages/AdminPage/AdminSubject";
 import PageLayout from "./pages/Layouts/PageLayout";
 
 function App() {
@@ -26,6 +27,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminSubject"
+              element={
+                <ProtectedRoute>
+                  <AdminSubject />
                 </ProtectedRoute>
               }
             />
