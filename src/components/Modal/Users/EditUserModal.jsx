@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd"; // Asegúrate de que tienes Ant Design instalado
-import { getRoles } from "../../services/rolService"; // Tu servicio para obtener roles
-import { useUser } from "../../context/userContext"; // Importa el contexto de usuario
-import { editRolByEmail } from "../../services/userService";
+import { getRoles } from "../../../services/rolService"; // Tu servicio para obtener roles
+import { useUser } from "../../../context/userContext"; // Importa el contexto de usuario
+import { editRolByEmail } from "../../../services/userService";
 
 export default function RoleModal({ email, isModalOpen, closeModal, notification }) {
   const { authToken } = useUser(); // Obtén el token de autenticación del contexto

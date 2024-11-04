@@ -12,6 +12,7 @@ export const apiUrls = {
     listUserInfo:`${baseUrl}/user/listUserInfo`,
     validateAdmin:`${baseUrl}/user/validateAdmin`,
     editRolByEmail:`${baseUrl}/user/editRolByEmail`,
+    getTeachers:`${baseUrl}/user/getTeachers`,
   },
 
   rol:{
@@ -24,5 +25,14 @@ export const apiUrls = {
     create: `${baseUrl}/subject/create`,
     delete: `${baseUrl}/subject/delete`,
     update: `${baseUrl}/subject/update`,
-  }  
+  }  ,
+  classes:{
+    all: `${baseUrl}/class/getAll`,
+    create: `${baseUrl}/class/create`,
+    delete: `${baseUrl}/class/delete`,
+    update: `${baseUrl}/class/update`,
+  },
+  group:{
+    all:`${baseUrl}/group/getAll`,
+  }
 };

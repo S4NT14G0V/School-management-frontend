@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, Tag, Modal } from "antd";
-import { useUser } from "../../context/userContext";
-import { getListUserInfo, deleteUser } from "../../services/userService";
-import RoleModal from "../Modal/Modal";
-import DeleteModal from "../Modal/DeleteModal";
+import { useUser } from "../../../context/userContext";
+import { getListUserInfo, deleteUser } from "../../../services/userService";
+import EditModal from "../../Modal/Classes/EditClassesModal";
+import DeleteModal from "../../Modal/Classes/DeleteClassesModal";
 import { notification } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import "./Table.css";
+import { createClass, getClasses } from "../../../services/ClassService";
+import CreateModal from "../../Modal/Classes/CreateClassesModal";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
@@ -26,13 +27,18 @@ const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [notificationDelete, setNotificationDelete] = useState(false);
+  // create function
+  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
+  const [notificationCreate, setNotificationCreate] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
 
-  const fetchUsers = async (token) => {
+  const fetchClasses = async (token) => {
     try {
-      const users = await getListUserInfo(token);
-      const usersWithKeys = users.map((user) => ({
-        ...user,
-        key: user.email, // Usa una propiedad única como key
+      const classes = await getClasses(token);
+      const usersWithKeys = classes.map((clase) => ({
+        ...clase,
+        key: clase.id, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
     } catch (error) {
@@ -49,8 +55,13 @@ const App = () => {
       showNotificationDelete();
       setNotificationDelete(false);
     }
-  }, [notificationEdit, notificationDelete]);
+    if (notificationCreate) {
+      showNotificationCreate();
+      setNotificationCreate(false);
+    }
+  }, [notificationEdit, notificationDelete, notificationCreate]);
 
+  // REVISAR A DETALLE
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const token = query.get("token");
@@ -61,18 +72,18 @@ const App = () => {
       setIsTokenProcessed(true); // Marcar como procesado
     }
 
-    fetchUsers(token);
-  }, [isModalOpen, isModalDeleteOpen]);
+    fetchClasses(token);
+  }, [isModalOpen, isModalDeleteOpen, isModalCreateOpen]);
 
   const showNotification = (message, description) => {
-      notification.success({
-        message: message,
-        description: description,
-        placement: "bottom",
-        showProgress: true,
-        style: { backgroundColor: "#f4fcf2"},
-        pauseOnHover: false
-      });
+    notification.success({
+      message: message,
+      description: description,
+      placement: "bottom",
+      showProgress: true,
+      style: { backgroundColor: "#f4fcf2" },
+      pauseOnHover: false,
+    });
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -86,26 +97,35 @@ const App = () => {
     setSearchText("");
   };
 
-  const openModal = (email) => {
-    if (email === admin) return; // Si es el administrador, no abre el modal
-    setSelectedEmail(email); // Establece el email del usuario seleccionado
+  const openModal = (dataEdit) => {
+    setEditData(dataEdit);
     setIsModalOpen(true); // Abre el modal
   };
 
-  const openModalDelete = (email) => {
-    if (email === admin) return; // Si es el administrador, no abre el modal
-    setSelectedEmail(email); // Establece el email del usuario seleccionado
+  const openModalDelete = (dataDelete) => {
+    setDeleteData(dataDelete);
     setIsModalDeleteOpen(true); // Abre el modal
+  };
+
+  const openModalCreate = () => {
+    setIsModalCreateOpen(true);
   };
 
   const showNotificationDelete = () => {
     showNotification("Success", "User deleted successfully");
-    fetchUsers(authToken);
+    fetchClasses(authToken);
   };
 
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    fetchUsers(authToken);
+    fetchClasses(authToken);
+    setEditData(null);
+  };
+
+  const showNotificationCreate = () => {
+    showNotification("Success", "User created successfully");
+    fetchClasses(authToken);
+    setDeleteData(null);
   };
 
   const closeModal = () => {
@@ -116,6 +136,10 @@ const App = () => {
   const closeModalDelete = () => {
     setIsModalDeleteOpen(false);
     setSelectedEmail(null); // Limpia el email seleccionado
+  };
+
+  const closeModalCreate = () => {
+    setIsModalCreateOpen(false);
   };
 
   const getColumnSearchProps = (dataIndex) => ({
@@ -211,93 +235,68 @@ const App = () => {
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
-    },
-    {
-      title: "Last Name",
-      dataIndex: "lastname",
-      key: "lastname",
-      ...getColumnSearchProps("lastname"),
-    },
-    {
-      title: "Document",
-      dataIndex: "document_number",
-      key: "document_number",
-      ...getColumnSearchProps("document_number"),
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-      ...getColumnSearchProps("email"),
-    },
-    {
-      title: "Rol",
-      dataIndex: "rol.name",
-      key: "rol.name",
-      filters: [
-        {
-          text: "Student",
-          value: "Student",
-        },
-        {
-          text: "Parent",
-          value: "Parent",
-        },
-        {
-          text: "Admin",
-          value: "Admin",
-        },
-        {
-          text: "Teacher",
-          value: "Teacher",
-        },
-      ],
-      onFilter: (value, record) => record.rol?.name === value,
+      title: "Subject",
+      dataIndex: "subject",
+      key: "subject",
+      width: "20%",
+      ...getColumnSearchProps("schedule"),
+      onFilter: (value, record) => record.subject?.name === value,
       render: (text, record) => {
-        const rolName = record.rol?.name;
-        let color;
-        if (!rolName) {
-          color = "volcano";
-        } else if (rolName === "Student") {
-          color = "blue";
-        } else if (rolName === "Admin") {
-          color = "red";
-        } else if (rolName === "Teacher") {
-          color = "purple";
-        } else if (rolName === "Parent") {
-          color = "orange";
-        }
-        return (
-          <>
-            {rolName ? (
-              <Tag color={color}>{rolName.toUpperCase()}</Tag>
-            ) : (
-              <Tag color="volcano">NO ROLE</Tag>
-            )}
-          </>
-        );
+        const subjectName = record.subject?.name;
+        return subjectName ? subjectName : "Subject not Found";
+      },
+    },
+    {
+        title: "Teacher",
+        dataIndex: "teacher", // Adjust to access the entire teacher object
+        key: "teacher.name",
+        width: "20%",
+        ...getColumnSearchProps("schedule"),
+        onFilter: (value, record) => record.teacher?.name === value,
+        render: (text, record) => {
+          const teacherName = record.teacher?.name;
+          const teacherLastName = record.teacher?.lastname;
+          return teacherName && teacherLastName 
+            ? `${teacherName}   ${teacherLastName}` 
+            : "Teacher not Found";
+        },
+      },
+    {
+      title: "Schedule",
+      dataIndex: "schedule",
+      key: "schedule",
+      width: "20%",
+      ...getColumnSearchProps("schedule"),
+    },
+    {
+      title: "Group",
+      dataIndex: "group",
+      key: "group",
+      width: "10%",
+      ...getColumnSearchProps("schedule"),
+      onFilter: (value, record) => record.group?.variant === value,
+      render: (text, record) => {
+        const groupName = record.group?.variant;
+        return groupName ? groupName : "Group not Found";
       },
     },
     {
       title: "Action",
       key: "action",
+      width: "20%",
       render: (_, record) => (
         <Space size="middle">
           <a
             className="table-edit"
             disabled={record.email === admin}
-            onClick={() => openModal(record.email)}
+            onClick={() => openModal(record)}
           >
             Editar
           </a>
           <a
             className="table-delete"
             disabled={record.email === admin}
-            onClick={() => openModalDelete(record.email)}
+            onClick={() => openModalDelete(record)}
           >
             Eliminar
           </a>
@@ -311,14 +310,28 @@ const App = () => {
       <div
         style={{
           display: "flex",
-          justifyContent: "end",
+          justifyContent: "space-between",
           alignItems: "center",
           width: "100%",
+          gap: "1rem",
         }}
       >
         <button
           className="reload"
-          onClick={() => fetchUsers(tokenVar)}
+          onClick={() => openModalCreate()}
+          style={{
+            width: "120px",
+            height: "35px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Create
+        </button>
+        <button
+          className="reload"
+          onClick={() => fetchClasses(authToken)}
           style={{
             width: "120px",
             height: "35px",
@@ -331,17 +344,24 @@ const App = () => {
         </button>
       </div>
       <div style={{ width: "100%", overflowX: "auto" }}>
-        <RoleModal
+        <EditModal
           email={selectedEmail}
           isModalOpen={isModalOpen}
           closeModal={closeModal}
           notification={setNotificationEdit}
+          subjectData={editData}
+        />
+        <CreateModal
+          isModalOpen={isModalCreateOpen}
+          closeModal={closeModalCreate}
+          notification={setNotificationCreate}
         />
         <DeleteModal
           email={selectedEmail}
           isModalOpen={isModalDeleteOpen}
           closeModal={closeModalDelete}
           notification={setNotificationDelete}
+          subjectData={deleteData}
         />
         <Table
           columns={columns}

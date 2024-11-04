@@ -70,12 +70,19 @@ export default function Sidebar() {
             alt: "button-administration",
             label: "Administration",
             href: `/admin?token=${token}`,
-          }, {
+          }, 
+          {
             src: "src/assets/item-admin.svg",
             alt: "button-administration-2",
             label: "Subject Administration",
             href: `/adminSubject?token=${token}`,
-          });
+          },
+          {
+            src: "src/assets/item-admin.svg",
+            alt: "button-administration-3",
+            label: "Classes Administration",
+            href: `/adminClasses?token=${token}`,
+          },);
         }
 
         setMenuItems(newMenuItems);

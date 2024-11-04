@@ -8,6 +8,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Register from "./pages/RegisterPage/RegisterPage";
 import AdminPage from "./pages/AdminPage/AdminPage";
 import AdminSubject from "./pages/AdminPage/AdminSubject";
+import AdminClasses from "./pages/AdminPage/AdminClasses";
 import PageLayout from "./pages/Layouts/PageLayout";
 
 function App() {
@@ -35,6 +36,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminSubject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminClasses"
+              element={
+                <ProtectedRoute>
+                  <AdminClasses />
                 </ProtectedRoute>
               }
             />

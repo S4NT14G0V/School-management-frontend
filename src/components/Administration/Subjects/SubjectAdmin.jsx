@@ -1,15 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, Tag, Modal } from "antd";
-import { useUser } from "../../context/userContext";
-import { getListUserInfo, deleteUser } from "../../services/userService";
-import RoleModal from "../Modal/Modal";
-import DeleteModal from "../Modal/DeleteModal";
+import { useUser } from "../../../context/userContext";
+import { getListUserInfo, deleteUser } from "../../../services/userService";
+import EditModal from "../../Modal/Subjects/EditSubjectModal";
+import DeleteModal from "../../Modal/Subjects/DeleteSubjectModal";
 import { notification } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import "./Table.css";
-import { createSubject, getSubjects } from "../../services/subjectService";
-import CreateModal from "../Modal/CreateModal";
+import { createSubject, getSubjects } from "../../../services/subjectService";
+import CreateModal from "../../Modal/Subjects/CreateSubjectModal";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
@@ -31,6 +30,8 @@ const App = () => {
   // create function
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [notificationCreate, setNotificationCreate] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const [deleteData, setDeleteData] = useState(null);
 
   const fetchSubjects = async () => {
     try {
@@ -96,15 +97,13 @@ const App = () => {
     setSearchText("");
   };
 
-  const openModal = (email) => {
-    if (email === admin) return; // Si es el administrador, no abre el modal
-    setSelectedEmail(email); // Establece el email del usuario seleccionado
+  const openModal = (dataEdit) => {
+    setEditData(dataEdit);
     setIsModalOpen(true); // Abre el modal
   };
 
-  const openModalDelete = (email) => {
-    if (email === admin) return; // Si es el administrador, no abre el modal
-    setSelectedEmail(email); // Establece el email del usuario seleccionado
+  const openModalDelete = (dataDelete) => {
+    setDeleteData(dataDelete);
     setIsModalDeleteOpen(true); // Abre el modal
   };
 
@@ -120,11 +119,13 @@ const App = () => {
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
     fetchSubjects();
+    setEditData(null);
   };
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
     fetchSubjects();
+    setDeleteData(null);
   };
 
   const closeModal = () => {
@@ -256,14 +257,14 @@ const App = () => {
           <a
             className="table-edit"
             disabled={record.email === admin}
-            onClick={() => openModal(record.email)}
+            onClick={() => openModal(record)}
           >
             Editar
           </a>
           <a
             className="table-delete"
             disabled={record.email === admin}
-            onClick={() => openModalDelete(record.email)}
+            onClick={() => openModalDelete(record)}
           >
             Eliminar
           </a>
@@ -311,18 +312,24 @@ const App = () => {
         </button>
       </div>
       <div style={{ width: "100%", overflowX: "auto" }}>
-        <RoleModal
+        <EditModal
           email={selectedEmail}
           isModalOpen={isModalOpen}
           closeModal={closeModal}
           notification={setNotificationEdit}
+          subjectData={editData}
         />
-        <CreateModal isModalOpen={isModalCreateOpen} closeModal={closeModalCreate} notification={setNotificationCreate}/>
+        <CreateModal
+          isModalOpen={isModalCreateOpen}
+          closeModal={closeModalCreate}
+          notification={setNotificationCreate}
+        />
         <DeleteModal
           email={selectedEmail}
           isModalOpen={isModalDeleteOpen}
           closeModal={closeModalDelete}
           notification={setNotificationDelete}
+          subjectData={deleteData}
         />
         <Table
           columns={columns}

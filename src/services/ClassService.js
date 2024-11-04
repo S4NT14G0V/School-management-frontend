@@ -1,13 +1,14 @@
 import { apiUrls } from "../routes/ApiUrls";
 
-export const createSubject = async (token,subject) => {
-    const response = await fetch(apiUrls.subject.create, {
+export const createClass = async (token,classes) => {
+    console.log("class.  ",classes)
+    const response = await fetch(apiUrls.classes.create, {
       method: "POST",
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(subject),
+      body: JSON.stringify(classes),
     });
   
     if (!response.ok) {
@@ -19,18 +20,20 @@ export const createSubject = async (token,subject) => {
 };
 
 
-export const getSubjects = async () => {
+export const getClasses = async (token) => {
     try {
-      const response = await fetch(apiUrls.subject.all, {
+        console.log("token:",token)
+      const response = await fetch(apiUrls.classes.all, {
         method: "GET",
         headers: {
+            authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
       console.log("Respuesta de subjects:", response); // Verifica la respuesta del servidor
       if (!response.ok) {
         const errorMessage = await response.text();
-        throw new Error("Error al obtener los subjects");
+        throw new Error("Error al obtener las classes");
       }
   
       return await response.json();
@@ -40,14 +43,14 @@ export const getSubjects = async () => {
     }
   };
 
-  export const updateSubject = async (token,subject) => {
-    const response = await fetch(apiUrls.subject.update, {
+  export const updateClasses = async (token,classes) => {
+    const response = await fetch(apiUrls.classes.update, {
       method: "PUT",
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(subject),
+      body: JSON.stringify(classes),
     });
   
     if (!response.ok) {
@@ -58,7 +61,7 @@ export const getSubjects = async () => {
 };
 
 export const deleteSubject = async (token,id) => {
-    const response = await fetch(apiUrls.subject.delete, {
+    const response = await fetch(apiUrls.classes.delete, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
