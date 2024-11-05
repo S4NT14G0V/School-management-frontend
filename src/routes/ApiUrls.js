@@ -34,5 +34,10 @@ export const apiUrls = {
   },
   group:{
     all:`${baseUrl}/group/getAll`,
+    create:`${baseUrl}/group/create`,
+  },
+  groupxUsers:{
+    studentsWithGroup:`${baseUrl}/userXGroup/student-groups`,
+    updateGroupById:`${baseUrl}/userXGroup/updateGroupById`,
   }
 };

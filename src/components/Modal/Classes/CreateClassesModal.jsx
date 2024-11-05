@@ -5,6 +5,7 @@ import { getSubjects } from "../../../services/subjectService";
 import { getGroups } from "../../../services/groupService";
 import { getTeachers } from "../../../services/userService";
 import { createClass } from "../../../services/ClassService";
+import "./CreateClassesModal.css";
 
 export default function CreateModal({ isModalOpen, closeModal, notification }) {
   const { authToken } = useUser();

@@ -9,6 +9,7 @@ import Register from "./pages/RegisterPage/RegisterPage";
 import AdminPage from "./pages/AdminPage/AdminPage";
 import AdminSubject from "./pages/AdminPage/AdminSubject";
 import AdminClasses from "./pages/AdminPage/AdminClasses";
+import AdminGroups from "./pages/AdminPage/AdminGroups";
 import PageLayout from "./pages/Layouts/PageLayout";
 
 function App() {
@@ -44,6 +45,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminClasses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/groupsClasses"
+              element={
+                <ProtectedRoute>
+                  <AdminGroups />
                 </ProtectedRoute>
               }
             />

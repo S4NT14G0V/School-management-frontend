@@ -46,6 +46,13 @@ const App = () => {
     }
   };
 
+  // Efecto para cargar usuarios solo al montar el componente
+  useEffect(() => {
+    if (authToken) {
+      fetchSubjects();
+    }
+  }, [authToken]);
+
   useEffect(() => {
     if (notificationEdit) {
       showNotificationEdit();
@@ -71,8 +78,6 @@ const App = () => {
       auth(token); // Guardar el token en el contexto
       setIsTokenProcessed(true); // Marcar como procesado
     }
-
-    fetchSubjects();
   }, [isModalOpen, isModalDeleteOpen, isModalCreateOpen]);
 
   const showNotification = (message, description) => {
@@ -334,7 +339,10 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
-          pagination={{ pageSize, position: ["topCenter"] }} // Usamos el pageSize dinámico
+          pagination={{
+            pageSize,
+            position: ["topCenter"],
+          }}
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />
       </div>

@@ -1,0 +1,4 @@
+select {
+    max-height: 60px; /* Ajusta según el número de opciones visibles que desees */
+    overflow-y: auto;  /* Agrega scroll vertical */
+  }

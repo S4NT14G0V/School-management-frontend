@@ -40,6 +40,13 @@ const App = () => {
     }
   };
 
+  // Efecto para cargar usuarios solo al montar el componente
+  useEffect(() => {
+    if (authToken) {
+      fetchUsers(authToken);
+    }
+  }, [authToken]);
+
   useEffect(() => {
     if (notificationEdit) {
       showNotificationEdit();
@@ -60,8 +67,6 @@ const App = () => {
       auth(token); // Guardar el token en el contexto
       setIsTokenProcessed(true); // Marcar como procesado
     }
-
-    fetchUsers(token);
   }, [isModalOpen, isModalDeleteOpen]);
 
   const showNotification = (message, description) => {

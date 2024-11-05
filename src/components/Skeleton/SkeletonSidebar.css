@@ -16,6 +16,7 @@
   .sidebar-menu-item,
   .user-info .user-details,
   .user-info .image-container,
+  .sidebar-menu-divider,
   .user-info .user-actions::after {
     background-color: #e0e0e0;
     background-image: linear-gradient(
@@ -39,6 +40,8 @@
   .sidebar-menu-item img,
   .user-info h3,
   .user-info h4,
+  .sidebar-menu-divider-text,
+  .sidebar-menu-divider-line,
   .image-container img {
     visibility: hidden;
   }

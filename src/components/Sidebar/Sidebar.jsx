@@ -13,7 +13,7 @@ export default function Sidebar() {
   const [menuItems, setMenuItems] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [token, setToken] = useState(null);
-  const { email } = useUser();
+  const { email, auth } = useUser();
   // Configura los elementos del menú
   const newMenuItems = [
     {
@@ -46,8 +46,9 @@ export default function Sidebar() {
     const urlToken = new URLSearchParams(window.location.search).get("token");
     if (urlToken) {
       setToken(urlToken);
+      auth(urlToken);
     }
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,28 +61,35 @@ export default function Sidebar() {
         setUserInfo(userData);
 
         // Luego validamos si es admin
-        const adminData = await validateAdmin(token);
-        setIsAdmin(adminData);
+
+          const adminData = await validateAdmin(token);
+          setIsAdmin(adminData);
+        
 
         if (adminData) {
           email(userData.email);
           newMenuItems.push({
-            src: "src/assets/item-admin.svg",
+            src: "src/assets/user-cog.svg",
             alt: "button-administration",
-            label: "Administration",
+            label: "User Management",
             href: `/admin?token=${token}`,
           }, 
           {
-            src: "src/assets/item-admin.svg",
+            src: "src/assets/book-cog.svg",
             alt: "button-administration-2",
-            label: "Subject Administration",
+            label: "Subject Management",
             href: `/adminSubject?token=${token}`,
           },
           {
-            src: "src/assets/item-admin.svg",
+            src: "src/assets/folder-cog.svg",
             alt: "button-administration-3",
-            label: "Classes Administration",
+            label: "Classes Management",
             href: `/adminClasses?token=${token}`,
+          },{
+            src: "src/assets/group-cog.svg",
+            alt: "button-administration-3",
+            label: "Groups Management",
+            href: `/groupsClasses?token=${token}`,
           },);
         }
 
@@ -90,7 +98,7 @@ export default function Sidebar() {
         console.error("Error fetching data:", error);
       } finally {
         // Añade un retraso de 3 segundos antes de cambiar loading a false
-        setTimeout(() => setLoading(false), 3000);
+        setTimeout(() => setLoading(false), 1000);
       }
     };
 
@@ -103,13 +111,13 @@ export default function Sidebar() {
         <Skeleton>
           <AcademicInfo />
           <SidebarMenu menuItems={menuItems} />
-          {userInfo && <UserInfo userInfo={userInfo} />}
+          <UserInfo userInfo={userInfo} />
         </Skeleton>
       ) : (
         <>
           <AcademicInfo />
           <SidebarMenu menuItems={menuItems} />
-          {userInfo && <UserInfo userInfo={userInfo} />}
+          <UserInfo userInfo={userInfo} />
         </>
       )}
     </div>

@@ -2,7 +2,6 @@
     max-height: 100dvh;
     flex: 1;
     display: flex;
-    padding: 30px;
     gap: 5%;
     flex-direction: column;
     justify-content: start;

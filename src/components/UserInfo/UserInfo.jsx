@@ -46,7 +46,7 @@ export default function UserInfo({ userInfo }) {
 
   return (
     <div className="user-info">
-      <div ref={actionsRef} className={`user-info-actions ${actionsVisible ? "visible" : ""}`}>
+      <div ref={actionsRef} className={`user-info-actions ${actionsVisible ? "visible" : ""}`} style={!actionsVisible ? {visibility:"hidden" } : {}}>
         <button className="actions-button logout-button" style={!actionsVisible ? {visibility:"hidden"} : {}} onClick={handleLogout}>
           <img src="src/assets/logout-rounded-icon.svg" alt="Cerrar Sesión" />
           Logout

@@ -1,34 +1,88 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { useUser } from "../../../context/userContext";
-import { updateSubject } from "../../../services/subjectService";
+import { getSubjects } from "../../../services/subjectService";
+import { getTeachers } from "../../../services/userService";
+import { getGroups } from "../../../services/groupService";
+import { updateClasses } from "../../../services/ClassService";
 
 export default function EditModal({
   isModalOpen,
   closeModal,
   notification,
-  subjectData
+  classesData,
 }) {
   const { authToken } = useUser();
-  const [formData, setFormData] = useState(subjectData || {}); // Inicializa con `subjectData`
+  const [formData, setFormData] = useState(classesData || {});
+
+  const [teacherOptions, setTeacherOptions] = useState([]);
+  const [groupOptions, setGroupOptions] = useState([]);
+  const [subjectOptions, setSubjectOptions] = useState([]);
 
   useEffect(() => {
-    if (subjectData) {
-      setFormData(subjectData); // Actualiza `formData` cuando `subjectData` cambia
+    if (isModalOpen) {
+      fetchOptions();
+    } else {
+      // Reiniciar formData cuando se cierra el modal
+      setFormData({
+        teacher: {},
+        group: {},
+        subject: {},
+        schedule: "",
+      });
     }
-  }, [subjectData]);
+  }, [isModalOpen]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const fetchOptions = async () => {
+    try {
+      const teachers = await getTeachers(authToken);
+      setTeacherOptions(teachers);
+
+      const groups = await getGroups(authToken);
+      setGroupOptions(groups);
+
+      const subjects = await getSubjects(authToken);
+      setSubjectOptions(subjects);
+    } catch (error) {
+      console.error("Error fetching options:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (classesData) {
+      setFormData(classesData);
+    }
+  }, [classesData]);
+
+  const handleTeacherChange = (value) => {
+    const selectedTeacher = teacherOptions.find(
+      (teacher) => teacher.id === value
+    );
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      teacher: selectedTeacher || {},
     }));
   };
 
-  const handleEdit = async (subject) => {
+  const handleGroupChange = (value) => {
+    const selectedGroup = groupOptions.find((group) => group.id === value);
+    setFormData((prevData) => ({ ...prevData, group: selectedGroup || {} }));
+  };
+
+  const handleSubjectChange = (value) => {
+    const selectedSubject = subjectOptions.find(
+      (subject) => subject.id === value
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      subject: selectedSubject || {},
+    }));
+  };
+
+  const handleEdit = async (classes) => {
     try {
-      const result = await updateSubject(authToken, subject);
+      console.log("Clases a editar:", classes);
+      const result = await updateClasses(authToken, classes);
       if (result) {
         notification(true);
         closeModal();
@@ -49,34 +103,75 @@ export default function EditModal({
       footer={null}
       width={400}
     >
-      <div className="form-group" style={{ border: "none", marginTop: "5px" }}>
-        <div style={{ padding: "10px" }} />
-        <label>Nombre de la Materia</label>
+      <div className="form-group">
+        <label>Profesor</label>
+        <select
+          name="teacher"
+          value={formData.teacher?.id || ""}
+          onChange={(e) => handleTeacherChange(parseInt(e.target.value))}
+          required
+        >
+          <option value="" disabled>
+            Seleccione...
+          </option>
+          {teacherOptions?.map((option) => (
+            <option key={option.id} value={option.id}>
+              {`${option.name} ${option.lastname}`}
+            </option>
+          ))}
+        </select>
+
+        <label>Grupo</label>
+        <select
+          name="group"
+          value={formData.group?.id || ""}
+          onChange={(e) => handleGroupChange(parseInt(e.target.value))}
+          required
+        >
+          <option value="" disabled>
+            Seleccione...
+          </option>
+          {groupOptions?.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.variant}
+            </option>
+          ))}
+        </select>
+
+        <label>Materia</label>
+        <select
+          name="subject"
+          value={formData.subject?.id || ""}
+          onChange={(e) => handleSubjectChange(parseInt(e.target.value))}
+          required
+        >
+          <option value="" disabled>
+            Seleccione...
+          </option>
+          {subjectOptions?.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+
+        <label>Horario</label>
         <input
           type="text"
-          placeholder="Nombre"
-          name="name"
-          value={formData.name || ""}
-          onChange={handleInputChange}
-        />
-        <label>Descripción de la Materia</label>
-        <input
-          type="text"
-          placeholder="Descripción"
-          name="description"
-          value={formData.description || ""}
-          onChange={handleInputChange}
-        />
-        <label>Link de la Imágen</label>
-        <input
-          type="text"
-          placeholder="Imágen"
-          name="picture"
-          value={formData.picture || ""}
-          onChange={handleInputChange}
+          name="schedule"
+          value={formData.schedule}
+          onChange={(e) =>
+            setFormData({ ...formData, schedule: e.target.value })
+          }
         />
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "20px",
+        }}
+      >
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancelar
         </Button>

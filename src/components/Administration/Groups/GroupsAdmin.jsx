@@ -2,13 +2,10 @@ import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, Tag, Modal } from "antd";
 import { useUser } from "../../../context/userContext";
-import { getListUserInfo, deleteUser } from "../../../services/userService";
-import EditModal from "../../Modal/Classes/EditClassesModal";
-import DeleteModal from "../../Modal/Classes/DeleteClassesModal";
+import EditModal from "../../Modal/Groups/EditGroupsModal";
 import { notification } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { createClass, getClasses } from "../../../services/ClassService";
-import CreateModal from "../../Modal/Classes/CreateClassesModal";
+import CreateModal from "../../Modal/Groups/CreateGroupsModal";
+import { getStudentsWithGroup } from "../../../services/groupService";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
@@ -18,27 +15,22 @@ const App = () => {
   const [data, setData] = useState([]);
   const [isTokenProcessed, setIsTokenProcessed] = useState(false);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [tokenVar, setTokenVar] = useState(null);
   const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
-  const [isAdmin, setIsAdmin] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
-  const [notificationDelete, setNotificationDelete] = useState(false);
   // create function
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [notificationCreate, setNotificationCreate] = useState(false);
   const [editData, setEditData] = useState(null);
-  const [deleteData, setDeleteData] = useState(null);
 
-  const fetchClasses = async (token) => {
+  const fetchGroups = async (token) => {
     try {
-      const classes = await getClasses(token);
-      const usersWithKeys = classes.map((clase) => ({
-        ...clase,
-        key: clase.id, // Usa una propiedad única como key
+      const GroupXstudent = await getStudentsWithGroup(token);
+      const usersWithKeys = GroupXstudent.map((groupXstudent) => ({
+        ...groupXstudent,
+        key: groupXstudent.student.id, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
     } catch (error) {
@@ -49,7 +41,7 @@ const App = () => {
   // Efecto para cargar usuarios solo al montar el componente
   useEffect(() => {
     if (authToken) {
-      fetchClasses(authToken);
+      fetchGroups(authToken);
     }
   }, [authToken]);
 
@@ -58,15 +50,11 @@ const App = () => {
       showNotificationEdit();
       setNotificationEdit(false);
     }
-    if (notificationDelete) {
-      showNotificationDelete();
-      setNotificationDelete(false);
-    }
     if (notificationCreate) {
       showNotificationCreate();
       setNotificationCreate(false);
     }
-  }, [notificationEdit, notificationDelete, notificationCreate]);
+  }, [notificationEdit, notificationCreate]);
 
   // REVISAR A DETALLE
   useEffect(() => {
@@ -78,7 +66,7 @@ const App = () => {
       auth(token); // Guardar el token en el contexto
       setIsTokenProcessed(true); // Marcar como procesado
     }
-  }, [isModalOpen, isModalDeleteOpen, isModalCreateOpen]);
+  }, [isModalOpen, isModalCreateOpen]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -107,39 +95,23 @@ const App = () => {
     setIsModalOpen(true); // Abre el modal
   };
 
-  const openModalDelete = (dataDelete) => {
-    setDeleteData(dataDelete);
-    setIsModalDeleteOpen(true); // Abre el modal
-  };
-
   const openModalCreate = () => {
     setIsModalCreateOpen(true);
   };
 
-  const showNotificationDelete = () => {
-    showNotification("Success", "User deleted successfully");
-    fetchClasses(authToken);
-  };
-
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    fetchClasses(authToken);
+    fetchGroups(authToken);
     setEditData(null);
   };
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
-    fetchClasses(authToken);
-    setDeleteData(null);
+    fetchGroups(authToken);
   };
 
   const closeModal = () => {
     setIsModalOpen(false); // Cierra el modal
-    setSelectedEmail(null); // Limpia el email seleccionado
-  };
-
-  const closeModalDelete = () => {
-    setIsModalDeleteOpen(false);
     setSelectedEmail(null); // Limpia el email seleccionado
   };
 
@@ -148,15 +120,31 @@ const App = () => {
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: "block" }}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
         />
         <Space>
           <Button
@@ -164,80 +152,100 @@ const App = () => {
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
-            style={{ width: 90 }}
+            style={{
+              width: 90,
+            }}
           >
             Search
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
             Reset
           </Button>
           <Button
             type="link"
             size="small"
             onClick={() => {
-              confirm({ closeDropdown: false });
+              confirm({
+                closeDropdown: false,
+              });
               setSearchText(selectedKeys[0]);
               setSearchedColumn(dataIndex);
             }}
           >
             Filter
           </Button>
-          <Button type="link" size="small" onClick={() => close()}>
-            Close
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
           </Button>
         </Space>
       </div>
     ),
-    filterIcon: (filtered) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
-      if (visible) setTimeout(() => searchInput.current?.select(), 100);
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
     },
-    render: (text) => (searchedColumn === dataIndex ? text || "" : text),
+    render: (text) =>
+      searchedColumn === dataIndex ? (text ? text : "") : text,
   });
-  
-  
 
   const columns = [
+    
     {
-      title: "Subject",
-      dataIndex: ["subject", "name"],
-      key: "subject.name",
-      width: "20%",
-      ...getColumnSearchProps("subject.name"),
+      title: "Student",
+      dataIndex: "student.name", // Accessing the student object
+      key: "student.name",
+      width: "60%",
+      ...getColumnSearchProps("student.name"),
       onFilter: (value, record) =>
-        record.subject?.name?.toLowerCase().includes(value.toLowerCase()),
-      render: (text, record) => record.subject?.name || "Subject not Found",
-    },
-    {
-      title: "Teacher",
-      dataIndex: ["teacher", "name"],
-      key: "teacher.name",
-      width: "20%",
-      ...getColumnSearchProps("teacher.name"),
-      onFilter: (value, record) =>
-        record.teacher?.name?.toLowerCase().includes(value.toLowerCase()),
-      render: (text, record) => record.teacher
-        ? `${record.teacher.name} ${record.teacher.lastname}`
-        : "Teacher not Found",
-    },
-    {
-      title: "Schedule",
-      dataIndex: "schedule",
-      key: "schedule",
-      width: "20%",
-      ...getColumnSearchProps("schedule"),
-      onFilter: (value, record) =>
-        record.schedule?.toLowerCase().includes(value.toLowerCase()),
+        record.student?.name?.toLowerCase().includes(value.toLowerCase()),
+      render: (text, record) => {
+        const studentName = record.student?.name;
+        const studentLastName = record.student?.lastname;
+        return studentName && studentLastName
+          ? `${studentName} ${studentLastName}`
+          : "Student not found";
+      },
     },
     {
       title: "Group",
-      dataIndex: ["group", "variant"],
-      key: "group.variant",
-      width: "10%",
-      ...getColumnSearchProps("group.variant"),
+      dataIndex: "group",
+      key: "group",
+      width: "20%",
+      ...getColumnSearchProps("group"),
       onFilter: (value, record) =>
         record.group?.variant?.toLowerCase().includes(value.toLowerCase()),
-      render: (text, record) => record.group?.variant || "Group not Found",
+      render: (text, record) => {
+        if (record.group?.grade === undefined || record.group?.variant === undefined) {
+          const groupName = "Sin Grupo";
+          return groupName;
+        } else {
+          const groupName = record.group?.grade + " - " + record.group?.variant;
+          return groupName ? groupName : "Group not found";
+        }
+        
+      },
     },
     {
       title: "Action",
@@ -252,19 +260,10 @@ const App = () => {
           >
             Editar
           </a>
-          <a
-            className="table-delete"
-            disabled={record.email === admin}
-            onClick={() => openModalDelete(record)}
-          >
-            Eliminar
-          </a>
         </Space>
       ),
     },
   ];
-  
-  
 
   return (
     <>
@@ -286,19 +285,21 @@ const App = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            background: "rgb(81, 0, 225)",
           }}
         >
           Create
         </button>
         <button
           className="reload"
-          onClick={() => fetchClasses(authToken)}
+          onClick={() => fetchGroups(authToken)}
           style={{
             width: "120px",
             height: "35px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            background: "rgb(81, 0, 225)",
           }}
         >
           Refresh
@@ -310,19 +311,12 @@ const App = () => {
           isModalOpen={isModalOpen}
           closeModal={closeModal}
           notification={setNotificationEdit}
-          classesData={editData}
+          groupsData={editData}
         />
         <CreateModal
           isModalOpen={isModalCreateOpen}
           closeModal={closeModalCreate}
           notification={setNotificationCreate}
-        />
-        <DeleteModal
-          email={selectedEmail}
-          isModalOpen={isModalDeleteOpen}
-          closeModal={closeModalDelete}
-          notification={setNotificationDelete}
-          classesData={deleteData}
         />
         <Table
           columns={columns}

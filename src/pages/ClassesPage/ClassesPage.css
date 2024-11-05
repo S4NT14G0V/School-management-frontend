@@ -7,7 +7,7 @@
   background: linear-gradient(
     to right,
     rgb(111, 0, 255),
-    blue
+    rgb(22, 22, 255)
   ); /* Gradiente de fondo */
   -webkit-background-clip: text; /* Clipping en WebKit */
   background-clip: text;

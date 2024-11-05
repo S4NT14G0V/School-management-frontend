@@ -44,6 +44,7 @@ export const getClasses = async (token) => {
   };
 
   export const updateClasses = async (token,classes) => {
+    console.log("Id =",classes.id)
     const response = await fetch(apiUrls.classes.update, {
       method: "PUT",
       headers: {
@@ -60,7 +61,7 @@ export const getClasses = async (token) => {
     return response.ok;
 };
 
-export const deleteSubject = async (token,id) => {
+export const deleteClasses = async (token,id) => {
     const response = await fetch(apiUrls.classes.delete, {
       method: "DELETE",
       headers: {
