@@ -1,10 +1,16 @@
 import React from "react";
 import "./ClassesPage.css";
+import ClassesPersonal  from "../../components/Classes/ClassesPersonal";
 
-export default function ClassesPage() {
+export default function ClassesPage({ title = "Classes" }) {
+
+  
+
   return (
-    <div className="main-container">
-      <h3 className="classes-title">Classes</h3>
-    </div>
+    <>
+      <h1>{title}</h1>
+      <hr className="classes-divider" />
+      <ClassesPersonal/>
+    </>
   );
 }

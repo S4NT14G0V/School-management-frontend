@@ -31,6 +31,7 @@ export const apiUrls = {
     create: `${baseUrl}/class/create`,
     delete: `${baseUrl}/class/delete`,
     update: `${baseUrl}/class/update`,
+    getMyClasses:`${baseUrl}/class/getMyClasses`,
   },
   group:{
     all:`${baseUrl}/group/getAll`,

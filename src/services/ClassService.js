@@ -43,6 +43,29 @@ export const getClasses = async (token) => {
     }
   };
 
+  export const getMyClasses = async (token) => {
+    try {
+        console.log("token:",token)
+      const response = await fetch(apiUrls.classes.getMyClasses, {
+        method: "GET",
+        headers: {
+            authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Respuesta de subjects:", response); 
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error("Error al obtener las classes");
+      }
+  
+      return await response.json();
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  };
+
   export const updateClasses = async (token,classes) => {
     console.log("Id =",classes.id)
     const response = await fetch(apiUrls.classes.update, {

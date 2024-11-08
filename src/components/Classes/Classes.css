@@ -1,0 +1,83 @@
+.classes-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 450px;
+  height: 200px;
+  padding: 5px;
+  gap: 10px;
+  border-radius: 6px;
+  box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.card-img {
+  width: 200px;
+  height: 190px;
+  border-radius: 5px;
+}
+
+.card-list {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+  gap: 2%;
+  overflow: auto;
+}
+
+.classes-right-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  gap: 10px;
+}
+
+.title-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 26px;
+
+  h2 {
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #000;
+  }
+}
+
+.classes-info-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.text-card {
+  font-size: 15px;
+  font-weight: 400;
+  color: #000;
+}
+
+.subtitle-card {
+  font-weight: 600;
+}
+
+.button-card {
+  width: 130px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 400;
+  margin-bottom: 5px;
+}

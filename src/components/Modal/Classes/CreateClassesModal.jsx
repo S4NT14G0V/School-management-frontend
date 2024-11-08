@@ -102,13 +102,17 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
         <label>Grupo</label>
         <select
           name="group"
-          value={formData.group.id || ""} // Asignar el ID del grupo seleccionado o vacío
+          value={formData.group?.id || ""}
           onChange={(e) => handleGroupChange(parseInt(e.target.value))}
           required
         >
-          <option value="" disabled>Seleccione...</option>
-          {groupOptions.map((option) => (
-            <option key={option.id} value={option.id}>{option.variant}</option>
+          <option value="" disabled>
+            Seleccione...
+          </option>
+          {groupOptions?.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.grade + " - " + option.variant}
+            </option>
           ))}
         </select>
 

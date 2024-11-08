@@ -133,7 +133,7 @@ export default function EditModal({
           </option>
           {groupOptions?.map((option) => (
             <option key={option.id} value={option.id}>
-              {option.variant}
+              {option.grade + " - " + option.variant}
             </option>
           ))}
         </select>

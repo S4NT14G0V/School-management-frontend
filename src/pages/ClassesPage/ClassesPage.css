@@ -1,7 +1,10 @@
 .main-container {
   flex: 1;
-  display: grid;
-  place-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 5%;
   font-size: 5rem;
   font-weight: 800;
   background: linear-gradient(
@@ -14,4 +17,10 @@
   color: transparent;
   height: 100%;
   width: 100%;
+}
+
+.classes-divider {
+  border: 1px solid rgba(104, 104, 104, 0.1); /* Cambia el color del borde a rojo */
+  width: 80%;
+  height: 1px;
 }

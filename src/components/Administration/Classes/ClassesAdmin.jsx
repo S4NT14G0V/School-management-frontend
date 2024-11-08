@@ -231,13 +231,22 @@ const App = () => {
     },
     {
       title: "Group",
-      dataIndex: ["group", "variant"],
-      key: "group.variant",
-      width: "10%",
-      ...getColumnSearchProps("group.variant"),
+      dataIndex: "group",
+      key: "group",
+      width: "20%",
+      ...getColumnSearchProps("group"),
       onFilter: (value, record) =>
         record.group?.variant?.toLowerCase().includes(value.toLowerCase()),
-      render: (text, record) => record.group?.variant || "Group not Found",
+      render: (text, record) => {
+        if (record.group?.grade === undefined || record.group?.variant === undefined) {
+          const groupName = "Sin Grupo";
+          return groupName;
+        } else {
+          const groupName = record.group?.grade + " - " + record.group?.variant;
+          return groupName ? groupName : "Group not found";
+        }
+        
+      },
     },
     {
       title: "Action",

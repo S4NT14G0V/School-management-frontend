@@ -10,6 +10,7 @@ import AdminPage from "./pages/AdminPage/AdminPage";
 import AdminSubject from "./pages/AdminPage/AdminSubject";
 import AdminClasses from "./pages/AdminPage/AdminClasses";
 import AdminGroups from "./pages/AdminPage/AdminGroups";
+import ClassesSubject from "./pages/ClassesPage/ClassesSubject";
 import PageLayout from "./pages/Layouts/PageLayout";
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
 
           {/* Rutas que utilizan el PageLayout */}
           <Route element={<PageLayout />}>
-            <Route path="/classes" element={<Classes />} />
+            <Route path="/classes" element={<Classes/>} />
             <Route
               path="/admin"
               element={
@@ -53,6 +54,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminGroups />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/classes/:id"
+              element={
+                <ProtectedRoute>
+                  <ClassesSubject />
                 </ProtectedRoute>
               }
             />
