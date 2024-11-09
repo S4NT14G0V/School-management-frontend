@@ -78,25 +78,25 @@ export default function Sidebar() {
               src: UserCogIcon,
               alt: "button-administration",
               label: "User Management",
-              href: `/admin?token=${token}`,
+              href: `/admin/users?token=${token}`,
             },
             {
               src: BookCogIcon,
               alt: "button-administration-2",
               label: "Subject Management",
-              href: `/adminSubject?token=${token}`,
+              href: `/admin/subjects?token=${token}`,
             },
             {
               src: FolderCogIcon,
               alt: "button-administration-3",
               label: "Classes Management",
-              href: `/adminClasses?token=${token}`,
+              href: `/admin/classes?token=${token}`,
             },
             {
               src: GroupCogIcon,
               alt: "button-administration-3",
               label: "Groups Management",
-              href: `/groupsClasses?token=${token}`,
+              href: `/admin/groups?token=${token}`,
             }
           );
         }
