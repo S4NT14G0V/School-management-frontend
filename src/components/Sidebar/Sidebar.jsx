@@ -6,41 +6,21 @@ import Skeleton from "../Skeleton/SkeletonSidebar";
 import { validateAdmin, getInfo } from "../../services/userService";
 import "./Sidebar.css";
 import { useUser } from "../../context/userContext";
+import ItemClassesIcon from "../../assets/item-classes.svg";
+import ItemAssesmentsIcon from "../../assets/item-assesments.svg";
+import ItemAttendanceIcon from "../../assets/item-attendance.svg";
+import ItemCalificationsIcon from "../../assets/item-califications.svg";
+import UserCogIcon from "../../assets/user-cog.svg";
+import BookCogIcon from "../../assets/book-cog.svg";
+import FolderCogIcon from "../../assets/folder-cog.svg";
+import GroupCogIcon from "../../assets/group-cog.svg";
 
 export default function Sidebar() {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [token, setToken] = useState(null);
   const { email, auth } = useUser();
-  // Configura los elementos del menú
-  const newMenuItems = [
-    {
-      src: "src/assets/item-classes.svg",
-      alt: "button-classes",
-      label: "Classes",
-      href: `/classes?token=${token}`,
-    },
-    {
-      src: "src/assets/item-assesments.svg",
-      alt: "button-assesments",
-      label: "Assesments",
-      href: "#",
-    },
-    {
-      src: "src/assets/item-attendance.svg",
-      alt: "button-attendance",
-      label: "Attendance",
-      href: "#",
-    },
-    {
-      src: "src/assets/item-califications.svg",
-      alt: "button-califications",
-      label: "Califications",
-      href: "#",
-    },
-  ];
 
   useEffect(() => {
     const urlToken = new URLSearchParams(window.location.search).get("token");
@@ -51,6 +31,33 @@ export default function Sidebar() {
   }, [auth]);
 
   useEffect(() => {
+    const newMenuItems = [
+      {
+        src: ItemClassesIcon ,
+        alt: "button-classes",
+        label: "Classes",
+        href: `/classes?token=${token}`,
+      },
+      {
+        src: ItemAssesmentsIcon,
+        alt: "button-assesments",
+        label: "Assesments",
+        href: `/assesments?token=${token}`,
+      },
+      {
+        src: ItemAttendanceIcon,
+        alt: "button-attendance",
+        label: "Attendance",
+        href: "#",
+      },
+      {
+        src: ItemCalificationsIcon,
+        alt: "button-califications",
+        label: "Califications",
+        href: "#",
+      },
+    ];
+
     const fetchData = async () => {
       if (!token) return;
 
@@ -62,35 +69,36 @@ export default function Sidebar() {
 
         // Luego validamos si es admin
 
-          const adminData = await validateAdmin(token);
-          setIsAdmin(adminData);
-        
+        const adminData = await validateAdmin(token);
 
         if (adminData) {
           email(userData.email);
-          newMenuItems.push({
-            src: "src/assets/user-cog.svg",
-            alt: "button-administration",
-            label: "User Management",
-            href: `/admin?token=${token}`,
-          }, 
-          {
-            src: "src/assets/book-cog.svg",
-            alt: "button-administration-2",
-            label: "Subject Management",
-            href: `/adminSubject?token=${token}`,
-          },
-          {
-            src: "src/assets/folder-cog.svg",
-            alt: "button-administration-3",
-            label: "Classes Management",
-            href: `/adminClasses?token=${token}`,
-          },{
-            src: "src/assets/group-cog.svg",
-            alt: "button-administration-3",
-            label: "Groups Management",
-            href: `/groupsClasses?token=${token}`,
-          },);
+          newMenuItems.push(
+            {
+              src: UserCogIcon,
+              alt: "button-administration",
+              label: "User Management",
+              href: `/admin?token=${token}`,
+            },
+            {
+              src: BookCogIcon,
+              alt: "button-administration-2",
+              label: "Subject Management",
+              href: `/adminSubject?token=${token}`,
+            },
+            {
+              src: FolderCogIcon,
+              alt: "button-administration-3",
+              label: "Classes Management",
+              href: `/adminClasses?token=${token}`,
+            },
+            {
+              src: GroupCogIcon,
+              alt: "button-administration-3",
+              label: "Groups Management",
+              href: `/groupsClasses?token=${token}`,
+            }
+          );
         }
 
         setMenuItems(newMenuItems);
@@ -122,5 +130,4 @@ export default function Sidebar() {
       )}
     </div>
   );
-  
 }

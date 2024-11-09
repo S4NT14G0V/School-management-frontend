@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./UserInfo.css";
 import { useNavigate } from "react-router-dom";
+import ArrowDownIcon from "../../assets/arrow_down.svg";
+import LogoutIcon from "../../assets/logout-rounded-icon.svg";
 
 export default function UserInfo({ userInfo }) {
   const [actionsVisible, setActionsVisible] = useState(false);
@@ -48,7 +50,7 @@ export default function UserInfo({ userInfo }) {
     <div className="user-info">
       <div ref={actionsRef} className={`user-info-actions ${actionsVisible ? "visible" : ""}`} style={!actionsVisible ? {visibility:"hidden" } : {}}>
         <button className="actions-button logout-button" style={!actionsVisible ? {visibility:"hidden"} : {}} onClick={handleLogout}>
-          <img src="src/assets/logout-rounded-icon.svg" alt="Cerrar Sesión" />
+          <img src={LogoutIcon} alt="Cerrar Sesión" />
           Logout
         </button>
       </div>
@@ -63,7 +65,7 @@ export default function UserInfo({ userInfo }) {
       <div className="user-actions">
         <button ref={buttonRef} className="user-actions-button" onClick={handleActionsToggle}>
           <img
-            src="src/assets/arrow_down.svg"
+            src={ArrowDownIcon}
             className={rotateIcon ? "rotated" : ""}
             alt="Toggle actions"
           />

@@ -18,9 +18,17 @@
     justify-content: start;
     align-items: center;
     background-color: white;
+    position: relative;
 
     h1{
         font-size: 2rem;
     }
 }
+
+.page-divider{
+    border: 1px solid rgba(104, 104, 104, 0.1); /* Cambia el color del borde a rojo */
+    width: 80%;
+    height: 1px;
+}
+
 

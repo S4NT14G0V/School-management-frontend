@@ -1,9 +1,86 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AssesmentTable from "../../components/Assesment/AssesmentsTable";
+import arrowLeftIcon from "../../assets/arrow_left.svg";
+import { useUser } from "../../context/userContext";
+import { useParams } from "react-router-dom";
+import { getClassesById } from "../../services/ClassService";
 
 export default function ClassTemplate() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { authToken } = useUser();
+  const [classData, setClassData] = useState(null);
+
+  const fetchClasses = async (token, id) => {
+    console.log("id en el fetch", id);
+    try {
+      const Classe = await getClassesById(token, id);
+      setClassData(Classe); // Actualizamos el estado con los datos obtenidos
+      console.log(Classe);
+    } catch (error) {
+      console.log("Error fetching class data: " + error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (authToken && id) {
+      fetchClasses(authToken, id); // Llamada a la función que obtiene los datos de la clase
+    }
+  }, [authToken, id]); // Dependencias en authToken e id
+
+  // Función para redirigir
+  const handleNavigate = () => {
+    navigate(`/classes?token=${authToken}`);
+  };
+
+  // Renderizar solo si classData no es null
+  if (!classData) {
+    return <div>Loading...</div>; // Mensaje de carga
+  }
+
   return (
-    <div>
-      
-    </div>
-  )
+    <>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "start",
+          position: "absolute",
+          left: "20px",
+          top: "20px",
+        }}
+      >
+        <button
+          style={{
+            width: "120px",
+            height: "30px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "0 20px",
+          }}
+          onClick={handleNavigate}
+        >
+          <img
+            src={arrowLeftIcon}
+            alt="a"
+            style={{
+              position: "absolute",
+              left: "5px",
+              width: "24px",
+              height: "24px",
+              fontWeight: "400",
+            }}
+          />
+          Return
+        </button>
+      </div>
+      <h1>
+        {classData.subject.name} | {classData.group.grade} - {classData.group.variant}
+      </h1>
+      <hr className="page-divider" />
+      <AssesmentTable classes={classData} />
+    </>
+  );
 }

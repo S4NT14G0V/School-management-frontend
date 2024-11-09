@@ -12,6 +12,7 @@ import AdminClasses from "./pages/AdminPage/AdminClasses";
 import AdminGroups from "./pages/AdminPage/AdminGroups";
 import ClassesSubject from "./pages/ClassesPage/ClassesSubject";
 import PageLayout from "./pages/Layouts/PageLayout";
+import Assesments from "./pages/AssesmentsPage/AssesmentPage";
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route element={<PageLayout />}>
             <Route path="/classes" element={<Classes/>} />
             <Route
-              path="/admin"
+              path="/admin/users"
               element={
                 <ProtectedRoute>
                   <AdminPage />
@@ -34,7 +35,7 @@ function App() {
               }
             />
             <Route
-              path="/adminSubject"
+              path="/admin/subjects"
               element={
                 <ProtectedRoute>
                   <AdminSubject />
@@ -42,7 +43,7 @@ function App() {
               }
             />
             <Route
-              path="/adminClasses"
+              path="/admin/classes"
               element={
                 <ProtectedRoute>
                   <AdminClasses />
@@ -50,7 +51,7 @@ function App() {
               }
             />
             <Route
-              path="/groupsClasses"
+              path="/admin/groups"
               element={
                 <ProtectedRoute>
                   <AdminGroups />
@@ -62,6 +63,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ClassesSubject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/assesments"
+              element={
+                <ProtectedRoute>
+                  <Assesments/>
                 </ProtectedRoute>
               }
             />

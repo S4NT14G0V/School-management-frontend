@@ -1,15 +1,13 @@
 import React from "react";
 import UserAdmin from "../../components/Administration/Users/UsersAdmin";
 import "./AdminPage.css";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import PageLayout from "../Layouts/PageLayout";
 
-export default function AdminPage({ title = "User Management" }) {
+export default function AdminPage({ title = "Admin Page" }) {
   return (
-    <div className="admin-container">
+    <>
       <h1>{title}</h1>
-      <hr className="admin-divider" />
+      <hr className="page-divider" />
       <UserAdmin />
-    </div>
+    </>
   );
 }

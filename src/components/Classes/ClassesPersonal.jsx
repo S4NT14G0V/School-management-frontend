@@ -7,7 +7,6 @@ import { getMyClasses } from "../../services/ClassService";
 export default function ClassesPersonal() {
   const { authToken } = useUser();
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
 
   const fetchClasses = async (token) => {
     try {
@@ -18,7 +17,7 @@ export default function ClassesPersonal() {
       }));
       setData(usersWithKeys);
     } catch (error) {
-      setError("Error fetching user data: " + error.message);
+      console.log("Error fetching user data: " + error.message);
     }
   };
 
@@ -29,7 +28,7 @@ export default function ClassesPersonal() {
   }, [authToken]);
 
   return (
-    <div className="card-list">
+    <div className="classes-card-list">
       {data.map((item) => (
         <ClassesCard key={item.key} data={item} />
       ))}

@@ -13,6 +13,7 @@ export const apiUrls = {
     validateAdmin:`${baseUrl}/user/validateAdmin`,
     editRolByEmail:`${baseUrl}/user/editRolByEmail`,
     getTeachers:`${baseUrl}/user/getTeachers`,
+    validateTeachersAdmins:`${baseUrl}/user/validateTeachersAdmins`
   },
 
   rol:{
@@ -32,6 +33,7 @@ export const apiUrls = {
     delete: `${baseUrl}/class/delete`,
     update: `${baseUrl}/class/update`,
     getMyClasses:`${baseUrl}/class/getMyClasses`,
+    getClassById:`${baseUrl}/class/getClassById`,
   },
   group:{
     all:`${baseUrl}/group/getAll`,
@@ -40,5 +42,10 @@ export const apiUrls = {
   groupxUsers:{
     studentsWithGroup:`${baseUrl}/userXGroup/student-groups`,
     updateGroupById:`${baseUrl}/userXGroup/updateGroupById`,
+  },
+  assesment:{
+    create:`${baseUrl}/assesment/create`,
+    getMyAssestment:`${baseUrl}/assesment/getMyAssesments`,
+    getAssesmentsByClass:`${baseUrl}/assesment/getAssesmentsByClass`,
   }
 };

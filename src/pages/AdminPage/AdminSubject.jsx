@@ -3,10 +3,10 @@ import SubjectAdmin from '../../components/Administration/Subjects/SubjectAdmin'
 
 export default function AdminSubject({ title = "Subject Management" }) {
   return (
-    <div className="admin-container">
+    <>
       <h1>{title}</h1>
-      <hr className="admin-divider" />
+      <hr className="page-divider" />
       <SubjectAdmin />
-    </div>
+    </>
   )
 }

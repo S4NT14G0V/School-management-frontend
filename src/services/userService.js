@@ -240,3 +240,25 @@ export const getTeachers = async (authToken) => {
     return null; // Puedes devolver null o manejar el error de otra manera
   }
 };
+
+export const validateTeachersAdmins = async (authToken) => {
+  try {
+    // Enviar la solicitud GET con el email como parámetro de consulta
+    const response = await fetch(apiUrls.user.validateTeachersAdmins, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      return null; // Devuelve null si la respuesta no es OK
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return null; // Puedes devolver null o manejar el error de otra manera
+  }
+};

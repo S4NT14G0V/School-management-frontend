@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // Importa el hook useNavigate
 import { useUser } from "../../context/userContext"; // Importa el hook useUser
 import "./Classes.css";
 
-export default function ClassesCard({ data }) {
+export default function ClassesCard({ data = {}}) {
   const navigate = useNavigate(); // Inicializa el hook de navegación
   const { authToken } = useUser(); // Obtiene el token del contexto
 
