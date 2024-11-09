@@ -6,6 +6,7 @@ export default function ClassesSubject() {
   return (
     <>
       <ClassTemplate />
+      
     </>
   );
 }

@@ -5,6 +5,7 @@ import arrowLeftIcon from "../../assets/arrow_left.svg";
 import { useUser } from "../../context/userContext";
 import { useParams } from "react-router-dom";
 import { getClassesById } from "../../services/ClassService";
+import EditableTable from "../Califications/CalificationsEdit";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();
@@ -80,7 +81,19 @@ export default function ClassTemplate() {
         {classData.subject.name} | {classData.group.grade} - {classData.group.variant}
       </h1>
       <hr className="page-divider" />
-      <AssesmentTable classes={classData} />
+
+      {/* Contenedor con barra de desplazamiento */}
+      <div
+        style={{
+          maxHeight: "500px",  // Máxima altura del contenedor
+          overflowY: "auto",   // Permite el desplazamiento vertical
+          padding: "10px",     // Espaciado dentro del contenedor
+        }}
+      >
+        <AssesmentTable classes={classData} />
+        <hr />
+        <EditableTable />
+      </div>
     </>
   );
 }
