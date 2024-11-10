@@ -18,7 +18,7 @@ export const createAssesment = async (token,assestment) => {
 };
 
 
-export const getMyAssestment = async (token) => {
+export const getMyAssesment = async (token) => {
     try {
         console.log("token:",token)
       const response = await fetch(apiUrls.assesment.getMyAssestment, {

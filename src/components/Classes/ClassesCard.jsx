@@ -11,7 +11,7 @@ export default function ClassesCard({ data = {}}) {
     e.preventDefault(); // Previene el comportamiento predeterminado del botón, como recargar la página
 
     // Codifica el nombre de la materia en la URL
-    const encodedSubjectID = encodeURIComponent(data.subject.id);
+    const encodedSubjectID = encodeURIComponent(data.id);
     // Navega a la URL de la materia con el token
     navigate(`/classes/${encodedSubjectID}?token=${authToken}`);
   };

@@ -25,7 +25,7 @@ function App() {
 
           {/* Rutas que utilizan el PageLayout */}
           <Route element={<PageLayout />}>
-            <Route path="/classes" element={<Classes/>} />
+            <Route path="/classes" element={<Classes />} />
             <Route
               path="/admin/users"
               element={
@@ -58,22 +58,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/classes/:id"
-              element={
-                <ProtectedRoute>
-                  <ClassesSubject />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/assesments"
-              element={
-                <ProtectedRoute>
-                  <Assesments/>
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/classes/:id" element={<ClassesSubject />} />
+            <Route path="/assesments" element={<Assesments />} />
           </Route>
         </Routes>
       </Router>

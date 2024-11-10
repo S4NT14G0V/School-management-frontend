@@ -5,13 +5,18 @@ import arrowLeftIcon from "../../assets/arrow_left.svg";
 import { useUser } from "../../context/userContext";
 import { useParams } from "react-router-dom";
 import { getClassesById } from "../../services/ClassService";
-import EditableTable from "../Califications/CalificationsEdit";
+import { notification } from "antd";
+import { createCalifications } from "../../services/califications";
+import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { authToken } = useUser();
   const [classData, setClassData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notificationEdit, setNotificationEdit] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const fetchClasses = async (token, id) => {
     console.log("id en el fetch", id);
@@ -24,11 +29,51 @@ export default function ClassTemplate() {
     }
   };
 
+  const fetchUpdateCalificationsClass = async (token, califications) => {
+    try {
+      const response = await createCalifications(token, califications);
+      return response;
+    } catch (error) {
+      console.error("Error fetching class data: " + error.message);
+    }
+  };
+
   useEffect(() => {
     if (authToken && id) {
       fetchClasses(authToken, id); // Llamada a la función que obtiene los datos de la clase
     }
   }, [authToken, id]); // Dependencias en authToken e id
+
+  useEffect(() => {
+    if (notificationEdit) {
+      showNotificationEdit();
+      setNotificationEdit(false);
+    }
+  }, [notificationEdit]);
+
+  const showNotification = (message, description) => {
+    notification.success({
+      message: message,
+      description: description,
+      placement: "bottom",
+      showProgress: true,
+      style: { backgroundColor: "#f4fcf2" },
+      pauseOnHover: false,
+    });
+  };
+  const openModal = (dataEdit) => {
+    setEditData(dataEdit);
+    setIsModalOpen(true); // Abre el modal
+  };
+  const showNotificationEdit = () => {
+    showNotification("Success", "User edited successfully");
+    console.log("data",editData);
+    fetchUpdateCalificationsClass(authToken, editData);
+    setEditData(null);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false); // Cierra el modal
+  };
 
   // Función para redirigir
   const handleNavigate = () => {
@@ -54,10 +99,10 @@ export default function ClassTemplate() {
       >
         <button
           style={{
-            width: "120px",
+            width: "100px",
             height: "30px",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "end",
             alignItems: "center",
             padding: "0 20px",
           }}
@@ -78,21 +123,29 @@ export default function ClassTemplate() {
         </button>
       </div>
       <h1>
-        {classData.subject.name} | {classData.group.grade} - {classData.group.variant}
+        {classData.subject.name} | {classData.group.grade} -{" "}
+        {classData.group.variant}
       </h1>
       <hr className="page-divider" />
 
       {/* Contenedor con barra de desplazamiento */}
       <div
         style={{
-          maxHeight: "500px",  // Máxima altura del contenedor
-          overflowY: "auto",   // Permite el desplazamiento vertical
-          padding: "10px",     // Espaciado dentro del contenedor
+          maxHeight: "500px", // Máxima altura del contenedor
+          overflowY: "auto", // Permite el desplazamiento vertical
+          padding: "10px", // Espaciado dentro del contenedor
         }}
       >
-        <AssesmentTable classes={classData} />
+        <AssesmentTable classes={classData} modal={openModal} />
         <hr />
-        <EditableTable />
+        <EditModal
+          isModalOpen={isModalOpen}
+          closeModal={closeModal}
+          notification={setNotificationEdit}
+          id={classData.id}
+          editData={editData}
+          setEditData={setEditData}
+        />
       </div>
     </>
   );

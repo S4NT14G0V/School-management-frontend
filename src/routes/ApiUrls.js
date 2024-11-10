@@ -47,5 +47,10 @@ export const apiUrls = {
     create:`${baseUrl}/assesment/create`,
     getMyAssestment:`${baseUrl}/assesment/getMyAssesments`,
     getAssesmentsByClass:`${baseUrl}/assesment/getAssesmentsByClass`,
-  }
+  },
+  califications:{
+    create:`${baseUrl}/calification/CreateUpdateCalifications`,
+    getCalificationsByClass:`${baseUrl}/calification/getCalificationsListByClass`,
+    getCalificationsByEmail:`${baseUrl}/calification/getCalificationsByEmail`,
+  },
 };

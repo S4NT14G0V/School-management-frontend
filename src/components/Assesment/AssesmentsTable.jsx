@@ -9,7 +9,7 @@ import EditModal from "../Modal/Classes/EditClassesModal";
 import DeleteModal from "../Modal/Classes/DeleteClassesModal";
 import CreateModal from "../Modal/Assesments/createAssesmentModal";
 
-const AssesmentTable = ({ classes }) => {
+const AssesmentTable = ({ classes, modal }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
@@ -187,8 +187,7 @@ const AssesmentTable = ({ classes }) => {
   ];
 
   return (
-    <div style={{display:"flex", flexDirection:"column"
-    }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <div
         style={{
           display: "flex",
@@ -198,21 +197,38 @@ const AssesmentTable = ({ classes }) => {
         }}
       >
         {isAdmin && (
-          <button
-            onClick={openModalCreate}
-            style={{
-              width: "80px",
-              height: "30px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "14px",
-              fontWeight: "400",
-            }}
-          >
-            Create
-          </button>
+          <>
+            <button
+              onClick={openModalCreate}
+              style={{
+                width: "80px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "14px",
+                fontWeight: "400",
+              }}
+            >
+              Create
+            </button>
+            <button
+              style={{
+                width: "110px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "14px",
+                fontWeight: "400",
+              }}
+              onClick={modal}
+            >
+              Calificaciones
+            </button>
+          </>
         )}
+
         <button
           onClick={() => fetchAssesment(authToken, classesData.id)}
           style={{

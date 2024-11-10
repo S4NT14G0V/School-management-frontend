@@ -1,123 +1,173 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Button } from "antd";
+import { Table, Input } from "antd";
+import { getAssesmentsByClass } from "../../services/assesment";
+import { useUser } from "../../context/userContext";
+import "./CalificationsEdit.css";
+import { getCalificationsByClass } from "../../services/califications";
 
-// Datos iniciales
-const initialData = [
-  {
-    id: 1,
-    student: { name: "Juan" },
-    califications: [
-      { assesment: { name: "Taller 1", percent: 50 }, score: 5 },
-      { assesment: { name: "Examen", percent: 30 }, score: 6 },
-    ],
-  },
-  {
-    id: 2,
-    student: { name: "Carlos" },
-    califications: [
-      { assesment: { name: "Taller 1", percent: 50 }, score: 5 },
-      { assesment: { name: "Examen", percent: 30 }, score: 6 },
-    ],
-  },
-];
-
-// Función para transformar los datos
-const transformData = (data) => {
-  return data.map((item) => {
-    const transformedItem = {
-      key: item.id,
-      name: item.student.name,
-    };
-    item.califications.forEach((c) => {
-      transformedItem[c.assesment.name] = c.score;
-    });
-    return transformedItem;
-  });
-};
-
-const revertDataTransformation = (data) => {
-    return data.map((item) => {
-      return {
-        id: item.key,
-        student: { name: item.name },
-        califications: Object.keys(item)
-          .filter((key) => key !== "key" && key !== "name")
-          .map((assessment) => ({
-            assesment: { name: assessment, percent: 0 }, // Ajusta el porcentaje según tus necesidades
-            score: item[assessment],
-          })),
-      };
-    });
-  };
-
-const EditableTable = () => {
+const EditableTable = ({ id, setEditData }) => {
   const [dataSource, setDataSource] = useState([]);
   const [columns, setColumns] = useState([]);
+  const { authToken } = useUser();
 
-  // useEffect para transformar y preparar las columnas dinámicamente
-  useEffect(() => {
-    const transformedData = transformData(initialData);
-    setDataSource(transformedData);
+  const fetchAssesments = async (id) => {
+    try {
+      const assessments = await getAssesmentsByClass(authToken, id);
+      return assessments;
+    } catch (error) {
+      console.error("Error fetching assessments:", error);
+      return [];
+    }
+  };
 
-    // Definir las columnas
-    const allColumns = [
-      { title: 'Nombre', dataIndex: 'name', key: 'name', editable: false },
-    ];
+  const fetchUsersTable = async (id) => {
+    try {
+      const users = await getCalificationsByClass(authToken, id);
+      return users;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      return [];
+    }
+  };
 
-    // Agregar columnas dinámicas según las calificaciones
-    const uniqueAssessments = Array.from(
-      new Set(initialData.flatMap((student) => student.califications.map((c) => c.assesment.name)))
-    );
-
-    uniqueAssessments.forEach((assessment) => {
-      allColumns.push({
-        title: assessment,
-        dataIndex: assessment,
-        key: assessment,
-        editable: true,
-        render: (_, record) => (
-          <Input
-            type="number"
-            value={record[assessment]}
-            onChange={(e) => handleFieldChange(e, record.key, assessment)}
-          />
-        ),
-      });
+  const transformData = (data) => {
+    return data.map((item) => {
+      const transformedItem = {
+        key: item.student.id,
+        name: item.student.name,
+      };
+  
+      if (item.califications && Array.isArray(item.califications)) {
+        item.califications.forEach((c) => {
+          transformedItem[c.assesment.description] = c.calification;
+        });
+      }
+  
+      return transformedItem;
     });
-
-    setColumns(allColumns);
-  }, []);
-
-  // Función para actualizar las calificaciones en el estado
+  };
+  
+  const revertDataTransformation = (data) => {
+    const transformedData = [];
+  
+    data.forEach((item) => {
+      console.log(item); // Verifica el objeto del estudiante en cada iteración
+  
+      // Asegúrate de que item tiene las propiedades esperadas antes de continuar
+      if (item.key && item.name) {
+        Object.keys(item)
+          .filter((key) => key !== "key" && key !== "name") // Filtra "key" y "name"
+          .forEach((assessmentDesc) => {
+            const calification = item[assessmentDesc];
+            if (calification !== undefined) {
+              const assesmentId = item[`${assessmentDesc}_id`] || 0; // Asegúrate de tener el id del assesment
+              transformedData.push({
+                student: {
+                  id: item.key, // Id del estudiante
+                  name: item.name, // Nombre del estudiante
+                },
+                calification: calification || 0, // La calificación
+                assesment: {
+                  id: assesmentId, // El id de la evaluación
+                  description: assessmentDesc, // Descripción del assessment
+                },
+                state: false, // Estado por defecto
+              });
+            }
+          });
+      }
+    });
+  
+    console.log(transformedData); // Verifica los datos transformados
+    return transformedData;
+  };
+  
+  
+  
+  
   const handleFieldChange = (e, key, field) => {
     const value = e.target.value;
     const newData = [...dataSource];
     const index = newData.findIndex((item) => key === item.key);
+  
     if (index > -1) {
-      newData[index][field] = Number(value); // Convertir a número
+      newData[index] = { ...newData[index], [field]: Number(value) };
       setDataSource(newData);
+  
+      const updatedCalifications = revertDataTransformation(newData);
+      setEditData(updatedCalifications);
     }
   };
+  
 
-  // Función para guardar los datos
-  const handleSave = () => {
-    const revertedData = revertDataTransformation(dataSource);
-    console.log("Datos revertidos:", revertedData);
-    // Aquí puedes enviar los datos al backend, por ejemplo
-  };
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Cargar datos de los usuarios y assessments
+        const usersData = await fetchUsersTable(id);
+        const assessments = await fetchAssesments(id);
+
+        // Transformar y setear data inicial
+        if (usersData && usersData.length > 0 && Array.isArray(assessments)) {
+          const transformedData = transformData(usersData);
+          setDataSource(transformedData);
+
+          // Configurar las columnas de la tabla
+          const tableColumns = [
+            { title: "Nombre", dataIndex: "name", key: "name" },
+            ...assessments.map((assessment, index) => ({
+              title: `${assessment.description} - ${assessment.percent}%`,
+              dataIndex: assessment.description,
+              key: `${assessment.description}-${index}`, // Usa description + index para asegurar una clave única
+              render: (_, record) => (
+                <Input
+                  type="number"
+                  value={record[assessment.description]}
+                  style={{ maxWidth: "50px", minWidth: "50px" }}
+                  onChange={(e) =>
+                    handleFieldChange(e, record.key, assessment.description)
+                  }
+                />
+              ),
+            })),
+          ];
+          setColumns(tableColumns);
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
+
+    if (id) {
+      loadData();
+    }
+  }, [id]);
+
+  // Actualizar setEditData cada vez que dataSource cambie
+  useEffect(() => {
+    const dataReverse = revertDataTransformation(dataSource);
+    setEditData(dataReverse);
+  }, [dataSource]);
+
+  
 
   return (
-    <div>
+    <div
+      style={{
+        width: "100%",
+        height: "400px",
+        overflowX: "auto",
+        overflowY: "auto",
+      }}
+    >
       <Table
         bordered
         dataSource={dataSource}
         columns={columns}
         rowClassName="editable-row"
         pagination={false}
+        style={{ minWidth: "1000px" }}
       />
-      <Button type="primary" onClick={handleSave} style={{ marginTop: 16 }}>
-        Guardar cambios
-      </Button>
     </div>
   );
 };
