@@ -13,8 +13,6 @@ export default function EditModal({
 
   const handleEdit = async () => {
     notification(true);
-    // Aquí podrías hacer el llamado a la API para guardar editData
-    console.log("Saving data:", editData);
   };
 
   return (
@@ -24,7 +22,7 @@ export default function EditModal({
       open={isModalOpen}
       onCancel={closeModal}
       footer={null}
-      width={800}
+      width={1000}
     >
       <div className="form-group">
         <CalificationsEditableTable id={id} setEditData={setEditData} />

@@ -8,8 +8,8 @@ import { getCalificationsByClass } from "../../services/califications";
 const EditableTable = ({ id, setEditData }) => {
   const [dataSource, setDataSource] = useState([]);
   const [columns, setColumns] = useState([]);
-  const { authToken } = useUser();
-
+  const { authToken, assesmentData } = useUser();
+  
   const fetchAssesments = async (id) => {
     try {
       const assessments = await getAssesmentsByClass(authToken, id);
@@ -35,43 +35,41 @@ const EditableTable = ({ id, setEditData }) => {
     students.forEach((studentCalif) => {
       const studentId = studentCalif.student.id;
       const assessmentId = studentCalif.assesment ? studentCalif.assesment.id : null;
-      const assessmentDesc = studentCalif.assesment ? studentCalif.assesment.description : '';
-
+  
       if (!studentMap[studentId]) {
         studentMap[studentId] = {
           key: studentId,
           name: studentCalif.student.name,
         };
       }
-
-      studentMap[studentId][assessmentDesc] = studentCalif.calification !== undefined ? studentCalif.calification : "";
-      studentMap[studentId][`${assessmentDesc}_id`] = assessmentId;
+  
+      if (assessmentId) {
+        studentMap[studentId][assessmentId] = studentCalif.calification !== undefined ? studentCalif.calification : "";
+      }
     });
-
+  
     const transformedData = Object.values(studentMap);
-
+  
     transformedData.forEach((student) => {
       assessments.forEach((assessment) => {
-        if (!student.hasOwnProperty(assessment.description)) {
-          student[assessment.description] = "";  // Asignar vacío para calificaciones nuevas
-          student[`${assessment.description}_id`] = assessment.id;
+        if (!student.hasOwnProperty(assessment.id)) {
+          student[assessment.id] = "";  // Calificación vacía para las evaluaciones nuevas
         }
       });
     });
-
+  
     return transformedData;
   };
+  
 
   const revertDataTransformation = (data) => {
     const transformedData = [];
     data.forEach((item) => {
       Object.keys(item)
-        .filter((key) => !["key", "name"].includes(key) && !key.endsWith("_id"))
-        .forEach((assessmentDesc) => {
-          const calification = item[assessmentDesc];
-          const assessmentIdKey = `${assessmentDesc}_id`;
-          const assesmentId = item[assessmentIdKey] || null;
-
+        .filter((key) => !["key", "name"].includes(key))
+        .forEach((assessmentId) => {
+          const calification = item[assessmentId];
+  
           transformedData.push({
             student: {
               id: item.key,
@@ -79,38 +77,40 @@ const EditableTable = ({ id, setEditData }) => {
             },
             calification: calification !== undefined ? Number(calification) : 0.0,
             assesment: {
-              id: assesmentId,
-              description: assessmentDesc,
+              id: assessmentId,
             },
             state: false,
           });
         });
     });
-
+  
     return transformedData;
   };
+  
 
-  const handleFieldChange = (e, key, field) => {
+  const handleFieldChange = (e, key, assessmentId) => {
     const value = e.target.value;
     setDataSource((prevData) => {
       const newData = [...prevData];
       const index = newData.findIndex((item) => item.key === key);
-
+  
       if (index > -1) {
-        newData[index] = { ...newData[index], [field]: value === "" ? 0.0 : Number(value) };
+        newData[index] = { ...newData[index], [assessmentId]: value === "" ? 0.0 : Number(value) };
         const updatedCalifications = revertDataTransformation(newData);
         setEditData(updatedCalifications);
       }
-
+  
       return newData;
     });
   };
+  
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const usersData = await fetchUsersTable(id);
-        const assessments = await fetchAssesments(id);
+        const assessments = assesmentData || {};
+        console.log("Assessments:", assessments);
 
         if (usersData && usersData.length > 0 && Array.isArray(assessments)) {
           const transformedData = transformData(usersData, assessments);
@@ -118,22 +118,23 @@ const EditableTable = ({ id, setEditData }) => {
 
           const tableColumns = [
             { title: "Nombre", dataIndex: "name", key: "name" },
-            ...assessments.map((assessment, index) => ({
+            ...assessments.map((assessment) => ({
               title: `${assessment.description} - ${assessment.percent}%`,
-              dataIndex: assessment.description,
-              key: `${assessment.description}-${index}`,
+              dataIndex: assessment.id,  // Identificador único para evitar colisiones
+              key: assessment.id,         // Clave única
               render: (_, record) => (
                 <Input
                   type="number"
-                  value={record[assessment.description]}
+                  value={record[assessment.id]}
                   style={{ maxWidth: "50px", minWidth: "50px" }}
                   onChange={(e) =>
-                    handleFieldChange(e, record.key, assessment.description)
+                    handleFieldChange(e, record.key, assessment.id)  // Usar assessment.id como clave única
                   }
                 />
               ),
             })),
           ];
+          
           setColumns(tableColumns);
         }
       } catch (error) {
@@ -144,7 +145,7 @@ const EditableTable = ({ id, setEditData }) => {
     if (id) {
       loadData();
     }
-  }, [id]);
+  }, [id, assesmentData]);
 
   useEffect(() => {
     const dataReverse = revertDataTransformation(dataSource);

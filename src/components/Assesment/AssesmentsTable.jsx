@@ -13,7 +13,7 @@ const AssesmentTable = ({ classes, modal }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, admin } = useUser();
+  const { authToken, auth, admin, assesmentData, setAssesmentData } = useUser();
   const [data, setData] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false); //CAMBIAR A FALSE
   const [isTokenProcessed, setIsTokenProcessed] = useState(false);
@@ -68,6 +68,7 @@ const AssesmentTable = ({ classes, modal }) => {
         key: Assesment.id, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
+      setAssesmentData(Assesments);
     } catch (error) {
       notification.error({
         message: "Error",

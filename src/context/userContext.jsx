@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   const [admin, setAdmin] = useState("");
   const [validationUser, setValidationUser] = useState(false);
   const [editDataCalificationClass, setEditDataCalificationClass] = useState(null);
+  const [assesmentData, setAssesmentData] = useState(null);
   // Función para loguear al usuario
   // Al autenticarse y recibir el token JWT
   const auth = (token) => {
@@ -29,7 +30,7 @@ export const UserProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ auth, authToken, setAuthToken, validationUser, validateUser, admin, setAdmin, email, editDataCalificationClass, setEditDataCalificationClass }}>
+    <UserContext.Provider value={{ auth, authToken, setAuthToken, validationUser, validateUser, admin, setAdmin, email, editDataCalificationClass, setEditDataCalificationClass, assesmentData, setAssesmentData }}>
       {children}
     </UserContext.Provider>
   );

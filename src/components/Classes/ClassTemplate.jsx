@@ -61,15 +61,14 @@ export default function ClassTemplate() {
       pauseOnHover: false,
     });
   };
-  const openModal = (dataEdit) => {
-    setEditData(dataEdit);
+  const openModal = () => {
     setIsModalOpen(true); // Abre el modal
   };
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    console.log("data",editData);
     fetchUpdateCalificationsClass(authToken, editData);
     setEditData(null);
+    closeModal();
   };
   const closeModal = () => {
     setIsModalOpen(false); // Cierra el modal
