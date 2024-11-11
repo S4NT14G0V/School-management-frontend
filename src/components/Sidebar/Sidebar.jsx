@@ -54,7 +54,7 @@ export default function Sidebar() {
         src: ItemCalificationsIcon,
         alt: "button-califications",
         label: "Califications",
-        href: "#",
+        href: `/califications?token=${token}`,
       },
     ];
 
