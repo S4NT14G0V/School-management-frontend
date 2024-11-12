@@ -14,6 +14,7 @@ import ClassesSubject from "./pages/ClassesPage/ClassesSubject";
 import PageLayout from "./pages/Layouts/PageLayout";
 import Assesments from "./pages/AssesmentsPage/AssesmentPage";
 import Califications from "./pages/CalificationsPage/CalificationsPage";
+import ForumClass from './components/Forum/ForumClass';
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             <Route path="/classes/:id" element={<ClassesSubject />} />
             <Route path="/assesments" element={<Assesments />} />
             <Route path="/califications" element={<Califications />} />
+            <Route path="/chat" element={<ForumClass />} />
           </Route>
         </Routes>
       </Router>
