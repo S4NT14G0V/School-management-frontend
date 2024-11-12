@@ -1,56 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import React, { useEffect, useState } from "react";
+import useGroupChat from "../../hooks/useGroupChat";
+import "./Forum.css";
+import { useUser } from "../../context/userContext";
+import { getUserByEmail } from "../../services/userService";
 
-const ChatRoom = () => {
-    const [messages, setMessages] = useState([]);
-    const [stompClient, setStompClient] = useState(null);
-    const [message, setMessage] = useState('');
+const Forum = ({Id_Class}) => {
+  const { messages, sendMessage } = useGroupChat();
+  const [input, setInput] = useState("");
+  const [username, setUsername] = useState(""); // Nuevo: Nombre del usuario
+  const { authToken } = useUser();
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        // Conexión al WebSocket en el backend
-        const socket = new SockJS('http://localhost:8080/ws');
-        const stompClient = Stomp.over(socket);
+  const clase = {
+    id: Id_Class,
+  };
+  
+  const fetchUser = async () => {
+    try {
+      const user = await getUserByEmail(authToken);
+      setUser(user);
+    } catch (error) {
+      console.error("Error fetching user data: " + error.message);
+    }
+  };
+  
+  useEffect(() => {
+    if (authToken) {
+      const user = fetchUser(authToken)
+      setUser(user);
+    }
+  }, [authToken]);
 
-        stompClient.connect({}, () => {
-            stompClient.subscribe('/topic/public', (msg) => {
-                const newMessage = JSON.parse(msg.body);
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
-            });
-        });
+  const handleSend = () => {
+    if (username.trim() !== "") {
+      const message = {
+        sender: user,
+        classes: clase,
+        content: input,
+        send_date: new Date().toISOString(),
+      };
+      sendMessage(message);
+      setInput("");
+    } else {
+      alert("Por favor, ingrese un nombre de usuario");
+    }
+  };
 
-        setStompClient(stompClient);
-
-        return () => stompClient.disconnect();
-    }, []);
-
-    const sendMessage = () => {
-        if (stompClient && message.trim() !== '') {
-            const chatMessage = {
-                sender: "User1", // Asigna un usuario
-                content: message,
-            };
-            stompClient.send('/app/sendMessage', {}, JSON.stringify(chatMessage));
-            setMessage('');
-        }
-    };
-
-    return (
-        <div>
-            <div>
-                {messages.map((msg, index) => (
-                    <p key={index}><strong>{msg.sender}:</strong> {msg.content}</p>
-                ))}
-            </div>
-            <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Escribe un mensaje..."
-            />
-            <button onClick={sendMessage}>Enviar</button>
-        </div>
-    );
+  return (
+    <div>
+      <div className="chat-box">
+        {messages.map((msg, index) => (
+          <div key={index}>
+            <strong>{msg.sender.name} {msg.sender.lastname}:</strong> {msg.content}
+          </div>
+        ))}
+      </div>
+      <input
+        type="text"
+        placeholder="Escribe tu nombre..."
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Escribe un mensaje..."
+      />
+      <button onClick={handleSend}>Enviar</button>
+    </div>
+  );
 };
 
-export default ChatRoom;
+export default Forum;

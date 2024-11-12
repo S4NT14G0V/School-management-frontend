@@ -14,10 +14,14 @@
     "@nextui-org/react": "^2.4.8",
     "@react-oauth/google": "^0.12.1",
     "@react-stately/data": "^3.11.7",
+    "@stomp/stompjs": "^7.0.0",
     "antd": "^5.21.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
+    "react-stomp": "^5.1.0",
+    "sockjs": "^0.3.24",
+    "sockjs-client": "^1.6.1",
     "vite-project": "file:"
   },
   "devDependencies": {

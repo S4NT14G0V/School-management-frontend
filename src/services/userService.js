@@ -134,6 +134,53 @@ export const getUsers = async (token) => {
   }
 };
 
+
+export const getParents = async (token) => {
+  try {
+    const response = await fetch(apiUrls.user.getParents, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Respuesta de Users:", response); // Verifica la respuesta del servidor
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error("Error al obtener los usuarios");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    return [];
+  }
+};
+
+
+export const getStudents = async (token) => {
+  try {
+    const response = await fetch(apiUrls.user.getStudents, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Respuesta de Users:", response); // Verifica la respuesta del servidor
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error("Error al obtener los usuarios");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    return [];
+  }
+};
+
+
 export const getInfo = async (authToken) => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta

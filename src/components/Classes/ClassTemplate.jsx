@@ -8,6 +8,7 @@ import { getClassesById } from "../../services/ClassService";
 import { notification } from "antd";
 import { createCalifications } from "../../services/califications";
 import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
+import Forum from "../Forum/Forum";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();
@@ -137,6 +138,7 @@ export default function ClassTemplate() {
       >
         <AssesmentTable classes={classData} modal={openModal} />
         <hr />
+        <Forum Id_Class={classData.id} />
         <EditModal
           isModalOpen={isModalOpen}
           closeModal={closeModal}

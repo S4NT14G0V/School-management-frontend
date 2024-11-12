@@ -13,7 +13,9 @@ export const apiUrls = {
     validateAdmin:`${baseUrl}/user/validateAdmin`,
     editRolByEmail:`${baseUrl}/user/editRolByEmail`,
     getTeachers:`${baseUrl}/user/getTeachers`,
-    validateTeachersAdmins:`${baseUrl}/user/validateTeachersAdmins`
+    validateTeachersAdmins:`${baseUrl}/user/validateTeachersAdmins`,
+    getParents:`${baseUrl}/user/getParents`,
+    getStudents:`${baseUrl}/user/getStudents`,
   },
 
   rol:{
@@ -53,4 +55,14 @@ export const apiUrls = {
     getCalificationsByClass:`${baseUrl}/calification/getCalificationsListByClass`,
     getCalificationsByEmail:`${baseUrl}/calification/getCalificationsByEmail`,
   },
+  messages:{
+    sendMessage:`${baseUrl}/messages/send`,
+    getMessagesByClass:`${baseUrl}/messages/chat`,
+  },
+  family:{
+    getAll:`${baseUrl}/studentXParent/getAll`,
+    create:`${baseUrl}/studentXParent/create`,
+    updateFamily:`${baseUrl}/studentXParent/update`,
+    deleteFamily:`${baseUrl}/studentXParent/delete`
+  }
 };

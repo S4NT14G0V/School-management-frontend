@@ -20,7 +20,7 @@ export default function Sidebar() {
   const [userInfo, setUserInfo] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [token, setToken] = useState(null);
-  const { email, auth } = useUser();
+  const { email, auth, setUserDataChat } = useUser();
 
   useEffect(() => {
     const urlToken = new URLSearchParams(window.location.search).get("token");
@@ -65,6 +65,7 @@ export default function Sidebar() {
       try {
         // Primero obtenemos la información del usuario
         const userData = await getInfo(token);
+        setUserDataChat(userData);
         setUserInfo(userData);
 
         // Luego validamos si es admin
