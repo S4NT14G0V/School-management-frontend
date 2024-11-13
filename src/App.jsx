@@ -10,6 +10,7 @@ import AdminPage from "./pages/AdminPage/AdminPage";
 import AdminSubject from "./pages/AdminPage/AdminSubject";
 import AdminClasses from "./pages/AdminPage/AdminClasses";
 import AdminGroups from "./pages/AdminPage/AdminGroups";
+import AdminFamily from "./pages/AdminPage/AdminFamily";
 import ClassesSubject from "./pages/ClassesPage/ClassesSubject";
 import PageLayout from "./pages/Layouts/PageLayout";
 import Assesments from "./pages/AssesmentsPage/AssesmentPage";
@@ -57,6 +58,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminGroups />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/family"
+              element={
+                <ProtectedRoute>
+                  <AdminFamily />
                 </ProtectedRoute>
               }
             />

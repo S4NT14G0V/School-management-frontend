@@ -195,6 +195,7 @@ const AssesmentTable = ({ classes, modal }) => {
           justifyContent: "end",
           gap: "1rem",
           width: "100%",
+          marginBottom: "1.5rem",
         }}
       >
         {isAdmin && (

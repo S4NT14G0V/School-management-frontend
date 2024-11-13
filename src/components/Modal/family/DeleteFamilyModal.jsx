@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button } from "antd";
 import { useUser } from "../../../context/userContext";
-import { deleteFamily } from "../../../services/ClassService";
+import { deleteFamily } from "../../../services/family";
 
 export default function DeleteConfirmModal({
   isModalOpen,
   closeModal,
   notification,
-  classesData = {},
+  FamilyData,
 }) {
   const { authToken } = useUser();
   const [studentName, setStudentName] = useState("");
@@ -17,31 +17,30 @@ export default function DeleteConfirmModal({
 
   const handleDelete = async () => {
     try {
-      const result = await deleteClasses(authToken, classesData.id);
+      const result = await deleteFamily(authToken, FamilyData.id);
       if (result) {
-        console.log("Clase eliminada con éxito");
+        console.log("Familia eliminada con éxito");
         notification(true); // Activa la notificación para mostrar éxito
       } else {
-        console.error("Error al borrar la clase:", result.message);
+        console.error("Error al borrar la familia:", result.message);
       }
       closeModal(); // Cierra el modal después de eliminar
     } catch (error) {
-      console.error("Error al borrar la clase", error);
+      console.error("Error al borrar la familia", error);
     }
   };
 
   useEffect(() => {
-    if (classesData) {
-      setStudentName(`${classesData.student?.name || ''} ${classesData.student?.lastname || ''}`);
-      setParentName(`${classesData.parent?.name || ''} ${classesData.parent?.lastname || ''}`);
-      setSubjectName(classesData.subject?.name || '');
-      setSchedule(classesData.schedule || '');
+    if (FamilyData) {
+      setParentName(`${FamilyData.parent?.name || ''} ${FamilyData.parent?.lastname || ''}`);
+      setStudentName(`${FamilyData.student?.name || ''} ${FamilyData.student?.lastname || ''}`);
+  
     }
-  }, [classesData]);
+  }, [FamilyData]);
 
   return (
     <Modal
-      title="Eliminar clase"
+      title="Eliminar Familia"
       centered
       open={isModalOpen}
       onCancel={closeModal}
@@ -49,7 +48,7 @@ export default function DeleteConfirmModal({
       width={400}
     >
       <hr style={{ border: "none", padding: "5px" }} />
-      <p>Estás a punto de eliminar la clase con la siguiente información:</p>
+      <p>Estás a punto de eliminar la familia con la siguiente información:</p>
       <div style={{ padding: "10px", paddingLeft: "15px" }}>
         <div
           style={{
@@ -75,30 +74,7 @@ export default function DeleteConfirmModal({
           <strong style={{ textDecoration: "underline" }}>Padre:</strong>
           <span style={{ fontWeight: "500" }}>{parentName}</span>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-            gap: "10px",
-            width: "100%",
-          }}
-        >
-          <strong style={{ textDecoration: "underline" }}>Materia:</strong>
-          <span style={{ fontWeight: "500" }}>{subjectName}</span>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-            gap: "10px",
-            width: "100%",
-          }}
-        >
-          <strong style={{ textDecoration: "underline" }}>Horario:</strong>
-          <span style={{ fontWeight: "500" }}>{schedule}</span>
-        </div>
+       
       </div>
       <hr style={{ border: "none", padding: "5px" }} />
       <p>¿Estás seguro de que deseas continuar con esta acción?</p>

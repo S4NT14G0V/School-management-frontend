@@ -57,7 +57,7 @@ export const apiUrls = {
   },
   messages:{
     sendMessage:`${baseUrl}/messages/send`,
-    getMessagesByClass:`${baseUrl}/messages/chat`,
+    getMessagesByClass:`${baseUrl}/messages/getMessagesClassId`,
   },
   family:{
     getAll:`${baseUrl}/studentXParent/getAll`,

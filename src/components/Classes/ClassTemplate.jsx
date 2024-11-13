@@ -131,14 +131,15 @@ export default function ClassTemplate() {
       {/* Contenedor con barra de desplazamiento */}
       <div
         style={{
+          minHeight: "fit-content", // Altura mínima del contenedor
           maxHeight: "500px", // Máxima altura del contenedor
           overflowY: "auto", // Permite el desplazamiento vertical
           padding: "10px", // Espaciado dentro del contenedor
         }}
       >
         <AssesmentTable classes={classData} modal={openModal} />
-        <hr />
-        <Forum Id_Class={classData.id} />
+        
+        
         <EditModal
           isModalOpen={isModalOpen}
           closeModal={closeModal}
@@ -148,6 +149,8 @@ export default function ClassTemplate() {
           setEditData={setEditData}
         />
       </div>
+      <hr className="page-divider" />
+      <Forum Id_Class={classData.id} />
     </>
   );
 }

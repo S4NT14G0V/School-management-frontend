@@ -1,10 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { getMessagesByClass } from '../services/messages';
 
-const useGroupChat = () => {
+const useGroupChat = (classId) => {
   const [messages, setMessages] = useState([]);
   const [stompClient, setStompClient] = useState(null);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const messagesOld = await getMessagesByClass(classId);
+        setMessages(messagesOld);
+      } catch (error) {
+        console.error("Error fetching messages: " + error.message);
+      }
+    };
+
+    if (classId) {
+      fetchMessages();
+    }
+  }, [classId]);
 
   useEffect(() => {
     console.log("Connecting to WebSocket...");
@@ -36,7 +52,7 @@ const useGroupChat = () => {
     return () => {
       if (client) client.deactivate(() => console.log("Disconnected from WebSocket"));
     };
-  }, []);
+  }, [classId]);
 
   const sendMessage = (message) => {
     if (stompClient && stompClient.connected && message.content.trim() !== '') {

@@ -14,6 +14,7 @@ import UserCogIcon from "../../assets/user-cog.svg";
 import BookCogIcon from "../../assets/book-cog.svg";
 import FolderCogIcon from "../../assets/folder-cog.svg";
 import GroupCogIcon from "../../assets/group-cog.svg";
+import FamilyIcon from "../../assets/family.svg";
 
 export default function Sidebar() {
   const [loading, setLoading] = useState(true);
@@ -98,7 +99,13 @@ export default function Sidebar() {
               alt: "button-administration-3",
               label: "Groups Management",
               href: `/admin/groups?token=${token}`,
-            }
+            },{
+              src: FamilyIcon,
+              alt: "button-administration-3",
+              label: "Family Management",
+              href: `/admin/family?token=${token}`,
+            },
+            
           );
         }
 

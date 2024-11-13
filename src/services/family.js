@@ -45,7 +45,7 @@ export const getFamilies = async (token) => {
 export const updateFamily = async (token, family) => {
   
     const response = await fetch(apiUrls.family.updateFamily, {
-      method: "OUT",
+      method: "PUT",
       headers: {
         authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -64,13 +64,12 @@ export const updateFamily = async (token, family) => {
   export const deleteFamily = async (token, id_family) => {
   
     const response = await fetch(apiUrls.family.deleteFamily, {
-      method: "OUT",
+      method: "DELETE",
       headers: {
         authorization: `Bearer ${token}`,
         id:id_family,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(family),
     });
   
     if (!response.ok) {

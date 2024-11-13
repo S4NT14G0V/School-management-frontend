@@ -8,8 +8,9 @@
 }
 
 .page-container{
-    max-height: 100dvh;
+    min-height: 100dvh;
     overflow: hidden;
+    overflow-y: auto;
     flex: 1;
     display: flex;
     padding: 30px;

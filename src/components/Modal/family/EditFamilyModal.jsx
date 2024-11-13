@@ -2,17 +2,16 @@ import { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
 import { useUser } from "../../../context/userContext";
 import { getStudents, getParents } from "../../../services/userService";
-import {updateFamily} from"../../../services/family"
-
+import { updateFamily } from "../../../services/family";
 
 export default function EditModal({
   isModalOpen,
   closeModal,
   notification,
-  classesData,
+  FamilyData,
 }) {
   const { authToken } = useUser();
-  const [formData, setFormData] = useState(classesData || {});
+  const [formData, setFormData] = useState(FamilyData || {});
 
   const [studentOptions, setStudentOptions] = useState([]);
   const [parentOptions, setParentOptions] = useState([]);
@@ -23,11 +22,12 @@ export default function EditModal({
     } else {
       // Reiniciar formData cuando se cierra el modal
       setFormData({
-        parent: {},
-        student: {},
+        id: FamilyData?.id || 0,
+        parent: FamilyData?.parent || {},
+        student: FamilyData?.student || {},
       });
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, FamilyData]);
 
   const fetchOptions = async () => {
     try {
@@ -112,16 +112,6 @@ export default function EditModal({
             </option>
           ))}
         </select>
-
-        <label>Horario</label>
-        <input
-          type="text"
-          name="schedule"
-          value={formData.schedule}
-          onChange={(e) =>
-            setFormData({ ...formData, schedule: e.target.value })
-          }
-        />
       </div>
       <div
         style={{

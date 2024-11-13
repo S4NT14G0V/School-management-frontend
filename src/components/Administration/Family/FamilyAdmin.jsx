@@ -4,7 +4,7 @@ import { Button, Input, Space, Table, Tag, Modal } from "antd";
 import { useUser } from "../../../context/userContext";
 import EditModal from "../../Modal/family/EditFamilyModal";
 import { notification } from "antd";
-import CreateModal from ".../..//Modal/family/CreateFamilyModal.jsx";
+import CreateModal from "../../Modal/family/CreateFamilyModal.jsx";
 import DeleteModal from "../../Modal/family/DeleteFamilyModal";
 import { getFamilies } from "../../../services/family";
 
@@ -109,25 +109,26 @@ const App = () => {
     setIsModalCreateOpen(true);
   };
 
-  const openModalDelete = () => {
+  const openModalDelete = (dataDelete) => {
     setIsModalDeleteOpen(true);
+    setDeleteData(dataDelete);
   };
 
 
   const showNotificationEdit = () => {
-    showNotification("Success", "User edited successfully");
+    showNotification("Success", "Family edited successfully");
     fetchGroups(authToken);
     setEditData(null);
   };
 
   const showNotificationCreate = () => {
-    showNotification("Success", "User created successfully");
+    showNotification("Success", "Family created successfully");
     fetchGroups(authToken);
-    setDeleteData(null);
   };
   const showNotificationDelete = () => {
-    showNotification("Success", "User deleted successfully");
-    fetchClasses(authToken);
+    showNotification("Success", "Family deleted successfully");
+    fetchGroups(authToken);
+    setDeleteData(null);
   };
 
   const closeModal = () => {
@@ -339,7 +340,7 @@ const App = () => {
           isModalOpen={isModalOpen}
           closeModal={closeModal}
           notification={setNotificationEdit}
-          groupsData={editData}
+          FamilyData={editData}
         />
         <CreateModal
           isModalOpen={isModalCreateOpen}
@@ -351,7 +352,7 @@ const App = () => {
           isModalOpen={isModalDeleteOpen}
           closeModal={closeModalDelete}
           notification={setNotificationDelete}
-          classesData={deleteData}
+          FamilyData={deleteData}
         />
         <Table
           columns={columns}

@@ -1,20 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useGroupChat from "../../hooks/useGroupChat";
 import "./Forum.css";
 import { useUser } from "../../context/userContext";
 import { getUserByEmail } from "../../services/userService";
+import { getMessagesByClass } from "../../services/messages";
+import { Tag } from "antd";
 
-const Forum = ({Id_Class}) => {
-  const { messages, sendMessage } = useGroupChat();
+const Forum = ({ Id_Class }) => {
+  const { messages, sendMessage } = useGroupChat(Id_Class);
   const [input, setInput] = useState("");
-  const [username, setUsername] = useState(""); // Nuevo: Nombre del usuario
   const { authToken } = useUser();
   const [user, setUser] = useState(null);
+  const lastMessageRef = useRef(null); // Referencia para el último mensaje
+
+  const roleColors = {
+    Admin: "red",
+    Student: "blue",
+    Parent: "green",
+    Teacher: "purple",
+  };
 
   const clase = {
     id: Id_Class,
   };
-  
+
   const fetchUser = async () => {
     try {
       const user = await getUserByEmail(authToken);
@@ -23,16 +32,22 @@ const Forum = ({Id_Class}) => {
       console.error("Error fetching user data: " + error.message);
     }
   };
-  
+
   useEffect(() => {
     if (authToken) {
-      const user = fetchUser(authToken)
-      setUser(user);
+      fetchUser();
     }
   }, [authToken]);
 
+  // Efecto para hacer scroll hacia el último mensaje
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   const handleSend = () => {
-    if (username.trim() !== "") {
+    if (input.trim() !== "") {
       const message = {
         sender: user,
         classes: clase,
@@ -41,33 +56,120 @@ const Forum = ({Id_Class}) => {
       };
       sendMessage(message);
       setInput("");
-    } else {
-      alert("Por favor, ingrese un nombre de usuario");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
     }
   };
 
   return (
-    <div>
-      <div className="chat-box">
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.sender.name} {msg.sender.lastname}:</strong> {msg.content}
-          </div>
-        ))}
+    <div style={{ borderRadius: "5px", width: "90%" }}>
+      <h3 style={{ marginBlock: "20px", fontSize: "18px" }}>Foro</h3>
+      <div
+        className="chat-box"
+        style={{ borderRadius: "5px", maxHeight: "400px", overflowY: "auto" }}
+      >
+        {messages.map((msg, index) => {
+          const isOwnMessage = msg.sender.email === user?.email; // Verifica si el mensaje es del usuario actual
+          return (
+            <div
+              key={index}
+              ref={index === messages.length - 1 ? lastMessageRef : null}
+              style={{
+                display: "flex",
+                justifyContent: isOwnMessage ? "flex-end" : "flex-start",
+                marginBottom: "5px",
+              }}
+            >
+              <div
+                style={{
+                  width: "45%",
+                  maxWidth: "60%",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  backgroundColor: isOwnMessage ? "#d9f1ff" : "#f5f5f5",
+                  color: isOwnMessage
+                    ? "black"
+                    : roleColors[msg.sender.rol?.name] || "black",
+                  textAlign: "left",
+                  wordWrap: "break-word", // Agregado para ajustar el texto al ancho del contenedor
+                  whiteSpace: "pre-wrap", // Agregado para manejar saltos de línea y espacios
+                }}
+              >
+                <strong style={{ width: "fit-content", fontSize: "15px" }}>
+                  {msg.sender.name} {msg.sender.lastname}
+                </strong>
+
+                <p
+                  style={{
+                    color: "black",
+                    width: "100%",
+                    height: "fit-content",
+                    whiteSpace: "pre-wrap", // Mantener el texto ajustado con saltos de línea
+                    overflowWrap: "break-word", // Forzar ajuste de palabras largas
+                    fontSize: "14px",
+                  }}
+                >
+                  {msg.content}
+                </p>
+                <div style={{width:"100%", display:"flex", justifyContent:`${msg.sender.rol?.name !== "Student" ? "space-between": "end"}`, alignItems:"end", marginTop:"10px"}}>
+                  {msg.sender.rol?.name !== "Student" && (
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        color: "#001010",
+                        verticalAlign: "end",
+                      }}
+                    >
+                      <Tag color={roleColors[msg.sender.rol?.name]}>{msg.sender.rol?.name.toUpperCase()}</Tag>
+                    </span>
+                  )}
+                  <span
+                    style={{
+                      fontSize: "12px",
+                      display: "block",
+                      textAlign: "end",
+                      marginTop: "10px",
+                      color: "#001010",
+                    }}
+                  >
+                    {new Date(msg.send_date).toLocaleString([], {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <input
-        type="text"
-        placeholder="Escribe tu nombre..."
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Escribe un mensaje..."
-      />
-      <button onClick={handleSend}>Enviar</button>
+      <div style={{ width: "100%", display: "flex" }}>
+        <input
+          style={{
+            flex: "1",
+            borderRadius: "5px",
+            padding: "5px",
+            paddingLeft: "10px",
+            outline: "none",
+            border: "1px solid #ccc",
+          }}
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Escribe un mensaje..."
+        />
+        <button style={{ width: "80px" }} onClick={handleSend}>
+          Enviar
+        </button>
+      </div>
     </div>
   );
 };
