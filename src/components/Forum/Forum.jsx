@@ -120,7 +120,7 @@ const Forum = ({ Id_Class }) => {
                     <span
                       style={{
                         fontSize: "12px",
-                        color: "#001010",
+                        color: "#001011",
                         verticalAlign: "end",
                       }}
                     >
