@@ -14,17 +14,11 @@ const App = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, email, admin } = useUser();
+  const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [tokenVar, setTokenVar] = useState(null);
-  const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
-  const [isAdmin, setIsAdmin] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [notificationDelete, setNotificationDelete] = useState(false);
   // create function
@@ -42,16 +36,14 @@ const App = () => {
       }));
       setData(usersWithKeys);
     } catch (error) {
-      setError("Error fetching user data: " + error.message);
+      console.error(error);
     }
   };
 
   // Efecto para cargar usuarios solo al montar el componente
   useEffect(() => {
-    if (authToken) {
-      fetchSubjects();
-    }
-  }, [authToken]);
+    fetchSubjects();
+  }, []);
 
   useEffect(() => {
     if (notificationEdit) {
@@ -67,18 +59,6 @@ const App = () => {
       setNotificationCreate(false);
     }
   }, [notificationEdit, notificationDelete, notificationCreate]);
-
-  // REVISAR A DETALLE
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
-    setTokenVar(token);
-
-    if (!isTokenProcessed && token) {
-      auth(token); // Guardar el token en el contexto
-      setIsTokenProcessed(true); // Marcar como procesado
-    }
-  }, [isModalOpen, isModalDeleteOpen, isModalCreateOpen]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -340,7 +320,7 @@ const App = () => {
           columns={columns}
           dataSource={data}
           pagination={{
-            pageSize,
+            pageSize: "7",
             position: ["topCenter"],
           }}
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario

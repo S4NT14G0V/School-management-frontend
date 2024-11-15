@@ -1,51 +1,42 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, Tag, Modal } from "antd";
+import { Button, Input, Space, Table, Tag } from "antd";
 import { useUser } from "../../../context/userContext";
-import { getListUserInfo, deleteUser } from "../../../services/userService";
+import { getListUserInfo } from "../../../services/userService";
 import RoleModal from "../../Modal/Users/EditUserModal";
 import DeleteModal from "../../Modal/Users/DeleteUserModal";
 import { notification } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./UsersAdmin.css";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, email, admin } = useUser();
+  const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [tokenVar, setTokenVar] = useState(null);
-  const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
-  const [isAdmin, setIsAdmin] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [notificationDelete, setNotificationDelete] = useState(false);
 
-  const fetchUsers = async (token) => {
+  const fetchUsers = async () => {
     try {
-      const users = await getListUserInfo(token);
+      const users = await getListUserInfo();
       const usersWithKeys = users.map((user) => ({
         ...user,
         key: user.email, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
     } catch (error) {
-      setError("Error fetching user data: " + error.message);
+      console.error("Error fetching users", error);
     }
   };
 
   // Efecto para cargar usuarios solo al montar el componente
   useEffect(() => {
-    if (authToken) {
-      fetchUsers(authToken);
-    }
-  }, [authToken]);
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (notificationEdit) {
@@ -58,26 +49,15 @@ const App = () => {
     }
   }, [notificationEdit, notificationDelete]);
 
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
-    setTokenVar(token);
-
-    if (!isTokenProcessed && token) {
-      auth(token); // Guardar el token en el contexto
-      setIsTokenProcessed(true); // Marcar como procesado
-    }
-  }, [isModalOpen, isModalDeleteOpen]);
-
   const showNotification = (message, description) => {
-      notification.success({
-        message: message,
-        description: description,
-        placement: "bottom",
-        showProgress: true,
-        style: { backgroundColor: "#f4fcf2"},
-        pauseOnHover: false
-      });
+    notification.success({
+      message: message,
+      description: description,
+      placement: "bottom",
+      showProgress: true,
+      style: { backgroundColor: "#f4fcf2" },
+      pauseOnHover: false,
+    });
   };
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -105,12 +85,12 @@ const App = () => {
 
   const showNotificationDelete = () => {
     showNotification("Success", "User deleted successfully");
-    fetchUsers(authToken);
+    fetchUsers();
   };
 
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    fetchUsers(authToken);
+    fetchUsers();
   };
 
   const closeModal = () => {
@@ -323,7 +303,7 @@ const App = () => {
       >
         <button
           className="reload"
-          onClick={() => fetchUsers(tokenVar)}
+          onClick={() => fetchUsers()}
           style={{
             width: "120px",
             height: "35px",
@@ -351,7 +331,7 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
-          pagination={{ pageSize, position: ["topCenter"] }} // Usamos el pageSize dinámico
+          pagination={{ pageSize: "7", position: ["topCenter"] }} // Usamos el pageSize dinámico
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />
       </div>

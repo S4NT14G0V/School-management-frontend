@@ -9,21 +9,19 @@ import EditModal from "../Modal/Classes/EditClassesModal";
 import DeleteModal from "../Modal/Classes/DeleteClassesModal";
 import CreateModal from "../Modal/Assesments/createAssesmentModal";
 
-const AssesmentTable = ({ classes, modal }) => {
+const AssesmentTable = ({ classes, modal, attendanceModal }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, admin, assesmentData, setAssesmentData } = useUser();
+  const { setAssesmentData } = useUser();
   const [data, setData] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false); //CAMBIAR A FALSE
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
   const [isClass, setClass] = useState(null);
-  const [pageSize, setPageSize] = useState(7);
   const [classesData, setClassesData] = useState(classes);
 
   const [notificationCreate, setNotificationCreate] = useState(false);
@@ -52,17 +50,17 @@ const AssesmentTable = ({ classes, modal }) => {
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
-    fetchAssesment(authToken, classesData.id);
+    fetchAssesment( classesData.id);
     setData(null);
   };
   const closeModalCreate = () => {
     setIsModalCreateOpen(false);
   };
 
-  const fetchAssesment = async (token, id) => {
+  const fetchAssesment = async ( id) => {
     try {
       console.log("id en el fetch 2", id);
-      const Assesments = await getAssesmentsByClass(token, id);
+      const Assesments = await getAssesmentsByClass( id);
       const usersWithKeys = Assesments.map((Assesment) => ({
         ...Assesment,
         key: Assesment.id, // Usa una propiedad única como key
@@ -77,10 +75,10 @@ const AssesmentTable = ({ classes, modal }) => {
     }
   };
 
-  const fetchClasses = async (token, id) => {
+  const fetchClasses = async ( id) => {
     console.log("id en el fetch", id);
     try {
-      const Classe = await getClassesById(token, id);
+      const Classe = await getClassesById( id);
       setClass(Classe);
     } catch (error) {
       notification.error({
@@ -90,9 +88,9 @@ const AssesmentTable = ({ classes, modal }) => {
     }
   };
 
-  const fetchAdminValidation = async (token) => {
+  const fetchAdminValidation = async () => {
     try {
-      const validation = await validateTeachersAdmins(token);
+      const validation = await validateTeachersAdmins();
       setIsAdmin(validation);
     } catch (error) {
       notification.error({
@@ -103,13 +101,10 @@ const AssesmentTable = ({ classes, modal }) => {
   };
 
   useEffect(() => {
-    if (authToken) {
-      fetchAssesment(authToken, classesData.id);
-      fetchAdminValidation(authToken);
-      fetchClasses(authToken, classesData.id);
-      console.log(classesData.id);
-    }
-  }, [authToken]);
+    fetchAssesment(classesData.id);
+    fetchAdminValidation();
+    fetchClasses(classesData.id);
+  }, []);
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -228,11 +223,25 @@ const AssesmentTable = ({ classes, modal }) => {
             >
               Calificaciones
             </button>
+            <button
+              style={{
+                width: "110px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "14px",
+                fontWeight: "400",
+              }}
+              onClick={attendanceModal}
+            >
+              Asistencias
+            </button>
           </>
         )}
 
         <button
-          onClick={() => fetchAssesment(authToken, classesData.id)}
+          onClick={() => fetchAssesment(classesData.id)}
           style={{
             width: "80px",
             height: "30px",
@@ -249,7 +258,7 @@ const AssesmentTable = ({ classes, modal }) => {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize, position: ["topCenter"] }}
+        pagination={{ pageSize: "7", position: ["topCenter"] }}
         scroll={{ x: "max-content" }}
       />
       <EditModal

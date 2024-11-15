@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Select } from "antd";
-import { useUser } from "../../../context/userContext";
 import { getParents, getStudents } from "../../../services/userService";
 import {createFamily} from"../../../services/family"
 
 export default function CreateModal({ isModalOpen, closeModal, notification }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState({
     parent: {},
     student: {},
@@ -27,10 +25,10 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
 
   const fetchOptions = async () => {
     try {
-      const parents = await getParents(authToken);
+      const parents = await getParents();
       setParentOptions(parents);
 
-      const students = await getStudents(authToken);
+      const students = await getStudents();
       setStudentOptions(students);
     } catch (error) {
       console.error("Error fetching options:", error);
@@ -53,7 +51,7 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
   const handleSubmit = async () => {
     try {
       console.log("Datos a enviar:", formData); // Para depuración
-      const result = await createFamily(authToken, formData);
+      const result = await createFamily(formData);
       if (result) {
         notification(true);
         closeModal(); // Cerrar el modal

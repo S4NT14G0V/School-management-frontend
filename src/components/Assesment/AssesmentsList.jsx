@@ -1,9 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, notification } from "antd";
-import { useUser } from "../../context/userContext";
 import { getMyAssesment } from "../../services/assesment";
-import { validateTeachersAdmins } from "../../services/userService";
 import EditModal from "../Modal/Classes/EditClassesModal";
 import DeleteModal from "../Modal/Classes/DeleteClassesModal";
 import CreateModal from "../Modal/Assesments/createAssesmentModal";
@@ -12,17 +10,12 @@ const AssesmentTable = ({ classes }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, admin } = useUser();
   const [data, setData] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false); //CAMBIAR A FALSE
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
-  const [isClass, setClass] = useState(null);
-  const [pageSize, setPageSize] = useState(7);
   const [classesData, setClassesData] = useState(classes);
 
   const [notificationCreate, setNotificationCreate] = useState(false);
@@ -51,16 +44,16 @@ const AssesmentTable = ({ classes }) => {
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
-    fetchAssesment(authToken, classesData.id);
+    fetchAssesment(classesData.id);
     setData(null);
   };
   const closeModalCreate = () => {
     setIsModalCreateOpen(false);
   };
 
-  const fetchAssesment = async (token) => {
+  const fetchAssesment = async () => {
     try {
-      const Assesments = await getMyAssesment(token);
+      const Assesments = await getMyAssesment();
       const usersWithKeys = Assesments.map((Assesment) => ({
         ...Assesment,
         key: Assesment.id, // Usa una propiedad única como key
@@ -75,10 +68,8 @@ const AssesmentTable = ({ classes }) => {
   };
 
   useEffect(() => {
-    if (authToken) {
-      fetchAssesment(authToken);
-    }
-  }, [authToken]);
+    fetchAssesment();
+  }, []);
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
@@ -128,20 +119,46 @@ const AssesmentTable = ({ classes }) => {
 
   const columns = [
     {
-        title: "Subject",
-        dataIndex: ["classes", "subject", "name"], 
-        key: "classes.subject.name", 
-        width: "20%",
-        ...getColumnSearchProps("classes.subject.name"+"classes.group.grade"+"-"+"classes.group.variant"), 
-        onFilter: (value, record) => {
-          const fullText = `${record.classes?.subject?.name || ''} ${record.classes?.group?.grade || ''} - ${record.classes?.group?.variant || ''}`;
-          return fullText.toLowerCase().includes(value.toLowerCase());
-        },
-        render: (text, record) => {
-          const displayText = `${record.classes?.subject?.name || 'Subject not Found'} ${record.classes?.group?.grade || ''} - ${record.classes?.group?.variant || ''}`;
-          return displayText; 
-        },
+      title: "Subject",
+      dataIndex: ["classes", "subject", "name"],
+      key: "classes.subject.name",
+      width: "20%",
+      ...getColumnSearchProps(
+        "classes.subject.name"
+      ),
+      onFilter: (value, record) => {
+        const fullText = `${record.classes?.subject?.name || ""}`;
+        return fullText.toLowerCase().includes(value.toLowerCase());
       },
+      render: (text, record) => {
+        const displayText = `${
+          record.classes?.subject?.name || "Subject not Found"
+        }`;
+        return displayText;
+      },
+    },
+    {
+      title: "Group",
+      dataIndex: ["classes", "group", "id"],
+      key: "classes.group.id",
+      width: "10%",
+      ...getColumnSearchProps(
+          "classes.group.grade" +
+          "-" +
+          "classes.group.variant"
+      ),
+      onFilter: (value, record) => {
+        const fullText = `${record.classes?.group?.grade || ""
+        } - ${record.classes?.group?.variant || ""}`;
+        return fullText.toLowerCase().includes(value.toLowerCase());
+      },
+      render: (text, record) => {
+        const displayText = `${record.classes?.group?.grade || ""} - ${
+          record.classes?.group?.variant || ""
+        }`;
+        return displayText;
+      },
+    },
     {
       title: "Percent",
       dataIndex: "percent",
@@ -159,21 +176,20 @@ const AssesmentTable = ({ classes }) => {
       title: "Date Posted",
       dataIndex: "date",
       key: "date",
-      width: "20%",
+      width: "15%",
       render: (date) => new Date(date).toLocaleDateString(),
     },
     {
       title: "Date Limit",
       dataIndex: "limit_date",
       key: "limit_date",
-      width: "20%",
+      width: "15%",
       render: (limitDate) => new Date(limitDate).toLocaleDateString(),
     },
   ];
 
   return (
-    <div style={{display:"flex", flexDirection:"column"
-    }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
       <div
         style={{
           display: "flex",
@@ -182,9 +198,8 @@ const AssesmentTable = ({ classes }) => {
           width: "100%",
         }}
       >
-       
         <button
-          onClick={() => fetchAssesment(authToken)}
+          onClick={() => fetchAssesment()}
           style={{
             width: "80px",
             height: "30px",
@@ -201,7 +216,7 @@ const AssesmentTable = ({ classes }) => {
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{ pageSize, position: ["topCenter"] }}
+        pagination={{ pageSize: "7", position: ["topCenter"] }}
         scroll={{ x: "max-content" }}
       />
       <EditModal

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./RegisterForm.css";
-import { apiUrls } from "../../routes/ApiUrls";
 import { useNavigate } from "react-router-dom";
 import { getPublicRoles } from "../../services/rolService";
 import { getUserByEmail, updateUser } from "../../services/userService";
-import { useUser } from "../../context/userContext";
 
 export default function RegisterForm() {
-  const { authToken, auth } = useUser();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -23,24 +20,11 @@ export default function RegisterForm() {
   });
   const navigate = useNavigate();
   const [roleOptions, setRoleOptions] = useState([]);
-  const [loading, setLoading] = useState(true); // Para manejar la carga de roles
-  const [error, setError] = useState(null); // Para manejar errores
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
 
   useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
-    
-    if (!isTokenProcessed && token) {
-      auth(token); // Guardar el token en el contexto
-      setIsTokenProcessed(true); // Marcar como procesado
-    }
-
-    
-
     const fetchUserData = async () => {
       try {
-        const user = await getUserByEmail(authToken);
+        const user = await getUserByEmail();
         if (user) {
           setFormData((prevData) => ({
             ...prevData,
@@ -52,10 +36,9 @@ export default function RegisterForm() {
           throw new Error("User not found.");
         }
       } catch (error) {
-        setError("Error fetching user data: " + error.message);
+        console.error("Error fetching user data: " + error.message);
       }
     };
-    
 
     const fetchRoles = async () => {
       try {
@@ -66,19 +49,13 @@ export default function RegisterForm() {
         }));
         setRoleOptions(roleOptions);
       } catch (error) {
-        setError("Error fetching roles.");
-      } finally {
-        setLoading(false); // Actualiza el estado de carga
+        console.error("Error fetching roles: ", error);
       }
     };
 
-    if (authToken) {
-      fetchUserData();
-      fetchRoles();
-    } else {
-      setLoading(false); // Si no hay token, se puede detener la carga
-    }
-  }, [auth, navigate, isTokenProcessed, authToken]);
+    fetchUserData();
+    fetchRoles();
+  }, []);
 
   const typeDocumentOptions = [
     { value: "CC", label: "Cédula de Ciudadanía" },
@@ -111,8 +88,8 @@ export default function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Datos del formulario:", formData);
-    await updateUser(authToken, formData);
-    navigate(`/classes?token=${authToken}`);
+    await updateUser(formData);
+    navigate(`/classes`);
   };
   return (
     <div className="register-form">

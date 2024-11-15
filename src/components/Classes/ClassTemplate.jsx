@@ -2,27 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AssesmentTable from "../../components/Assesment/AssesmentsTable";
 import arrowLeftIcon from "../../assets/arrow_left.svg";
-import { useUser } from "../../context/userContext";
 import { useParams } from "react-router-dom";
 import { getClassesById } from "../../services/ClassService";
 import { notification } from "antd";
 import { createCalifications } from "../../services/califications";
+import CreateAttendanceModal from "../Modal/Attendance/createAttendanceModal";
 import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
 import Forum from "../Forum/Forum";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { authToken } = useUser();
   const [classData, setClassData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const fetchClasses = async (token, id) => {
+  const fetchClasses = async (id) => {
     console.log("id en el fetch", id);
     try {
-      const Classe = await getClassesById(token, id);
+      const Classe = await getClassesById(id);
       setClassData(Classe); // Actualizamos el estado con los datos obtenidos
       console.log(Classe);
     } catch (error) {
@@ -30,9 +30,9 @@ export default function ClassTemplate() {
     }
   };
 
-  const fetchUpdateCalificationsClass = async (token, califications) => {
+  const fetchUpdateCalificationsClass = async (califications) => {
     try {
-      const response = await createCalifications(token, califications);
+      const response = await createCalifications(califications);
       return response;
     } catch (error) {
       console.error("Error fetching class data: " + error.message);
@@ -40,10 +40,10 @@ export default function ClassTemplate() {
   };
 
   useEffect(() => {
-    if (authToken && id) {
-      fetchClasses(authToken, id); // Llamada a la función que obtiene los datos de la clase
+    if (id) {
+      fetchClasses(id); // Llamada a la función que obtiene los datos de la clase
     }
-  }, [authToken, id]); // Dependencias en authToken e id
+  }, [id]); // Dependencias en id
 
   useEffect(() => {
     if (notificationEdit) {
@@ -65,19 +65,29 @@ export default function ClassTemplate() {
   const openModal = () => {
     setIsModalOpen(true); // Abre el modal
   };
+
+  const openAttendanceModal = () => {
+    setIsAttendanceModalOpen(true); // Abre el modal
+  }
+
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    fetchUpdateCalificationsClass(authToken, editData);
+    fetchUpdateCalificationsClass(editData);
     setEditData(null);
     closeModal();
   };
+
   const closeModal = () => {
     setIsModalOpen(false); // Cierra el modal
   };
 
+  const closeModalAttendance = () => {
+    setIsAttendanceModalOpen(false); // Cierra el modal
+  }
+
   // Función para redirigir
   const handleNavigate = () => {
-    navigate(`/classes?token=${authToken}`);
+    navigate(`/classes`);
   };
 
   // Renderizar solo si classData no es null
@@ -137,8 +147,14 @@ export default function ClassTemplate() {
           padding: "10px", // Espaciado dentro del contenedor
         }}
       >
-        <AssesmentTable classes={classData} modal={openModal} />
+        <AssesmentTable classes={classData} modal={openModal} attendanceModal={openAttendanceModal} />
         
+        <CreateAttendanceModal
+          isModalOpen={isAttendanceModalOpen}
+          closeModal={closeModalAttendance}
+          notification={closeModalAttendance}
+          classesId={classData.id}  
+        />
         
         <EditModal
           isModalOpen={isModalOpen}

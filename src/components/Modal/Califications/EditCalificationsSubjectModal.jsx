@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Modal, Button } from "antd";
 import CalificationsEditableTable from "../../Califications/CalificationsEdit";
 

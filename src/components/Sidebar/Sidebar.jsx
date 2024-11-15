@@ -20,16 +20,7 @@ export default function Sidebar() {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
-  const [token, setToken] = useState(null);
-  const { email, auth, setUserDataChat } = useUser();
-
-  useEffect(() => {
-    const urlToken = new URLSearchParams(window.location.search).get("token");
-    if (urlToken) {
-      setToken(urlToken);
-      auth(urlToken);
-    }
-  }, [auth]);
+  const { email, setUserDataChat } = useUser();
 
   useEffect(() => {
     const newMenuItems = [
@@ -37,13 +28,13 @@ export default function Sidebar() {
         src: ItemClassesIcon ,
         alt: "button-classes",
         label: "Classes",
-        href: `/classes?token=${token}`,
+        href: `/classes`,
       },
       {
         src: ItemAssesmentsIcon,
         alt: "button-assesments",
         label: "Assesments",
-        href: `/assesments?token=${token}`,
+        href: `/assesments`,
       },
       {
         src: ItemAttendanceIcon,
@@ -55,23 +46,21 @@ export default function Sidebar() {
         src: ItemCalificationsIcon,
         alt: "button-califications",
         label: "Califications",
-        href: `/califications?token=${token}`,
+        href: `/califications`,
       },
     ];
 
     const fetchData = async () => {
-      if (!token) return;
-
       setLoading(true);
       try {
         // Primero obtenemos la información del usuario
-        const userData = await getInfo(token);
+        const userData = await getInfo();
         setUserDataChat(userData);
         setUserInfo(userData);
 
         // Luego validamos si es admin
 
-        const adminData = await validateAdmin(token);
+        const adminData = await validateAdmin();
 
         if (adminData) {
           email(userData.email);
@@ -80,30 +69,30 @@ export default function Sidebar() {
               src: UserCogIcon,
               alt: "button-administration",
               label: "User Management",
-              href: `/admin/users?token=${token}`,
+              href: `/admin/users`,
             },
             {
               src: BookCogIcon,
               alt: "button-administration-2",
               label: "Subject Management",
-              href: `/admin/subjects?token=${token}`,
+              href: `/admin/subjects`,
             },
             {
               src: FolderCogIcon,
               alt: "button-administration-3",
               label: "Classes Management",
-              href: `/admin/classes?token=${token}`,
+              href: `/admin/classes`,
             },
             {
               src: GroupCogIcon,
               alt: "button-administration-3",
               label: "Groups Management",
-              href: `/admin/groups?token=${token}`,
+              href: `/admin/groups`,
             },{
               src: FamilyIcon,
               alt: "button-administration-3",
               label: "Family Management",
-              href: `/admin/family?token=${token}`,
+              href: `/admin/family`,
             },
             
           );
@@ -119,7 +108,8 @@ export default function Sidebar() {
     };
 
     fetchData();
-  }, [token]);
+    console.log('Cookies actuales:', document.cookie);
+  }, []);
 
   return (
     <div className="sidebar">

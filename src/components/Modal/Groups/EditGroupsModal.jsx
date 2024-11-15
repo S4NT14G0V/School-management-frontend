@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
-import { getSubjects } from "../../../services/subjectService";
-import { getGroups, getStudentsWithGroup } from "../../../services/groupService";
+import { getGroups } from "../../../services/groupService";
 import { updateGroupByIds } from "../../../services/groupService";
 
 export default function EditModal({
@@ -11,7 +9,6 @@ export default function EditModal({
   notification,
   groupsData,
 }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState(groupsData || {});
   const [groupOptions, setGroupOptions] = useState([]);
 
@@ -26,7 +23,7 @@ export default function EditModal({
 
   const fetchOptions = async () => {
     try {
-      const groups = await getGroups(authToken);
+      const groups = await getGroups();
       setGroupOptions(groups);
     } catch (error) {
       console.error("Error fetching options:", error);
@@ -48,7 +45,7 @@ export default function EditModal({
 
   const handleEdit = async (idStudent, idGroup) => {
     try {
-      const result = await updateGroupByIds(authToken, idStudent, idGroup); //CAMBIAR
+      const result = await updateGroupByIds(idStudent, idGroup); //CAMBIAR
       if (result) {
         notification(true);
         closeModal();

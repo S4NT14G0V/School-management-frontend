@@ -1,21 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Table, Divider } from "antd";
 import { getCalificationsByEmail } from "../../services/califications";
-import { useUser } from "../../context/userContext";
 import "./CalificationsEdit.css";
 
 export default function CalificationsStudent() {
   const [dataSource, setDataSource] = useState({});
-  const { authToken } = useUser();
   const [pressedButton, setPressedButton] = useState(false);
 
-  // Use ref to avoid calling on initial render
   const isInitialRender = useRef(true);
 
-  // Fetch califications data
   const fetchCalificationsStudent = async () => {
     try {
-      const califications = await getCalificationsByEmail(authToken);
+      const califications = await getCalificationsByEmail();
       return califications;
     } catch (error) {
       console.error("Error fetching califications:", error);
@@ -23,23 +19,25 @@ export default function CalificationsStudent() {
     }
   };
 
-  // Group data by subject
+  // Agrupa las calificaciones por estudiante y por materia
   const transformData = (califications) => {
     const groupedData = {};
 
     califications.forEach((studentCalif) => {
-      const subjectName =
-        studentCalif.assesment?.classes?.subject?.name || "Sin materia";
-      const description =
-        studentCalif.assesment?.description || "No tienes calificaciones";
+      const studentName = `${studentCalif.student?.name} ${studentCalif.student?.lastname}`;
+      const subjectName = studentCalif.assesment?.classes?.subject?.name || "Sin materia";
+      const description = studentCalif.assesment?.description || "No tienes calificaciones";
       const percent = studentCalif.assesment?.percent || 0;
       const calification = studentCalif.calification || 0;
 
-      if (!groupedData[subjectName]) {
-        groupedData[subjectName] = [];
+      if (!groupedData[studentName]) {
+        groupedData[studentName] = {};
+      }
+      if (!groupedData[studentName][subjectName]) {
+        groupedData[studentName][subjectName] = [];
       }
 
-      groupedData[subjectName].push({
+      groupedData[studentName][subjectName].push({
         key: studentCalif.id,
         description,
         percent,
@@ -50,36 +48,30 @@ export default function CalificationsStudent() {
     return groupedData;
   };
 
-  // Fetch data and group by subject
   useEffect(() => {
     const loadData = async () => {
-      if (authToken) {
-        try {
-          const userData = await fetchCalificationsStudent();
-          if (userData && userData.length > 0) {
-            const groupedData = transformData(userData);
-            setDataSource(groupedData);
-          }
-        } catch (error) {
-          console.error("Error loading data:", error);
+      try {
+        const userData = await fetchCalificationsStudent();
+        if (userData && userData.length > 0) {
+          const groupedData = transformData(userData);
+          setDataSource(groupedData);
         }
+      } catch (error) {
+        console.error("Error loading data:", error);
       }
     };
 
-    // Make the call when the component mounts (only once)
-    if (isInitialRender.current && authToken) {
+    if (isInitialRender.current) {
       loadData();
-      isInitialRender.current = false;  // Prevent subsequent calls on re-renders
+      isInitialRender.current = false;
     }
 
-    // Only trigger a new API call if pressedButton is true
-    if (pressedButton && authToken) {
+    if (pressedButton) {
       loadData();
-      setPressedButton(false);  // Reset pressedButton after the call
+      setPressedButton(false);
     }
-  }, [authToken, pressedButton]); // Only depend on authToken and pressedButton
+  }, [pressedButton]);
 
-  // Calculate total percentage and weighted average
   const calculateTotals = (data) => {
     const totalPercent = data.reduce((sum, item) => sum + item.percent, 0);
     const weightedSum = data.reduce(
@@ -93,7 +85,6 @@ export default function CalificationsStudent() {
     return { total, weightedAverage };
   };
 
-  // Columns configuration
   const columns = [
     { title: "Descripción", dataIndex: "description", key: "description" },
     {
@@ -105,9 +96,7 @@ export default function CalificationsStudent() {
           style={{
             textAlign: "center",
             display: "block",
-            fontWeight: String(record.key).includes("total")
-              ? "bold"
-              : "normal", // Convierte record.key a string antes de usar includes
+            fontWeight: String(record.key).includes("total") ? "bold" : "normal",
           }}
         >
           {text}%
@@ -160,38 +149,43 @@ export default function CalificationsStudent() {
           paddingInline: "20px",
         }}
       >
-        {Object.keys(dataSource).map((subject) => {
-          const subjectData = dataSource[subject];
-          const { total, weightedAverage } = calculateTotals(subjectData);
+        {Object.keys(dataSource).map((student) => (
+          <div key={student}>
+            <Divider orientation="left" style={{ fontSize: "18px" }}>
+              {student}
+            </Divider>
+            {Object.keys(dataSource[student]).map((subject) => {
+              const subjectData = dataSource[student][subject];
+              const { total, weightedAverage } = calculateTotals(subjectData);
 
-          // Add a row for total and weighted average
-          const dataWithTotal = [
-            ...subjectData,
-            {
-              key: `${subject}-total`,
-              description: <strong>Total</strong>, // Aseguramos que 'Total' esté en strong
-              percent: <strong>{total}</strong>, // Mantener el total en negrita
-              calification: <strong>{weightedAverage.toFixed(2)}</strong>, // Calificación en negrita
-            },
-          ];
+              const dataWithTotal = [
+                ...subjectData,
+                {
+                  key: `${subject}-total`,
+                  description: <strong>Total</strong>,
+                  percent: <strong>{total}</strong>,
+                  calification: <strong>{weightedAverage.toFixed(2)}</strong>,
+                },
+              ];
 
-          return (
-            <div key={subject}>
-              <h2 style={{ display: "block", textAlign: "start" }}>
-                {subject}
-              </h2>
-              <Table
-                bordered
-                dataSource={dataWithTotal}
-                columns={columns}
-                rowClassName="editable-row"
-                pagination={false}
-                style={{ marginBottom: "20px" }}
-              />
-              <Divider />
-            </div>
-          );
-        })}
+              return (
+                <div key={subject}>
+                  <h3 style={{ display: "block", textAlign: "start", fontWeight: "bold" }}>
+                    {subject}
+                  </h3>
+                  <Table
+                    bordered
+                    dataSource={dataWithTotal}
+                    columns={columns}
+                    rowClassName="editable-row"
+                    pagination={false}
+                    style={{ marginBottom: "20px" }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </>
   );

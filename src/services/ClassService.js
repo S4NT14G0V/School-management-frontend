@@ -1,40 +1,34 @@
 import { apiUrls } from "../routes/ApiUrls";
 
-export const createClass = async (token, classes) => {
-  console.log("class.  ", classes);
+export const createClass = async (classes) => {
   const response = await fetch(apiUrls.classes.create, {
     method: "POST",
+    credentials: "include", // Incluye cookies en la petición
     headers: {
-      authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(classes),
   });
-
   if (!response.ok) {
     throw new Error("Error en la creación del subject");
   }
-
   const data = await response.json();
   return response.ok;
 };
 
-export const getClasses = async (token) => {
+export const getClasses = async () => {
   try {
-    console.log("token:", token);
     const response = await fetch(apiUrls.classes.all, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de subjects:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener las classes");
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
@@ -42,45 +36,39 @@ export const getClasses = async (token) => {
   }
 };
 
-export const getClassesById = async (token, ClassId) => {
+export const getClassesById = async (ClassId) => {
   try {
-    console.log("token:", token);
     const response = await fetch(apiUrls.classes.getClassById, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         ClassId: ClassId,
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de subjects:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener las classes");
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
   }
 };
 
-export const getMyClasses = async (token) => {
+export const getMyClasses = async () => {
   try {
-    console.log("token:", token);
     const response = await fetch(apiUrls.classes.getMyClasses, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de subjects:", response);
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener las classes");
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
@@ -88,34 +76,30 @@ export const getMyClasses = async (token) => {
   }
 };
 
-export const updateClasses = async (token, classes) => {
-  console.log("Id =", classes.id);
+export const updateClasses = async (classes) => {
   const response = await fetch(apiUrls.classes.update, {
     method: "PUT",
+    credentials: "include", // Incluye cookies en la petición
     headers: {
-      authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(classes),
   });
-
   if (!response.ok) {
     throw new Error("Error en la edicion del subject");
   }
-
   return response.ok;
 };
 
-export const deleteClasses = async (token, id) => {
+export const deleteClasses = async (id) => {
   const response = await fetch(apiUrls.classes.delete, {
     method: "DELETE",
+    credentials: "include", // Incluye cookies en la petición
     headers: {
-      authorization: `Bearer ${token}`,
       id: id,
       "Content-Type": "application/json",
     },
   });
-
   if (!response.ok) {
     throw new Error("Error en la edicion del subject");
   }

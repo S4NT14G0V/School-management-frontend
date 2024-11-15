@@ -1,4 +1,6 @@
-const baseUrl = "https://backend-hogwarts.onrender.com";
+import create from "@ant-design/icons/lib/components/IconFont";
+
+const baseUrl = "http://localhost:8080";
 
 export const apiUrls = {
   user: {
@@ -64,5 +66,12 @@ export const apiUrls = {
     create:`${baseUrl}/studentXParent/create`,
     updateFamily:`${baseUrl}/studentXParent/update`,
     deleteFamily:`${baseUrl}/studentXParent/delete`
+  },
+  attendance:{
+    all:`${baseUrl}/attendance/getAll`,
+    getAttendancesByClass:`${baseUrl}/attendance/getAttendancesByClassId`,
+    getAttendancesByClassAndDate:`${baseUrl}/attendance/getAttendancesByClassId_Date`,
+    getMyAttendances:`${baseUrl}/attendance/getMyAttendances`,
+    create: `${baseUrl}/attendance/createAttendances`,
   }
 };

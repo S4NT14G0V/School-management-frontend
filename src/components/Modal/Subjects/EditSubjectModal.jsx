@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { updateSubject } from "../../../services/subjectService";
 
 export default function EditModal({
@@ -9,7 +8,6 @@ export default function EditModal({
   notification,
   subjectData
 }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState(subjectData || {}); // Inicializa con `subjectData`
 
   useEffect(() => {
@@ -28,7 +26,7 @@ export default function EditModal({
 
   const handleEdit = async (subject) => {
     try {
-      const result = await updateSubject(authToken, subject);
+      const result = await updateSubject(subject);
       if (result) {
         notification(true);
         closeModal();

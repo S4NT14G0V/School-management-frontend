@@ -1,11 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Importa el hook useNavigate
-import { useUser } from "../../context/userContext"; // Importa el hook useUser
 import "./Classes.css";
 
 export default function ClassesCard({ data = {}}) {
   const navigate = useNavigate(); // Inicializa el hook de navegación
-  const { authToken } = useUser(); // Obtiene el token del contexto
 
   const handleShowClass = (e) => {
     e.preventDefault(); // Previene el comportamiento predeterminado del botón, como recargar la página
@@ -13,7 +11,7 @@ export default function ClassesCard({ data = {}}) {
     // Codifica el nombre de la materia en la URL
     const encodedSubjectID = encodeURIComponent(data.id);
     // Navega a la URL de la materia con el token
-    navigate(`/classes/${encodedSubjectID}?token=${authToken}`);
+    navigate(`/classes/${encodedSubjectID}`);
   };
 
   return (

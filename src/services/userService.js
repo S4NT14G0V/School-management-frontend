@@ -3,6 +3,7 @@ import { apiUrls } from "../routes/ApiUrls";
 export const createUser = async (userInfo) => {
   const response = await fetch(apiUrls.user.create, {
     method: "POST",
+    credentials: "include", // Incluye cookies en la petición
     headers: {
       "Content-Type": "application/json",
     },
@@ -17,15 +18,15 @@ export const createUser = async (userInfo) => {
   return data;
 };
 
-export const validateUser = async (authToken) => {
+export const validateUser = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.validateUser, {
       method: "GET", // Cambia a GET
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     // Verifica si la respuesta no es OK (4xx o 5xx)
@@ -44,15 +45,15 @@ export const validateUser = async (authToken) => {
   }
 };
 
-export const validateAdmin = async (authToken) => {
+export const validateAdmin = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.validateAdmin, {
       method: "GET", // Cambia a GET
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     // Verifica si la respuesta no es OK (4xx o 5xx)
@@ -71,15 +72,15 @@ export const validateAdmin = async (authToken) => {
   }
 };
 
-export const getUserByEmail = async (authToken) => {
+export const getUserByEmail = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.getByEmail, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -93,13 +94,12 @@ export const getUserByEmail = async (authToken) => {
   }
 };
 
-export const updateUser = async (token, userInfo) => {
+export const updateUser = async (userInfo) => {
   try {
     const response = await fetch(`${apiUrls.user.updateByEmail}`, {
       method: "PUT",
-      credentials: "include",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(userInfo),
@@ -112,12 +112,12 @@ export const updateUser = async (token, userInfo) => {
   }
 };
 
-export const getUsers = async (token) => {
+export const getUsers = async () => {
   try {
     const response = await fetch(apiUrls.user.all, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -134,13 +134,12 @@ export const getUsers = async (token) => {
   }
 };
 
-
-export const getParents = async (token) => {
+export const getParents = async () => {
   try {
     const response = await fetch(apiUrls.user.getParents, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -157,13 +156,12 @@ export const getParents = async (token) => {
   }
 };
 
-
-export const getStudents = async (token) => {
+export const getStudents = async () => {
   try {
     const response = await fetch(apiUrls.user.getStudents, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -180,16 +178,15 @@ export const getStudents = async (token) => {
   }
 };
 
-
-export const getInfo = async (authToken) => {
+export const getInfo = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.getInfo, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -203,12 +200,12 @@ export const getInfo = async (authToken) => {
   }
 };
 
-export const getListUserInfo = async (authToken) => {
+export const getListUserInfo = async () => {
   try {
     const response = await fetch(apiUrls.user.listUserInfo, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -223,13 +220,12 @@ export const getListUserInfo = async (authToken) => {
     console.error("Error:", error);
   }
 };
-export const deleteUser = async (authToken, email) => {
+export const deleteUser = async (email) => {
   try {
     const response = await fetch(apiUrls.user.delete, {
       method: "DELETE",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
-        user: email,
         "Content-Type": "application/json",
       },
     });
@@ -246,13 +242,12 @@ export const deleteUser = async (authToken, email) => {
   }
 };
 
-export const editRolByEmail = async (token, email, rol) => {
+export const editRolByEmail = async (email, rol) => {
   try {
     const response = await fetch(`${apiUrls.user.editRolByEmail}`, {
       method: "PUT",
       credentials: "include",
       headers: {
-        Authorization: `Bearer ${token}`,
         user: email,
         role: rol,
         "Content-Type": "application/json",
@@ -266,15 +261,15 @@ export const editRolByEmail = async (token, email, rol) => {
   }
 };
 
-export const getTeachers = async (authToken) => {
+export const getTeachers = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.getTeachers, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     if (!response.ok) {
@@ -288,15 +283,15 @@ export const getTeachers = async (authToken) => {
   }
 };
 
-export const validateTeachersAdmins = async (authToken) => {
+export const validateTeachersAdmins = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.user.validateTeachersAdmins, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include",
     });
 
     if (!response.ok) {

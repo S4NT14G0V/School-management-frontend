@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { getSubjects } from "../../../services/subjectService";
 import { getTeachers } from "../../../services/userService";
 import { getGroups } from "../../../services/groupService";
@@ -12,9 +11,7 @@ export default function EditModal({
   notification,
   classesData,
 }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState(classesData || {});
-
   const [teacherOptions, setTeacherOptions] = useState([]);
   const [groupOptions, setGroupOptions] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
@@ -35,13 +32,13 @@ export default function EditModal({
 
   const fetchOptions = async () => {
     try {
-      const teachers = await getTeachers(authToken);
+      const teachers = await getTeachers();
       setTeacherOptions(teachers);
 
-      const groups = await getGroups(authToken);
+      const groups = await getGroups();
       setGroupOptions(groups);
 
-      const subjects = await getSubjects(authToken);
+      const subjects = await getSubjects();
       setSubjectOptions(subjects);
     } catch (error) {
       console.error("Error fetching options:", error);
@@ -82,7 +79,7 @@ export default function EditModal({
   const handleEdit = async (classes) => {
     try {
       console.log("Clases a editar:", classes);
-      const result = await updateClasses(authToken, classes);
+      const result = await updateClasses(classes);
       if (result) {
         notification(true);
         closeModal();

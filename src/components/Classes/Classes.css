@@ -23,7 +23,34 @@
   border-radius: 8px;
 }
 
-.classes-card-list {
+.classes-card-list{
+  width: 90%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  gap: 5%;
+}
+
+.classes-group-divider{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  min-width: 100%;
+  height: 50px;
+
+}
+
+.classes-group-divider-title{
+  min-width: max-content;
+  height: 100%;
+  margin: 0;
+  margin-right: 20px;
+  vertical-align: middle !important;
+}
+
+.group-classes {
   display: grid;
   width: 100%;
   height: 100%;

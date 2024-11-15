@@ -1,14 +1,13 @@
 import { apiUrls } from "../routes/ApiUrls";
 
-export const getCalificationsByClass = async (token, id) => {
+export const getCalificationsByClass = async (id) => {
   try {
-    console.log("token 2323:", token);
     const response = await fetch(
       apiUrls.califications.getCalificationsByClass,
       {
         method: "GET",
+        credentials: "include",
         headers: {
-          authorization: `Bearer ${token}`,
           ClassId: id,
           "Content-Type": "application/json",
         },
@@ -27,11 +26,11 @@ export const getCalificationsByClass = async (token, id) => {
   }
 };
 
-export const createCalifications = async (token, califications) => {
+export const createCalifications = async (califications) => {
   const response = await fetch(apiUrls.califications.create, {
     method: "POST",
+    credentials: "include", // Incluye cookies en la petición
     headers: {
-      authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(califications),
@@ -43,21 +42,19 @@ export const createCalifications = async (token, califications) => {
   return response;
 };
 
-export const getCalificationsByEmail = async (authToken) => {
+export const getCalificationsByEmail = async () => {
   try {
     // Enviar la solicitud GET con el email como parámetro de consulta
     const response = await fetch(apiUrls.califications.getCalificationsByEmail, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${authToken}`,
+      "Content-Type": "application/json",
       },
-      credentials: "include",
     });
-
     if (!response.ok) {
       return null; // Devuelve null si la respuesta no es OK
     }
-
     const data = await response.json();
     return data;
   } catch (error) {

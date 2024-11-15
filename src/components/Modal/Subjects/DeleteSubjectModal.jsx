@@ -1,14 +1,12 @@
 import React from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { deleteSubject } from "../../../services/subjectService";
 
 export default function DeleteConfirmModal({ isModalOpen, closeModal, notification, subjectData }) {
-  const { authToken } = useUser();
 
   const handleDelete = async () => {
     try {
-      const result = await deleteSubject(authToken, subjectData.id);
+      const result = await deleteSubject(subjectData.id);
       if (result) {
         console.log("Materia eliminada con éxito");
         notification(true); // Activa la notificación para mostrar éxito

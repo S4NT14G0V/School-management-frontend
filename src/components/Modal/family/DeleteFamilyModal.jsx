@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { deleteFamily } from "../../../services/family";
 
 export default function DeleteConfirmModal({
@@ -9,15 +8,12 @@ export default function DeleteConfirmModal({
   notification,
   FamilyData,
 }) {
-  const { authToken } = useUser();
   const [studentName, setStudentName] = useState("");
   const [parentName, setParentName] = useState("");
-  const [subjectName, setSubjectName] = useState("");
-  const [schedule, setSchedule] = useState("");
 
   const handleDelete = async () => {
     try {
-      const result = await deleteFamily(authToken, FamilyData.id);
+      const result = await deleteFamily(FamilyData.id);
       if (result) {
         console.log("Familia eliminada con éxito");
         notification(true); // Activa la notificación para mostrar éxito

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, Tag, Modal } from "antd";
+import { Button, Input, Space, Table } from "antd";
 import { useUser } from "../../../context/userContext";
 import EditModal from "../../Modal/Groups/EditGroupsModal";
 import { notification } from "antd";
@@ -11,39 +11,33 @@ const App = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, email, admin } = useUser();
+  const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
-  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [tokenVar, setTokenVar] = useState(null);
-  const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
   const [notificationEdit, setNotificationEdit] = useState(false);
   // create function
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [notificationCreate, setNotificationCreate] = useState(false);
   const [editData, setEditData] = useState(null);
 
-  const fetchGroups = async (token) => {
+  const fetchGroups = async () => {
     try {
-      const GroupXstudent = await getStudentsWithGroup(token);
+      const GroupXstudent = await getStudentsWithGroup();
       const usersWithKeys = GroupXstudent.map((groupXstudent) => ({
         ...groupXstudent,
         key: groupXstudent.student.id, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
     } catch (error) {
-      setError("Error fetching user data: " + error.message);
+      console.error("Error fetching groups", error);
     }
   };
 
   // Efecto para cargar usuarios solo al montar el componente
   useEffect(() => {
-    if (authToken) {
-      fetchGroups(authToken);
-    }
-  }, [authToken]);
+    fetchGroups();
+  }, []);
 
   useEffect(() => {
     if (notificationEdit) {
@@ -55,18 +49,6 @@ const App = () => {
       setNotificationCreate(false);
     }
   }, [notificationEdit, notificationCreate]);
-
-  // REVISAR A DETALLE
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
-    setTokenVar(token);
-
-    if (!isTokenProcessed && token) {
-      auth(token); // Guardar el token en el contexto
-      setIsTokenProcessed(true); // Marcar como procesado
-    }
-  }, [isModalOpen, isModalCreateOpen]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -101,13 +83,13 @@ const App = () => {
 
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    fetchGroups(authToken);
+    fetchGroups();
     setEditData(null);
   };
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
-    fetchGroups(authToken);
+    fetchGroups();
   };
 
   const closeModal = () => {
@@ -211,7 +193,6 @@ const App = () => {
   });
 
   const columns = [
-    
     {
       title: "Student",
       dataIndex: "student.name", // Accessing the student object
@@ -237,14 +218,16 @@ const App = () => {
       onFilter: (value, record) =>
         record.group?.variant?.toLowerCase().includes(value.toLowerCase()),
       render: (text, record) => {
-        if (record.group?.grade === undefined || record.group?.variant === undefined) {
+        if (
+          record.group?.grade === undefined ||
+          record.group?.variant === undefined
+        ) {
           const groupName = "Sin Grupo";
           return groupName;
         } else {
           const groupName = record.group?.grade + " - " + record.group?.variant;
           return groupName ? groupName : "Group not found";
         }
-        
       },
     },
     {
@@ -292,7 +275,7 @@ const App = () => {
         </button>
         <button
           className="reload"
-          onClick={() => fetchGroups(authToken)}
+          onClick={() => fetchGroups()}
           style={{
             width: "120px",
             height: "35px",
@@ -321,7 +304,7 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
-          pagination={{ pageSize, position: ["topCenter"] }} // Usamos el pageSize dinámico
+          pagination={{ pageSize: "7", position: ["topCenter"] }} // Usamos el pageSize dinámico
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />
       </div>

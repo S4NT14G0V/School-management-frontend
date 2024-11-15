@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { getStudents, getParents } from "../../../services/userService";
 import { updateFamily } from "../../../services/family";
 
@@ -10,9 +9,7 @@ export default function EditModal({
   notification,
   FamilyData,
 }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState(FamilyData || {});
-
   const [studentOptions, setStudentOptions] = useState([]);
   const [parentOptions, setParentOptions] = useState([]);
 
@@ -31,10 +28,10 @@ export default function EditModal({
 
   const fetchOptions = async () => {
     try {
-      const students = await getStudents(authToken);
+      const students = await getStudents();
       setStudentOptions(students);
 
-      const parents = await getParents(authToken);
+      const parents = await getParents();
       setParentOptions(parents);
     } catch (error) {
       console.error("Error fetching options:", error);
@@ -57,7 +54,7 @@ export default function EditModal({
   const handleEdit = async (data) => {
     try {
       console.log("Datos a editar:", data);
-      const result = await updateFamily(authToken, data);
+      const result = await updateFamily(data);
       if (result) {
         notification(true);
         closeModal();

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { deleteClasses } from "../../../services/ClassService";
 
 export default function DeleteConfirmModal({
@@ -9,7 +8,6 @@ export default function DeleteConfirmModal({
   notification,
   classesData = {},
 }) {
-  const { authToken } = useUser();
   const [teacherName, setTeacherName] = useState("");
   const [groupVariant, setGroupVariant] = useState("");
   const [subjectName, setSubjectName] = useState("");
@@ -17,7 +15,7 @@ export default function DeleteConfirmModal({
 
   const handleDelete = async () => {
     try {
-      const result = await deleteClasses(authToken, classesData.id);
+      const result = await deleteClasses(classesData.id);
       if (result) {
         console.log("Materia eliminada con éxito");
         notification(true); // Activa la notificación para mostrar éxito

@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
-import { getSubjects } from "../../../services/subjectService";
 import { createGroups } from "../../../services/groupService";
 import "./CreateGroupsModal.css";
 
 export default function CreateModal({ isModalOpen, closeModal, notification }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState({
     grade: 0, // Cambiado a string
     variant: "", // Cambiado a string
@@ -29,7 +26,7 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
         grade: parseInt(formData.grade, 10) || 0, // Convierte a entero, o 0 si no es un número válido
       };
       console.log("Datos a enviar:", formData); // Para depuración
-      const result = await createGroups(authToken, formDataToSend);
+      const result = await createGroups(formDataToSend);
       if (result) {
         notification(true);
         closeModal(); // Cerrar el modal

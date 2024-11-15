@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, Tag, Modal } from "antd";
+import { Button, Input, Space, Table } from "antd";
 import { useUser } from "../../../context/userContext";
 import EditModal from "../../Modal/family/EditFamilyModal";
 import { notification } from "antd";
@@ -12,16 +12,11 @@ const App = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, email, admin } = useUser();
+  const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
-  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [tokenVar, setTokenVar] = useState(null);
-  const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
-  const [isAdmin, setIsAdmin] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [notificationDelete, setNotificationDelete] = useState(false);
   // create function
@@ -30,25 +25,23 @@ const App = () => {
   const [editData, setEditData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
 
-  const fetchGroups = async (token) => {
+  const fetchGroups = async () => {
     try {
-      const StudentXParent = await getFamilies(token);
+      const StudentXParent = await getFamilies();
       const usersWithKeys = StudentXParent.map((StudentXParent) => ({
         ...StudentXParent,
         key: StudentXParent.id, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
     } catch (error) {
-      setError("Error fetching user data: " + error.message);
+      console.error("Error fetching families", error);
     }
   };
 
   // Efecto para cargar usuarios solo al montar el componente
   useEffect(() => {
-    if (authToken) {
-      fetchGroups(authToken);
-    }
-  }, [authToken]);
+    fetchGroups();
+  }, []);
 
   useEffect(() => {
     if (notificationEdit) {
@@ -59,24 +52,12 @@ const App = () => {
       showNotificationCreate();
       setNotificationCreate(false);
     }
-    
+
     if (notificationDelete) {
-        showNotificationDelete();
-        setNotificationDelete(false);}
-        
-  }, [notificationEdit,notificationDelete, notificationCreate]);
-
-  // REVISAR A DETALLE
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
-    setTokenVar(token);
-
-    if (!isTokenProcessed && token) {
-      auth(token); // Guardar el token en el contexto
-      setIsTokenProcessed(true); // Marcar como procesado
+      showNotificationDelete();
+      setNotificationDelete(false);
     }
-  }, [isModalOpen,isModalDeleteOpen, isModalCreateOpen]);
+  }, [notificationEdit, notificationDelete, notificationCreate]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -114,20 +95,19 @@ const App = () => {
     setDeleteData(dataDelete);
   };
 
-
   const showNotificationEdit = () => {
     showNotification("Success", "Family edited successfully");
-    fetchGroups(authToken);
+    fetchGroups();
     setEditData(null);
   };
 
   const showNotificationCreate = () => {
     showNotification("Success", "Family created successfully");
-    fetchGroups(authToken);
+    fetchGroups();
   };
   const showNotificationDelete = () => {
     showNotification("Success", "Family deleted successfully");
-    fetchGroups(authToken);
+    fetchGroups();
     setDeleteData(null);
   };
 
@@ -143,7 +123,7 @@ const App = () => {
     setIsModalDeleteOpen(false);
     setSelectedEmail(null); // Limpia el email seleccionado
   };
-  
+
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -236,7 +216,6 @@ const App = () => {
   });
 
   const columns = [
-    
     {
       title: "Student",
       dataIndex: "student.name", // Accessing the student object
@@ -254,21 +233,21 @@ const App = () => {
       },
     },
     {
-        title: "Parent",
-        dataIndex: "parent.name", // Accessing the student object
-        key: "parent.name",
-        width: "60%",
-        ...getColumnSearchProps("parent.name"),
-        onFilter: (value, record) =>
-          record.parent?.name?.toLowerCase().includes(value.toLowerCase()),
-        render: (text, record) => {
-          const studentName = record.parent?.name;
-          const studentLastName = record.parent?.lastname;
-          return studentName && studentLastName
-            ? `${studentName} ${studentLastName}`
-            : "Parent not found";
-        },
+      title: "Parent",
+      dataIndex: "parent.name", // Accessing the student object
+      key: "parent.name",
+      width: "60%",
+      ...getColumnSearchProps("parent.name"),
+      onFilter: (value, record) =>
+        record.parent?.name?.toLowerCase().includes(value.toLowerCase()),
+      render: (text, record) => {
+        const studentName = record.parent?.name;
+        const studentLastName = record.parent?.lastname;
+        return studentName && studentLastName
+          ? `${studentName} ${studentLastName}`
+          : "Parent not found";
       },
+    },
     {
       title: "Action",
       key: "action",
@@ -321,7 +300,7 @@ const App = () => {
         </button>
         <button
           className="reload"
-          onClick={() => fetchGroups(authToken)}
+          onClick={() => fetchGroups()}
           style={{
             width: "120px",
             height: "35px",
@@ -357,7 +336,7 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
-          pagination={{ pageSize, position: ["topCenter"] }} // Usamos el pageSize dinámico
+          pagination={{ pageSize: "7", position: ["topCenter"] }} // Usamos el pageSize dinámico
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />
       </div>

@@ -1,40 +1,34 @@
 import { apiUrls } from "../routes/ApiUrls";
 
-export const createFamily = async (token, family) => {
-  
+export const createFamily = async (family) => {
   const response = await fetch(apiUrls.family.create, {
     method: "POST",
+    credentials: "include", // Incluye cookies en la petición
     headers: {
-      authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(family),
   });
-
   if (!response.ok) {
     throw new Error("Error en la creación de la familia");
   }
-
   const data = await response.json();
   return response.ok;
 };
 
-export const getFamilies = async (token) => {
+export const getFamilies = async () => {
   try {
-    console.log("token:", token);
     const response = await fetch(apiUrls.family.getAll, {
       method: "GET",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de families:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener las familias");
     }
-
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
@@ -42,40 +36,34 @@ export const getFamilies = async (token) => {
   }
 };
 
-export const updateFamily = async (token, family) => {
-  
-    const response = await fetch(apiUrls.family.updateFamily, {
-      method: "PUT",
-      headers: {
-        authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(family),
-    });
-  
-    if (!response.ok) {
-      throw new Error("Error en la update");
-    }
-  
-    const data = await response.json();
-    return response.ok;
-  };
+export const updateFamily = async (family) => {
+  const response = await fetch(apiUrls.family.updateFamily, {
+    method: "PUT",
+    credentials: "include", // Incluye cookies en la petición
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(family),
+  });
+  if (!response.ok) {
+    throw new Error("Error en la update");
+  }
+  const data = await response.json();
+  return response.ok;
+};
 
-  export const deleteFamily = async (token, id_family) => {
-  
-    const response = await fetch(apiUrls.family.deleteFamily, {
-      method: "DELETE",
-      headers: {
-        authorization: `Bearer ${token}`,
-        id:id_family,
-        "Content-Type": "application/json",
-      },
-    });
-  
-    if (!response.ok) {
-      throw new Error("Error eliminando ");
-    }
-  
-    const data = await response.json();
-    return response.ok;
-  };
+export const deleteFamily = async (id_family) => {
+  const response = await fetch(apiUrls.family.deleteFamily, {
+    method: "DELETE",
+    credentials: "include", // Incluye cookies en la petición
+    headers: {
+      id: id_family,
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error("Error eliminando ");
+  }
+  const data = await response.json();
+  return response.ok;
+};

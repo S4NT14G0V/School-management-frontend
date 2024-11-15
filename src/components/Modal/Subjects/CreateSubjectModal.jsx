@@ -1,10 +1,8 @@
 import React, {useState} from "react";
 import { Modal, Button } from "antd"; // Asegúrate de que tienes Ant Design instalado
-import { useUser } from "../../../context/userContext"; // Importa el contexto de usuario
 import { createSubject } from "../../../services/subjectService"; // Importa tu servicio de eliminación
 
 export default function CreateModal({ isModalOpen, closeModal, notification }) {
-  const { authToken } = useUser(); // Obtén el token de autenticación del contexto
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -13,7 +11,7 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
 
   const handleCreateSubject = async (subject) => {
     try {
-      const result = await createSubject(authToken, subject); // Espera el resultado
+      const result = await createSubject(subject); // Espera el resultado
       if (result) {
         console.log("materia creado con éxito");
         notification(true); // Marcar para mostrar notificación

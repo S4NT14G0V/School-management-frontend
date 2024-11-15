@@ -1,15 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import useGroupChat from "../../hooks/useGroupChat";
 import "./Forum.css";
-import { useUser } from "../../context/userContext";
 import { getUserByEmail } from "../../services/userService";
-import { getMessagesByClass } from "../../services/messages";
 import { Tag } from "antd";
 
 const Forum = ({ Id_Class }) => {
   const { messages, sendMessage } = useGroupChat(Id_Class);
   const [input, setInput] = useState("");
-  const { authToken } = useUser();
   const [user, setUser] = useState(null);
   const lastMessageRef = useRef(null); // Referencia para el último mensaje
 
@@ -26,7 +23,7 @@ const Forum = ({ Id_Class }) => {
 
   const fetchUser = async () => {
     try {
-      const user = await getUserByEmail(authToken);
+      const user = await getUserByEmail();
       setUser(user);
     } catch (error) {
       console.error("Error fetching user data: " + error.message);
@@ -34,10 +31,8 @@ const Forum = ({ Id_Class }) => {
   };
 
   useEffect(() => {
-    if (authToken) {
-      fetchUser();
-    }
-  }, [authToken]);
+    fetchUser();
+  }, []);
 
   // Efecto para hacer scroll hacia el último mensaje
   useEffect(() => {

@@ -1,10 +1,10 @@
 import { apiUrls } from "../routes/ApiUrls";
 
-export const createSubject = async (token,subject) => {
+export const createSubject = async (subject) => {
     const response = await fetch(apiUrls.subject.create, {
       method: "POST",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(subject),
@@ -40,11 +40,11 @@ export const getSubjects = async () => {
     }
   };
 
-  export const updateSubject = async (token,subject) => {
+  export const updateSubject = async (subject) => {
     const response = await fetch(apiUrls.subject.update, {
       method: "PUT",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(subject),
@@ -57,11 +57,11 @@ export const getSubjects = async () => {
     return response.ok;
 };
 
-export const deleteSubject = async (token,id) => {
+export const deleteSubject = async (id) => {
     const response = await fetch(apiUrls.subject.delete, {
       method: "DELETE",
+      credentials: "include", // Incluye cookies en la petición
       headers: {
-        authorization: `Bearer ${token}`,
         id:id,
         "Content-Type": "application/json",
       }

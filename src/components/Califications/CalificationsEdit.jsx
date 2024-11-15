@@ -9,11 +9,11 @@ const EditableTable = ({ id, setEditData }) => {
   const [dataSource, setDataSource] = useState([]);
   const [columns, setColumns] = useState([]);
   const [searchText, setSearchText] = useState("");  // Estado para el filtro de búsqueda
-  const { authToken, assesmentData } = useUser();
+  const { assesmentData } = useUser();
 
   const fetchAssesments = async (id) => {
     try {
-      const assessments = await getAssesmentsByClass(authToken, id);
+      const assessments = await getAssesmentsByClass(id);
       return assessments;
     } catch (error) {
       console.error("Error fetching assessments:", error);
@@ -23,7 +23,7 @@ const EditableTable = ({ id, setEditData }) => {
 
   const fetchUsersTable = async (id) => {
     try {
-      const users = await getCalificationsByClass(authToken, id);
+      const users = await getCalificationsByClass(id);
       return users;
     } catch (error) {
       console.error("Error fetching users:", error);

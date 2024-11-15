@@ -24,7 +24,7 @@ const useGroupChat = (classId) => {
 
   useEffect(() => {
     console.log("Connecting to WebSocket...");
-    const socketUrl = 'https://backend-hogwarts.onrender.com/ws';
+    const socketUrl = 'http://localhost:8080/ws';
 
     const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),

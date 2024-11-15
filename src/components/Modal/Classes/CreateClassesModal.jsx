@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { useUser } from "../../../context/userContext";
 import { getSubjects } from "../../../services/subjectService";
 import { getGroups } from "../../../services/groupService";
 import { getTeachers } from "../../../services/userService";
@@ -8,7 +7,6 @@ import { createClass } from "../../../services/ClassService";
 import "./CreateClassesModal.css";
 
 export default function CreateModal({ isModalOpen, closeModal, notification }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState({
     teacher: {}, // Mantener como objeto completo
     group: {},   // Mantener como objeto completo
@@ -35,13 +33,13 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
 
   const fetchOptions = async () => {
     try {
-      const teachers = await getTeachers(authToken);
+      const teachers = await getTeachers();
       setTeacherOptions(teachers); // Guardar el objeto completo
 
-      const groups = await getGroups(authToken);
+      const groups = await getGroups();
       setGroupOptions(groups); // Guardar el objeto completo
 
-      const subjects = await getSubjects(authToken);
+      const subjects = await getSubjects();
       setSubjectOptions(subjects); // Guardar el objeto completo
     } catch (error) {
       console.error("Error fetching options:", error);
@@ -51,7 +49,7 @@ export default function CreateModal({ isModalOpen, closeModal, notification }) {
   const handleCreateClass = async () => {
     try {
       console.log("Datos a enviar:", formData); // Para depuración
-      const result = await createClass(authToken, formData);
+      const result = await createClass(formData);
       if (result) {
         notification(true);
         closeModal(); // Cerrar el modal

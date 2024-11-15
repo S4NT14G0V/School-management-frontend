@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Input, DatePicker } from "antd";
-import { useUser } from "../../../context/userContext";
 import { createAssesment } from "../../../services/assesment";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default function CreateModal({ isModalOpen, closeModal, notification, classes }) {
-  const { authToken } = useUser();
   const [formData, setFormData] = useState({
     classes: "", 
     percent: 0,   
@@ -44,7 +47,7 @@ export default function CreateModal({ isModalOpen, closeModal, notification, cla
 
     try {
       console.log("Data to send:", formData); 
-      const result = await createAssesment(authToken, formData);
+      const result = await createAssesment(formData);
       if (result) {
         notification(true);
         closeModal(); 
@@ -60,7 +63,9 @@ export default function CreateModal({ isModalOpen, closeModal, notification, cla
   };
 
   const handleDateChange = (date, dateString, field) => {
-    setFormData({ ...formData, [field]: dateString });
+    // Convierte la fecha seleccionada a UTC-5 (zona horaria de Colombia) antes de guardarla en formData
+    const dateInColombia = date ? dayjs(date).tz("America/Bogota").format("YYYY-MM-DD") : "";
+    setFormData({ ...formData, [field]: dateInColombia });
   };
 
   return (
@@ -83,13 +88,13 @@ export default function CreateModal({ isModalOpen, closeModal, notification, cla
 
         <label>Date</label>
         <DatePicker
-          value={formData.date ? dayjs(formData.date) : null}
+          value={formData.date ? dayjs(formData.date).tz("America/Bogota") : null}
           onChange={(date, dateString) => handleDateChange(date, dateString, "date")}
         />
 
         <label>Limit Date</label>
         <DatePicker
-          value={formData.limit_date ? dayjs(formData.limit_date) : null}
+          value={formData.limit_date ? dayjs(formData.limit_date).tz("America/Bogota") : null}
           onChange={(date, dateString) => handleDateChange(date, dateString, "limit_date")}
         />
 

@@ -1,14 +1,12 @@
 import React from "react";
 import { Modal, Button } from "antd"; // Asegúrate de que tienes Ant Design instalado
-import { useUser } from "../../../context/userContext"; // Importa el contexto de usuario
 import { deleteUser } from "../../../services/userService"; // Importa tu servicio de eliminación
 
 export default function DeleteConfirmModal({ email, isModalOpen, closeModal, notification }) {
-  const { authToken } = useUser(); // Obtén el token de autenticación del contexto
 
   const handleDelete = async (email) => {
     try {
-      const result = await deleteUser(authToken, email); // Espera el resultado
+      const result = await deleteUser(email); // Espera el resultado
       if (result.success) {
         console.log("Usuario eliminado con éxito");
         notification(true); // Marcar para mostrar notificación

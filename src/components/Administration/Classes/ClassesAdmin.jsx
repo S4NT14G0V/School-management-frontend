@@ -1,30 +1,22 @@
 import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, Tag, Modal } from "antd";
+import { Button, Input, Space, Table} from "antd";
 import { useUser } from "../../../context/userContext";
-import { getListUserInfo, deleteUser } from "../../../services/userService";
 import EditModal from "../../Modal/Classes/EditClassesModal";
 import DeleteModal from "../../Modal/Classes/DeleteClassesModal";
 import { notification } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { createClass, getClasses } from "../../../services/ClassService";
+import {  getClasses } from "../../../services/ClassService";
 import CreateModal from "../../Modal/Classes/CreateClassesModal";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { authToken, auth, email, admin } = useUser();
+  const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isTokenProcessed, setIsTokenProcessed] = useState(false);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [tokenVar, setTokenVar] = useState(null);
-  const [pageSize, setPageSize] = useState(7); // Tamaño de página por defecto
-  const [isAdmin, setIsAdmin] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [notificationDelete, setNotificationDelete] = useState(false);
   // create function
@@ -33,25 +25,23 @@ const App = () => {
   const [editData, setEditData] = useState(null);
   const [deleteData, setDeleteData] = useState(null);
 
-  const fetchClasses = async (token) => {
+  const fetchClasses = async () => {
     try {
-      const classes = await getClasses(token);
+      const classes = await getClasses();
       const usersWithKeys = classes.map((clase) => ({
         ...clase,
         key: clase.id, // Usa una propiedad única como key
       }));
       setData(usersWithKeys);
     } catch (error) {
-      setError("Error fetching user data: " + error.message);
+      console.error("Error:", error);
     }
   };
 
   // Efecto para cargar usuarios solo al montar el componente
   useEffect(() => {
-    if (authToken) {
-      fetchClasses(authToken);
-    }
-  }, [authToken]);
+    fetchClasses();
+  }, []);
 
   useEffect(() => {
     if (notificationEdit) {
@@ -67,18 +57,6 @@ const App = () => {
       setNotificationCreate(false);
     }
   }, [notificationEdit, notificationDelete, notificationCreate]);
-
-  // REVISAR A DETALLE
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const token = query.get("token");
-    setTokenVar(token);
-
-    if (!isTokenProcessed && token) {
-      auth(token); // Guardar el token en el contexto
-      setIsTokenProcessed(true); // Marcar como procesado
-    }
-  }, [isModalOpen, isModalDeleteOpen, isModalCreateOpen]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -118,18 +96,18 @@ const App = () => {
 
   const showNotificationDelete = () => {
     showNotification("Success", "User deleted successfully");
-    fetchClasses(authToken);
+    fetchClasses();
   };
 
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
-    fetchClasses(authToken);
+    fetchClasses();
     setEditData(null);
   };
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
-    fetchClasses(authToken);
+    fetchClasses();
     setDeleteData(null);
   };
 
@@ -301,7 +279,7 @@ const App = () => {
         </button>
         <button
           className="reload"
-          onClick={() => fetchClasses(authToken)}
+          onClick={() => fetchClasses()}
           style={{
             width: "120px",
             height: "35px",
@@ -336,7 +314,7 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
-          pagination={{ pageSize, position: ["topCenter"] }} // Usamos el pageSize dinámico
+          pagination={{ pageSize: "7", position: ["topCenter"] }}
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />
       </div>

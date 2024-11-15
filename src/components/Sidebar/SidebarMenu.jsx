@@ -8,7 +8,7 @@ export default function SidebarMenu({ menuItems }) {
   // Encuentra el índice del primer elemento que contiene "admin" en su href
   const adminIndex = menuItems.findIndex((item) =>
     item.href.includes("admin")
-  );
+  ); 
 
   return (
     <div className="sidebar-menu">
