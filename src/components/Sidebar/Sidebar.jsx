@@ -40,7 +40,7 @@ export default function Sidebar() {
         src: ItemAttendanceIcon,
         alt: "button-attendance",
         label: "Attendance",
-        href: "/assesments",
+        href: "/attendances",
       },
       {
         src: ItemCalificationsIcon,
