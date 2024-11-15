@@ -7,6 +7,7 @@ import { getClassesById } from "../../services/ClassService";
 import { notification } from "antd";
 import { createCalifications } from "../../services/califications";
 import CreateAttendanceModal from "../Modal/Attendance/createAttendanceModal";
+import ShowAttendanceClassModal from "../Modal/Attendance/showAttendanceClassModal";
 import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
 import Forum from "../Forum/Forum";
 
@@ -16,7 +17,9 @@ export default function ClassTemplate() {
   const [classData, setClassData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [ isAttendanceShowModalOpen, setIsAttendanceShowModalOpen] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
+  const [notificationAttendance, setNotificationAttendance] = useState(false);
   const [editData, setEditData] = useState(null);
 
   const fetchClasses = async (id) => {
@@ -50,7 +53,11 @@ export default function ClassTemplate() {
       showNotificationEdit();
       setNotificationEdit(false);
     }
-  }, [notificationEdit]);
+    if (notificationAttendance) {
+      showNotificationAttendance();
+      setNotificationAttendance(false);
+    }
+  }, [notificationEdit, notificationAttendance]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -70,6 +77,10 @@ export default function ClassTemplate() {
     setIsAttendanceModalOpen(true); // Abre el modal
   }
 
+  const openShowAttendanceModal = () => {
+    setIsAttendanceShowModalOpen(true); // Abre el modal
+  }
+
   const showNotificationEdit = () => {
     showNotification("Success", "User edited successfully");
     fetchUpdateCalificationsClass(editData);
@@ -77,12 +88,21 @@ export default function ClassTemplate() {
     closeModal();
   };
 
+  const showNotificationAttendance = () => {
+    showNotification("Success", "Attendance created successfully");
+    closeModalAttendance();
+  }
+
   const closeModal = () => {
     setIsModalOpen(false); // Cierra el modal
   };
 
   const closeModalAttendance = () => {
     setIsAttendanceModalOpen(false); // Cierra el modal
+  }
+
+  const closeModalShowAttendance = () => {
+    setIsAttendanceShowModalOpen(false); // Cierra el modal
   }
 
   // Función para redirigir
@@ -147,13 +167,19 @@ export default function ClassTemplate() {
           padding: "10px", // Espaciado dentro del contenedor
         }}
       >
-        <AssesmentTable classes={classData} modal={openModal} attendanceModal={openAttendanceModal} />
+        <AssesmentTable classes={classData} modal={openModal} attendanceModal={openAttendanceModal} attendanceShowModal={openShowAttendanceModal}/>
         
         <CreateAttendanceModal
           isModalOpen={isAttendanceModalOpen}
           closeModal={closeModalAttendance}
-          notification={closeModalAttendance}
+          notification={setNotificationAttendance}
           classesId={classData.id}  
+        />
+
+        <ShowAttendanceClassModal
+          isModalOpen={isAttendanceShowModalOpen}
+          closeModal={closeModalShowAttendance}
+          classesId={classData.id}
         />
         
         <EditModal

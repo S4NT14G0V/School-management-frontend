@@ -51,6 +51,8 @@ export const apiUrls = {
     create:`${baseUrl}/assesment/create`,
     getMyAssestment:`${baseUrl}/assesment/getMyAssesments`,
     getAssesmentsByClass:`${baseUrl}/assesment/getAssesmentsByClass`,
+    update:`${baseUrl}/assesment/update`,
+    delete:`${baseUrl}/assesment/delete`,
   },
   califications:{
     create:`${baseUrl}/calification/CreateUpdateCalifications`,

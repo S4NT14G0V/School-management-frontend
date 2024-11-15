@@ -5,18 +5,18 @@ import { useUser } from "../../context/userContext";
 import { getAssesmentsByClass } from "../../services/assesment";
 import { validateTeachersAdmins } from "../../services/userService";
 import { getClassesById } from "../../services/ClassService";
-import EditModal from "../Modal/Classes/EditClassesModal";
-import DeleteModal from "../Modal/Classes/DeleteClassesModal";
+import EditModal from "../Modal/Assesments/EditAssesmentModal";
+import DeleteModal from "../Modal/Assesments/deleteAssesmentModal";
 import CreateModal from "../Modal/Assesments/createAssesmentModal";
 
-const AssesmentTable = ({ classes, modal, attendanceModal }) => {
+const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
   const { setAssesmentData } = useUser();
   const [data, setData] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false); //CAMBIAR A FALSE
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
   const [editData, setEditData] = useState(null);
@@ -25,9 +25,20 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
   const [classesData, setClassesData] = useState(classes);
 
   const [notificationCreate, setNotificationCreate] = useState(false);
+  const [notificationDelete, setNotificationDelete] = useState(false);
+  const [notificationEdit, setNotificationEdit] = useState(false);
 
   const openModalCreate = () => {
     setIsModalCreateOpen(true);
+  };
+
+  const openModalEdit = (record) => {
+    setIsModalEditOpen(true);
+    setEditData(record);
+  };
+  const openModalDelete = (record) => {
+    setIsModalDeleteOpen(true);
+    setDeleteData(record);
   };
 
   const showNotification = (message, description) => {
@@ -46,13 +57,34 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
       showNotificationCreate();
       setNotificationCreate(false);
     }
-  }, [notificationCreate]);
+    if (notificationDelete){
+      showNotificationDelete();
+      setNotificationDelete(false);
+    }
+    if (notificationEdit) {
+      showNotificationEdit();
+      setNotificationEdit(false);
+    }
+  }, [notificationCreate, notificationDelete, notificationEdit]);
 
   const showNotificationCreate = () => {
     showNotification("Success", "User created successfully");
     fetchAssesment( classesData.id);
     setData(null);
   };
+
+  const showNotificationDelete = () => {
+    showNotification("Success", "Assesment deleted successfully");
+    fetchAssesment( classesData.id);
+    setData(null);
+  };
+
+  const showNotificationEdit = () => {
+    showNotification("Success", "Assesment edited successfully");
+    fetchAssesment( classesData.id);
+    setData(null);
+  };
+
   const closeModalCreate = () => {
     setIsModalCreateOpen(false);
   };
@@ -171,15 +203,39 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
       dataIndex: "date",
       key: "date",
       width: "20%",
-      render: (date) => new Date(date).toLocaleDateString(),
+      render: (date) => date,
     },
     {
       title: "Date Limit",
       dataIndex: "limit_date",
       key: "limit_date",
       width: "20%",
-      render: (limitDate) => new Date(limitDate).toLocaleDateString(),
-    },
+      render: (limitDate) => limitDate,
+    }, ...(isAdmin
+      ? [
+          {
+            title: "Action",
+            key: "action",
+            width: "20%",
+            render: (_, record) => (
+              <Space size="middle">
+                <a
+                  className="table-edit"
+                  onClick={() => openModalEdit(record)}
+                >
+                  Editar
+                </a>
+                <a
+                  className="table-delete"
+                  onClick={() => openModalDelete(record)}
+                >
+                  Eliminar
+                </a>
+              </Space>
+            ),
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -198,44 +254,58 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
             <button
               onClick={openModalCreate}
               style={{
-                width: "80px",
+                width: "120px",
                 height: "30px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                fontSize: "14px",
+                fontSize: "12px",
                 fontWeight: "400",
               }}
             >
-              Create
+              Create Assesment
             </button>
             <button
               style={{
-                width: "110px",
+                width: "130px",
                 height: "30px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                fontSize: "14px",
+                fontSize: "12px",
                 fontWeight: "400",
               }}
               onClick={modal}
             >
-              Calificaciones
+              Modify Califications
             </button>
             <button
               style={{
-                width: "110px",
+                width: "120px",
                 height: "30px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                fontSize: "14px",
+                fontSize: "12px",
                 fontWeight: "400",
               }}
               onClick={attendanceModal}
             >
-              Asistencias
+              Add Attendances
+            </button>
+            <button
+              style={{
+                width: "120px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "12px",
+                fontWeight: "400",
+              }}
+              onClick={attendanceShowModal}
+            >
+              Show Attendances
             </button>
           </>
         )}
@@ -248,7 +318,7 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            fontSize: "14px",
+            fontSize: "12px",
             fontWeight: "400",
           }}
         >
@@ -262,9 +332,10 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
         scroll={{ x: "max-content" }}
       />
       <EditModal
-        isModalOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        classesData={editData}
+        isModalOpen={isModalEditOpen}
+        closeModal={() => setIsModalEditOpen(false)}
+        notification={setNotificationEdit}
+        assesmentData={editData}
       />
       <CreateModal
         isModalOpen={isModalCreateOpen}
@@ -275,7 +346,8 @@ const AssesmentTable = ({ classes, modal, attendanceModal }) => {
       <DeleteModal
         isModalOpen={isModalDeleteOpen}
         closeModal={() => setIsModalDeleteOpen(false)}
-        classesData={deleteData}
+        notification={setNotificationDelete}
+        assesment={deleteData}
       />
     </div>
   );

@@ -2,54 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, notification } from "antd";
 import { getMyAssesment } from "../../services/assesment";
-import EditModal from "../Modal/Classes/EditClassesModal";
-import DeleteModal from "../Modal/Classes/DeleteClassesModal";
-import CreateModal from "../Modal/Assesments/createAssesmentModal";
 
-const AssesmentTable = ({ classes }) => {
+const AssesmentTable = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
   const [data, setData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
-  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
-  const [editData, setEditData] = useState(null);
-  const [deleteData, setDeleteData] = useState(null);
-  const [classesData, setClassesData] = useState(classes);
-
-  const [notificationCreate, setNotificationCreate] = useState(false);
-
-  const openModalCreate = () => {
-    setIsModalCreateOpen(true);
-  };
-
-  const showNotification = (message, description) => {
-    notification.success({
-      message: message,
-      description: description,
-      placement: "bottom",
-      showProgress: true,
-      style: { backgroundColor: "#f4fcf2" },
-      pauseOnHover: false,
-    });
-  };
-
-  useEffect(() => {
-    if (notificationCreate) {
-      showNotificationCreate();
-      setNotificationCreate(false);
-    }
-  }, [notificationCreate]);
-
-  const showNotificationCreate = () => {
-    showNotification("Success", "User created successfully");
-    fetchAssesment(classesData.id);
-    setData(null);
-  };
-  const closeModalCreate = () => {
-    setIsModalCreateOpen(false);
-  };
 
   const fetchAssesment = async () => {
     try {
@@ -177,14 +135,14 @@ const AssesmentTable = ({ classes }) => {
       dataIndex: "date",
       key: "date",
       width: "15%",
-      render: (date) => new Date(date).toLocaleDateString(),
+      render: (date) => date,
     },
     {
       title: "Date Limit",
       dataIndex: "limit_date",
       key: "limit_date",
       width: "15%",
-      render: (limitDate) => new Date(limitDate).toLocaleDateString(),
+      render: (limitDate) => limitDate,
     },
   ];
 
@@ -218,16 +176,6 @@ const AssesmentTable = ({ classes }) => {
         dataSource={data}
         pagination={{ pageSize: "7", position: ["topCenter"] }}
         scroll={{ x: "max-content" }}
-      />
-      <EditModal
-        isModalOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        classesData={editData}
-      />
-      <DeleteModal
-        isModalOpen={isModalDeleteOpen}
-        closeModal={() => setIsModalDeleteOpen(false)}
-        classesData={deleteData}
       />
     </div>
   );

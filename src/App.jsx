@@ -15,6 +15,8 @@ import ClassesSubject from "./pages/ClassesPage/ClassesSubject";
 import PageLayout from "./pages/Layouts/PageLayout";
 import Assesments from "./pages/AssesmentsPage/AssesmentPage";
 import Califications from "./pages/CalificationsPage/CalificationsPage";
+import Attendances from "./pages/AttendancesPage/AttendancesPage";
+import Test from "./components/Attendance/AttendanceList";
 
 function App() {
   return (
@@ -71,7 +73,9 @@ function App() {
             <Route path="/classes/:id" element={<ClassesSubject />} />
             <Route path="/assesments" element={<Assesments />} />
             <Route path="/califications" element={<Califications />} />
+            <Route path="/attendances" element={<Attendances />} />
           </Route>
+            <Route path="/test" element={<Test />} />
         </Routes>
       </Router>
     </UserProvider>

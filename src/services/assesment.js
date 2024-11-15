@@ -55,3 +55,33 @@ export const getAssesmentsByClass = async (id) => {
     return [];
   }
 };
+
+export const updateAssesment = async (assestment) => {
+  const response = await fetch(apiUrls.assesment.update, {
+    method: "PUT",
+    credentials: "include", // Incluye cookies en la petición
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(assestment),
+  });
+  if (!response) {
+    throw new Error("Error en la creación del subject");
+  }
+  return response;
+};
+
+export const deleteAssesment = async (id) => {
+  const response = await fetch(apiUrls.assesment.delete, {
+    method: "DELETE",
+    credentials: "include", // Incluye cookies en la petición
+    headers: {
+      "Content-Type": "application/json",
+      id:id,
+    },
+  });
+  if (!response) {
+    throw new Error("Error en la creación del subject");
+  }
+  return response;
+};

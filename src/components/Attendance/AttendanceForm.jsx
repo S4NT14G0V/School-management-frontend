@@ -32,7 +32,6 @@ const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
 
   const fetchAttendancesClassAndDate = async (id, selectedDate) => {
     try {
-      console.log("getd", selectedDate);
       const response = await getAttendancesByClassAndDate(id, selectedDate);
       const mappedAttendance = response.reduce((acc, attendanceItem) => {
         const studentId = attendanceItem.student.id;
@@ -49,13 +48,10 @@ const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
   const fetchCreateAttendance = async (attendanceData) => {
     try {
       const response = await createAttendance(attendanceData);
-      console.log("Response: ", response);
-      message.success("Asistencia guardada correctamente.");
       setAttendance({});
       setDate("");
     } catch (error) {
       console.error("Error creating attendance: ", error);
-      message.error("Error al guardar la asistencia.");
     }
   };
 
