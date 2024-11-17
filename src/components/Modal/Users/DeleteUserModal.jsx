@@ -1,62 +1,27 @@
 import React from "react";
-import { Modal, Button } from "antd"; // Asegúrate de que tienes Ant Design instalado
-import { deleteUser } from "../../../services/userService"; // Importa tu servicio de eliminación
+import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
+import DeleteUserForm from "../../Forms/DeleteUserForm";
 
-export default function DeleteConfirmModal({ email, isModalOpen, closeModal, notification }) {
-
-  const handleDelete = async (email) => {
-    try {
-      const result = await deleteUser(email); // Espera el resultado
-      if (result.success) {
-        console.log("Usuario eliminado con éxito");
-        notification(true); // Marcar para mostrar notificación
-      } else {
-        console.error("Error borrando el usuario:", result.message);
-      }
-      closeModal(); // Cerrar el modal después de procesar
-    } catch (error) {
-      console.error("Error borrando el usuario", error);
-    }
-  };
-
+const DeleteUserModal = ({
+  isModalOpen,
+  closeModal,
+  notification,
+  email,
+}) => {
   return (
-    <Modal
+    <BaseModal
       title="Eliminación de Usuario"
-      centered
-      open={isModalOpen}
-      onCancel={closeModal}
-      footer={null}
+      isOpen={isModalOpen}
+      onClose={closeModal}
       width={400}
     >
-      <hr style={{ border: "none", padding: "5px" }} />
-      <p>Estás a punto de eliminar al usuario con el correo electrónico:</p>
-      <p style={{ padding: "10px", paddingLeft: "15px" }}>
-        <strong style={{ textDecoration: "underline" }}>{email}</strong>.
-      </p>
-      <hr style={{ border: "none", padding: "5px" }} />
-      <p>¿Estás seguro de que deseas continuar con esta acción?</p>
-      <hr style={{ border: "none", padding: "5px" }} />
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "20px",
-          gap: "10px",
-        }}
-      >
-        <Button key="cancel" onClick={closeModal}>
-          Cancelar
-        </Button>
-        <Button
-          key="delete"
-          type="primary"
-          danger
-          onClick={() => handleDelete(email)}
-        >
-          Eliminar
-        </Button>
-      </div>
-    </Modal>
+      <DeleteUserForm
+        email={email}
+        notification={notification}
+        closeModal={closeModal}
+      />
+    </BaseModal>
   );
 }
+
+export default React.memo(DeleteUserModal);

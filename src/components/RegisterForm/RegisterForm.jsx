@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import "./RegisterForm.css";
 import { useNavigate } from "react-router-dom";
 import { getPublicRoles } from "../../services/rolService";
 import { getUserByEmail, updateUser } from "../../services/userService";
+import { TYPE_DOCUMENT_OPTIONS, GENDER_OPTIONS, MESSAGES_ERROR, PAGES_URLS, ROLES } from "../../config/constants";
 
-export default function RegisterForm() {
+const RegisterForm = () => {
 
   const [formData, setFormData] = useState({
     name: "",
@@ -36,7 +37,7 @@ export default function RegisterForm() {
           throw new Error("User not found.");
         }
       } catch (error) {
-        console.error("Error fetching user data: " + error.message);
+        console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
       }
     };
 
@@ -45,11 +46,11 @@ export default function RegisterForm() {
         const roles = await getPublicRoles();
         const roleOptions = roles.map((role) => ({
           value: { id: role.id, name: role.name },
-          label: role.name === "Student" ? "Estudiante" : "Padre / Acudiente",
+          label: role.name === ROLES.Student ? "Estudiante" : "Padre / Acudiente",
         }));
         setRoleOptions(roleOptions);
       } catch (error) {
-        console.error("Error fetching roles: ", error);
+        console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
       }
     };
 
@@ -57,17 +58,9 @@ export default function RegisterForm() {
     fetchRoles();
   }, []);
 
-  const typeDocumentOptions = [
-    { value: "CC", label: "Cédula de Ciudadanía" },
-    { value: "TI", label: "Tarjeta de Identidad" },
-    { value: "PP", label: "Pasaporte" },
-  ];
+  const typeDocumentOptions = TYPE_DOCUMENT_OPTIONS;
 
-  const genderOptions = [
-    { value: "Masculino", label: "Masculino" },
-    { value: "Femenino", label: "Femenino" },
-    { value: "Otros", label: "Otros" },
-  ];
+  const genderOptions = GENDER_OPTIONS;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,10 +80,10 @@ export default function RegisterForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
     await updateUser(formData);
-    navigate(`/classes`);
+    navigate(`${PAGES_URLS.PUBLIC.CLASSES}`);
   };
+
   return (
     <div className="register-form">
       <form onSubmit={handleSubmit} className="form-grid">
@@ -207,3 +200,5 @@ export default function RegisterForm() {
     </div>
   );
 }
+
+export default RegisterForm;

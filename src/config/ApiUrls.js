@@ -1,6 +1,6 @@
-import create from "@ant-design/icons/lib/components/IconFont";
+import { URLS } from "./constants";
 
-const baseUrl = "http://localhost:8080";
+const baseUrl = `${URLS.BASE_URL}`;
 
 export const apiUrls = {
   user: {

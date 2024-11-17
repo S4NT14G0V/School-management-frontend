@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "../config/ApiUrls";
 
 export const createFamily = async (family) => {
   const response = await fetch(apiUrls.family.create, {

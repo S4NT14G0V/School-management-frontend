@@ -1,29 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Table, Tag, DatePicker, message } from "antd";
 import { getMyAttendances } from "../../services/attendance";
+import { MESSAGES_ERROR } from "../../config/constants";
 
 const { RangePicker } = DatePicker;
 
 const AttendanceTable = () => {
-  const [attendances, setAttendances] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  // Formato de fecha usando API nativa
-
+  const [attendances, setAttendances] = useState([]); // Datos originales
+  const [filteredAttendances, setFilteredAttendances] = useState([]); // Datos filtrados
+  const [loading, setLoading] = useState(true);
 
   // Columnas para la tabla
-  const columns = [
+  const columns = useMemo(() => [
     {
       title: "Estudiante",
       dataIndex: "studentName",
       key: "studentName",
     },
     {
-        title: "Class",
-        dataIndex: "class",
-        key: "class ",
-      },
+      title: "Class",
+      dataIndex: "class",
+      key: "class",
+    },
     {
       title: "Estado",
       dataIndex: "status",
@@ -38,81 +36,61 @@ const AttendanceTable = () => {
       title: "Fecha",
       dataIndex: "date",
       key: "date",
-      render: (date) => date, // Formatea la fecha
+      render: (date) => date,
     },
-  ];
+  ], []);
+
+  // Cargar asistencias desde el backend
+  const fetchAttendances = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getMyAttendances();
+      const formattedAttendances = response.map((item) => ({
+        key: item.id,
+        class: `${item.classes.subject.name} ${item.classes.group.grade}-${item.classes.group.variant}`,
+        studentName: `${item.student.name} ${item.student.lastname}`,
+        status: item.status,
+        date: item.date,
+      }));
+      setAttendances(formattedAttendances);
+      setFilteredAttendances(formattedAttendances); // Inicialmente, las filtradas son todas
+    } catch (error) {
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
+    } finally {
+      setLoading(false);
+    }
+  },[]);
 
   useEffect(() => {
     fetchAttendances();
   }, []);
 
-  // Cargar asistencias desde el backend
-  const fetchAttendances = async () => {
-    setLoading(true);
-    try {
-        const response = await getMyAttendances();
-        setAttendances(
-          response.map((item) => ({
-            key: item.id,
-            class:`${item.classes.subject.name} ${item.classes.group.grade}-${item.classes.group.variant}`,
-            studentName: `${item.student.name} ${item.student.lastname}`,
-            status: item.status,
-            date: item.date,
-          }))
-        );
-      } catch (error) {
-        console.error("Error al cargar las asistencias:", error); 
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Filtrar asistencias por rango de fechas
-  const handleDateFilter = async (dates) => {
+  const handleDateFilter = useCallback((dates) => {
     if (!dates || dates.length === 0) {
-      fetchAttendances();
+      // Restaurar los datos originales si no hay fechas seleccionadas
+      setFilteredAttendances(attendances);
       return;
     }
   
     const [startDate, endDate] = dates;
-    console.log("Rango de fechas seleccionado:", startDate, endDate);
+    const filteredData = attendances.filter((item) => {
+      const itemDate = new Date(item.date);
+      // Incluir las fechas de inicio y final
+      return itemDate >= startDate.toDate() && itemDate <= endDate.toDate();
+    });
   
-    try {
-      setLoading(true);
-      const response = await getAttendancesByClass(id_class);
+    setFilteredAttendances(filteredData);
+  },[]);
   
-      // Filtrar manualmente los datos en el frontend
-      const filteredData = response.filter((item) => {
-        const itemDate = new Date(item.date);
-        return itemDate >= startDate.toDate() && itemDate <= endDate.toDate();
-      });
-  
-      setAttendances(
-        filteredData.map((item) => ({
-          key: item.id,
-          studentName: `${item.student.name} ${item.student.lastname}`,
-          status: item.status,
-          date: item.date,
-        }))
-      );
-    } catch (error) {
-      console.error("Error al filtrar las asistencias:", error);
-      message.error("No se pudieron filtrar las asistencias.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  
-
   return (
     <div>
       <div style={{ marginBottom: "20px" }}>
-        <RangePicker onChange={(dates) => handleDateFilter(dates)} />
+        <RangePicker onChange={handleDateFilter} />
       </div>
       <Table
         columns={columns}
-        dataSource={attendances}
+        dataSource={filteredAttendances} // Usar las asistencias filtradas
         loading={loading}
         pagination={{ pageSize: 7 }}
       />

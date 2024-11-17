@@ -1,15 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, notification } from "antd";
 import { getMyAssesment } from "../../services/assesment";
+import { MESSAGES_ERROR } from "../../config/constants";
 
 const AssesmentTable = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchAssesment = async () => {
+  const fetchAssesment = useCallback(async () => {
+    setLoading(true);
     try {
       const Assesments = await getMyAssesment();
       const usersWithKeys = Assesments.map((Assesment) => ({
@@ -18,18 +21,28 @@ const AssesmentTable = () => {
       }));
       setData(usersWithKeys);
     } catch (error) {
-      notification.error({
-        message: "Error",
-        description: "Error fetching class data: " + error.message,
-      });
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
+    } finally {
+      setLoading(false);
     }
-  };
+  },[]);
 
   useEffect(() => {
     fetchAssesment();
   }, []);
 
-  const getColumnSearchProps = (dataIndex) => ({
+  const handleSearch = useCallback((selectedKeys, confirm, dataIndex) => {
+    confirm(); 
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  },[]);
+
+  const handleReset = useCallback((clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  },[]);
+
+  const getColumnSearchProps = useMemo(()=>(dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -73,9 +86,11 @@ const AssesmentTable = () => {
     onFilterDropdownOpenChange: (visible) => {
       if (visible) setTimeout(() => searchInput.current?.select(), 100);
     },
-  });
+    render: (text) =>
+      searchedColumn === dataIndex ? (text ? text : "") : text,
+  }),[handleReset, handleSearch, searchedColumn]);
 
-  const columns = [
+  const columns = useMemo(()=>[
     {
       title: "Subject",
       dataIndex: ["classes", "subject", "name"],
@@ -144,7 +159,7 @@ const AssesmentTable = () => {
       width: "15%",
       render: (limitDate) => limitDate,
     },
-  ];
+  ],[]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -174,6 +189,7 @@ const AssesmentTable = () => {
       <Table
         columns={columns}
         dataSource={data}
+        loading={loading}
         pagination={{ pageSize: "7", position: ["topCenter"] }}
         scroll={{ x: "max-content" }}
       />

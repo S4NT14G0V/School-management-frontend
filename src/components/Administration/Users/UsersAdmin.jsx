@@ -1,12 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table, Tag } from "antd";
 import { useUser } from "../../../context/userContext";
 import { getListUserInfo } from "../../../services/userService";
-import RoleModal from "../../Modal/Users/EditUserModal";
+import RoleModal from "../../Modal/Users/EditRolUserModal";
 import DeleteModal from "../../Modal/Users/DeleteUserModal";
 import { notification } from "antd";
 import "./UsersAdmin.css";
+import { MESSAGES_SUCCESS, MESSAGES_ERROR, ROLES } from "../../../config/constants";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
@@ -14,13 +15,11 @@ const App = () => {
   const searchInput = useRef(null);
   const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [notificationEdit, setNotificationEdit] = useState(false);
-  const [notificationDelete, setNotificationDelete] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
     try {
       const users = await getListUserInfo();
       const usersWithKeys = users.map((user) => ({
@@ -29,25 +28,45 @@ const App = () => {
       }));
       setData(usersWithKeys);
     } catch (error) {
-      console.error("Error fetching users", error);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
+    } finally {
+      setLoading(false);
     }
+  },[]);
+
+  // EDIT
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notificationEdit, setNotificationEdit] = useState(false);
+  const openModal = (email) => {
+    if (email === admin) return; // Si es el administrador, no abre el modal
+    setSelectedEmail(email); // Establece el email del usuario seleccionado
+    setIsModalOpen(true); // Abre el modal
   };
-
-  // Efecto para cargar usuarios solo al montar el componente
-  useEffect(() => {
+  const showNotificationEdit = useCallback(() => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.USER_ROLE_UPDATED);
     fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    if (notificationEdit) {
-      showNotificationEdit();
-      setNotificationEdit(false);
-    }
-    if (notificationDelete) {
-      showNotificationDelete();
-      setNotificationDelete(false);
-    }
-  }, [notificationEdit, notificationDelete]);
+  },[fetchUsers]);
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false); // Cierra el modal
+    setSelectedEmail(null); // Limpia el email seleccionado
+  },[]);
+  
+  // DELETE
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [notificationDelete, setNotificationDelete] = useState(false);
+  const openModalDelete = (email) => {
+    if (email === admin) return; // Si es el administrador, no abre el modal
+    setSelectedEmail(email); // Establece el email del usuario seleccionado
+    setIsModalDeleteOpen(true); // Abre el modal
+  };
+  const showNotificationDelete = useCallback(() => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.USER_DELETED);
+    fetchUsers();
+  },[fetchUsers]);
+  const closeModalDelete = useCallback(() => {
+    setIsModalDeleteOpen(false);
+    setSelectedEmail(null); // Limpia el email seleccionado
+  },[]);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -60,50 +79,36 @@ const App = () => {
     });
   };
 
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
+  useEffect(() => {
+    if (notificationEdit) {
+      showNotificationEdit();
+      setNotificationEdit(false);
+    }
+    if (notificationDelete) {
+      showNotificationDelete();
+      setNotificationDelete(false);
+    }
+  }, [notificationEdit, notificationDelete]);
+
+  
+
+  // Efecto para cargar usuarios solo al montar el componente
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleSearch = useCallback((selectedKeys, confirm, dataIndex) => {
+    confirm(); 
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
-  };
+  },[]);
 
-  const handleReset = (clearFilters) => {
+  const handleReset = useCallback((clearFilters) => {
     clearFilters();
     setSearchText("");
-  };
+  },[]);
 
-  const openModal = (email) => {
-    if (email === admin) return; // Si es el administrador, no abre el modal
-    setSelectedEmail(email); // Establece el email del usuario seleccionado
-    setIsModalOpen(true); // Abre el modal
-  };
-
-  const openModalDelete = (email) => {
-    if (email === admin) return; // Si es el administrador, no abre el modal
-    setSelectedEmail(email); // Establece el email del usuario seleccionado
-    setIsModalDeleteOpen(true); // Abre el modal
-  };
-
-  const showNotificationDelete = () => {
-    showNotification("Success", "User deleted successfully");
-    fetchUsers();
-  };
-
-  const showNotificationEdit = () => {
-    showNotification("Success", "User edited successfully");
-    fetchUsers();
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
-    setSelectedEmail(null); // Limpia el email seleccionado
-  };
-
-  const closeModalDelete = () => {
-    setIsModalDeleteOpen(false);
-    setSelectedEmail(null); // Limpia el email seleccionado
-  };
-
-  const getColumnSearchProps = (dataIndex) => ({
+  const getColumnSearchProps = useMemo(()=>(dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -192,9 +197,9 @@ const App = () => {
     },
     render: (text) =>
       searchedColumn === dataIndex ? (text ? text : "") : text,
-  });
+  }),[handleReset, handleSearch, searchedColumn]);
 
-  const columns = [
+  const columns = useMemo(()=>[
     {
       title: "Name",
       dataIndex: "name",
@@ -247,13 +252,13 @@ const App = () => {
         let color;
         if (!rolName) {
           color = "volcano";
-        } else if (rolName === "Student") {
+        } else if (rolName === ROLES.Student) {
           color = "blue";
-        } else if (rolName === "Admin") {
+        } else if (rolName === ROLES.Admin) {
           color = "red";
-        } else if (rolName === "Teacher") {
+        } else if (rolName === ROLES.Teacher) {
           color = "purple";
-        } else if (rolName === "Parent") {
+        } else if (rolName === ROLES.Parent) {
           color = "orange";
         }
         return (
@@ -289,7 +294,7 @@ const App = () => {
         </Space>
       ),
     },
-  ];
+  ],[admin, getColumnSearchProps]);
 
   return (
     <>
@@ -331,6 +336,7 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
+          loading={loading}
           pagination={{ pageSize: "7", position: ["topCenter"] }} // Usamos el pageSize dinámico
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />

@@ -1,133 +1,27 @@
-import { useState, useEffect } from "react";
-import { Modal, Button } from "antd";
-import { getStudents, getParents } from "../../../services/userService";
-import { updateFamily } from "../../../services/family";
+import React from "react";
+import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
+import EditFamilyForm from "../../Forms/EditFamilyForm";
 
-export default function EditModal({
+const EditFamilyModal = ({
   isModalOpen,
   closeModal,
   notification,
   FamilyData,
-}) {
-  const [formData, setFormData] = useState(FamilyData || {});
-  const [studentOptions, setStudentOptions] = useState([]);
-  const [parentOptions, setParentOptions] = useState([]);
-
-  useEffect(() => {
-    if (isModalOpen) {
-      fetchOptions();
-    } else {
-      // Reiniciar formData cuando se cierra el modal
-      setFormData({
-        id: FamilyData?.id || 0,
-        parent: FamilyData?.parent || {},
-        student: FamilyData?.student || {},
-      });
-    }
-  }, [isModalOpen, FamilyData]);
-
-  const fetchOptions = async () => {
-    try {
-      const students = await getStudents();
-      setStudentOptions(students);
-
-      const parents = await getParents();
-      setParentOptions(parents);
-    } catch (error) {
-      console.error("Error fetching options:", error);
-    }
-  };
-
-  const handleStudentChange = (value) => {
-    const selectedStudent = studentOptions.find((student) => student.id === value);
-    setFormData((prevData) => ({
-      ...prevData,
-      student: selectedStudent || {},
-    }));
-  };
-
-  const handleParentChange = (value) => {
-    const selectedParent = parentOptions.find((parent) => parent.id === value);
-    setFormData((prevData) => ({ ...prevData, parent: selectedParent || {} }));
-  };
-
-  const handleEdit = async (data) => {
-    try {
-      console.log("Datos a editar:", data);
-      const result = await updateFamily(data);
-      if (result) {
-        notification(true);
-        closeModal();
-      } else {
-        console.error("Error actualizando la información:", result.message);
-      }
-    } catch (error) {
-      console.error("Error actualizando la información", error);
-    }
-  };
-
+}) => {
   return (
-    <Modal
+    <BaseModal
       title="Editar Información"
-      centered
-      open={isModalOpen}
-      onCancel={closeModal}
-      footer={null}
+      isOpen={isModalOpen}
+      onClose={closeModal}
       width={400}
     >
-      <div className="form-group">
-        <label>Estudiante</label>
-        <select
-          name="student"
-          value={formData.student?.id || ""}
-          onChange={(e) => handleStudentChange(parseInt(e.target.value))}
-          required
-        >
-          <option value="" disabled>
-            Seleccione...
-          </option>
-          {studentOptions?.map((option) => (
-            <option key={option.id} value={option.id}>
-              {`${option.name} ${option.lastname}`}
-            </option>
-          ))}
-        </select>
-
-        <label>Padre</label>
-        <select
-          name="parent"
-          value={formData.parent?.id || ""}
-          onChange={(e) => handleParentChange(parseInt(e.target.value))}
-          required
-        >
-          <option value="" disabled>
-            Seleccione...
-          </option>
-          {parentOptions?.map((option) => (
-            <option key={option.id} value={option.id}>
-              {`${option.name} ${option.lastname}`}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "20px",
-        }}
-      >
-        <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
-          Cancelar
-        </Button>
-        <Button
-          key="submit"
-          style={{ backgroundColor: "#2f1b41", color: "white" }}
-          onClick={() => handleEdit(formData)}
-        >
-          Guardar Cambios
-        </Button>
-      </div>
-    </Modal>
+      <EditFamilyForm
+        FamilyData={FamilyData}
+        notification={notification}
+        closeModal={closeModal}
+      />
+    </BaseModal>
   );
 }
+
+export default React.memo(EditFamilyModal);

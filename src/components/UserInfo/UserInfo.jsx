@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./UserInfo.css";
 import { useNavigate } from "react-router-dom";
 import ArrowDownIcon from "../../assets/arrow_down.svg";
 import LogoutIcon from "../../assets/logout-rounded-icon.svg";
+import { PAGES_URLS } from "../../config/constants";
 
-export default function UserInfo({ userInfo }) {
+const UserInfo = ({ userInfo }) => {
   const [actionsVisible, setActionsVisible] = useState(false);
   const [rotateIcon, setRotateIcon] = useState(false);
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function UserInfo({ userInfo }) {
   const buttonRef = useRef(null); // Ref para el botón de acciones
 
   const handleLogout = () => {
-    navigate("/");
+    navigate(`${PAGES_URLS.PUBLIC.HOME}`);
   };
 
   const handleActionsToggle = (e) => {
@@ -74,3 +75,5 @@ export default function UserInfo({ userInfo }) {
     </div>
   );
 }
+
+export default React.memo(UserInfo);

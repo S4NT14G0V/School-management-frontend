@@ -1,6 +1,6 @@
 // src/pages/Layouts/PageLayout.js
 import React from 'react';
-import Sidebar from '../../components/Sidebar/Sidebar';
+import Sidebar from '../components/Sidebar/Sidebar';
 import { Outlet } from 'react-router-dom';
 import './PageLayout.css';
 

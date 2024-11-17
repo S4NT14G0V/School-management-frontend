@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "../config/ApiUrls";
 
 export const getCalificationsByClass = async (id) => {
   try {
@@ -13,7 +13,6 @@ export const getCalificationsByClass = async (id) => {
         },
       }
     );
-    console.log("Respuesta de subjects:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener las classes");
@@ -58,7 +57,7 @@ export const getCalificationsByEmail = async () => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log("Error:", error);
+    console.error("Error:", error);
   }
 };
 

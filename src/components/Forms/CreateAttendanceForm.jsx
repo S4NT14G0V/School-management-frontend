@@ -1,36 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { Table, Select, Button, DatePicker, message } from "antd";
-import {
-  getAttendancesByClassAndDate,
-  createAttendance,
-} from "../../services/attendance";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { Table, Select, Button, DatePicker, message, notification as notification2 } from "antd";
+import { getAttendancesByClassAndDate, createAttendance } from "../../services/attendance";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-
+import { MESSAGES_ERROR } from "../../config/constants";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
+export default function CreateAttendanceForm({ id_class, notification, closeModal }) {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
   const [attendancesForDate, setAttendancesForDate] = useState([]);
   const [date, setDate] = useState("");
-  const [idClass, setIdClass] = useState(classId);
+  const [idClass, setIdClass] = useState(id_class);
 
-  const handleDateChange = (date, dateString) => {
-    // Convertir la fecha seleccionada a la zona horaria de Colombia (UTC-5)
+  const handleDateChange = useCallback((date, dateString) => {
     setDate(dateString);
-    setAttendance({}); // Reinicia la asistencia al cambiar la fecha
-  };
+    setAttendance({});
+  }, []);
 
   useEffect(() => {
     if (idClass && date) {
       fetchAttendancesClassAndDate(idClass, date);
     }
-  }, [idClass, date, isModalOpen]);
+  }, [idClass, date]);
 
-  const fetchAttendancesClassAndDate = async (id, selectedDate) => {
+  const fetchAttendancesClassAndDate = useCallback(async (id, selectedDate) => {
     try {
       const response = await getAttendancesByClassAndDate(id, selectedDate);
       const mappedAttendance = response.reduce((acc, attendanceItem) => {
@@ -39,36 +35,47 @@ const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
         return acc;
       }, {});
       setAttendancesForDate(response);
-      setAttendance(mappedAttendance); // Cargar el estado de cada estudiante
+      setAttendance(mappedAttendance);
     } catch (error) {
-      console.error("Error fetching attendances: ", error);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  };
+  }, []);
 
-  const fetchCreateAttendance = async (attendanceData) => {
+  const fetchCreateAttendance = useCallback(async (attendanceData) => {
     try {
+      closeModal();
       const response = await createAttendance(attendanceData);
+      if (response) {
+        notification(true);
+      } else {
+        notification2.error({
+          message: MESSAGES_ERROR.TITLE,
+          description: MESSAGES_ERROR.ATTENDANCE_CREATED,
+          placement: "bottom",
+          showProgress: true,
+          style: { backgroundColor: "#ffd9d9" },
+          pauseOnHover: false,
+        });
+      }
       setAttendance({});
       setDate("");
     } catch (error) {
-      console.error("Error creating attendance: ", error);
+      console.error(MESSAGES_ERROR.ATTENDANCE_CREATED, error);
     }
-  };
+  }, [notification, closeModal]);
 
-  const handleAttendanceChange = (studentId, value) => {
+  const handleAttendanceChange = useCallback((studentId, value) => {
     setAttendance((prev) => ({
       ...prev,
       [studentId]: value,
     }));
-  };
+  }, []);
 
-  const submitAttendance = () => {
+  const submitAttendance = useCallback(() => {
     if (!date) {
-      message.error("Por favor, seleccione una fecha.");
       return;
     }
 
-    // Convertir la fecha seleccionada a UTC-5 para almacenarla correctamente
     const formattedDate = dayjs(date).tz("America/Bogota").format("YYYY-MM-DD");
     console.log("formattedDate", formattedDate);
 
@@ -76,27 +83,18 @@ const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
       student: { id: parseInt(studentId, 10) },
       classes: { id: idClass },
       date: formattedDate,
-      status:
-        attendance[studentId] !== "Seleccionar" ? attendance[studentId] : null,
+      status: attendance[studentId] !== "Seleccionar" ? attendance[studentId] : null,
     }));
-    try {
-      const result = fetchCreateAttendance(attendanceData);
-      if (result) {
-        notification(true);
-        closeModal(); 
-      }
-    } catch (error) {
-      console.error("Error creating attendance", error);
-    }
-  };
 
-  const columns = [
+    fetchCreateAttendance(attendanceData);
+  }, [date, attendance, idClass, fetchCreateAttendance]);
+
+  const columns = useMemo(() => [
     {
       title: "Estudiante",
       dataIndex: "name",
       key: "name",
-      render: (text, record) =>
-        `${record.student.name} ${record.student.lastname}`,
+      render: (text, record) => `${record.student.name} ${record.student.lastname}`,
     },
     {
       title: "Estado",
@@ -115,23 +113,23 @@ const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
         </Select>
       ),
     },
-  ];
+  ], [attendance, handleAttendanceChange]);
 
-  const data = attendancesForDate.length > 0 ? attendancesForDate : students;
+  const data = useMemo(() => (attendancesForDate.length > 0 ? attendancesForDate : students), [attendancesForDate, students]);
 
   return (
     <>
       <DatePicker
         value={date ? dayjs(date).tz("America/Bogota") : null}
-        onChange={(date, dateString) => handleDateChange(date, dateString)}
-        style={{width: "50%", marginBlock:"20px"}}
+        onChange={handleDateChange}
+        style={{ width: "50%", marginBlock: "20px" }}
       />
 
       <Table
         columns={columns}
         dataSource={data}
         rowKey={(record) => record.student.id}
-        style={{ width: "100%"}}
+        style={{ width: "100%" }}
         pagination={{ pageSize: 5, position: ["bottomCenter"] }}
       />
 
@@ -144,6 +142,4 @@ const AttendanceForm = ({ classId, notification, closeModal, isModalOpen }) => {
       </Button>
     </>
   );
-};
-
-export default AttendanceForm;
+}

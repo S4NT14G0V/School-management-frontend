@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "../config/ApiUrls";
 
 export const createClass = async (classes) => {
   const response = await fetch(apiUrls.classes.create, {

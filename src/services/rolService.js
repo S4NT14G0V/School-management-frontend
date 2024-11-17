@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "../config/ApiUrls";
 
 export const getRoles = async () => {
     try {

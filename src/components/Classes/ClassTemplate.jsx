@@ -1,52 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AssesmentTable from "../../components/Assesment/AssesmentsTable";
 import arrowLeftIcon from "../../assets/arrow_left.svg";
 import { useParams } from "react-router-dom";
 import { getClassesById } from "../../services/ClassService";
 import { notification } from "antd";
-import { createCalifications } from "../../services/califications";
 import CreateAttendanceModal from "../Modal/Attendance/createAttendanceModal";
 import ShowAttendanceClassModal from "../Modal/Attendance/showAttendanceClassModal";
 import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
 import Forum from "../Forum/Forum";
+import { MESSAGES_ERROR, MESSAGES_SUCCESS, PAGES_URLS } from "../../config/constants";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [classData, setClassData] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // CREATE
   const [ isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
-  const [ isAttendanceShowModalOpen, setIsAttendanceShowModalOpen] = useState(false);
-  const [notificationEdit, setNotificationEdit] = useState(false);
   const [notificationAttendance, setNotificationAttendance] = useState(false);
+  const openAttendanceModal = useCallback(() => {
+    setIsAttendanceModalOpen(true); // Abre el modal
+  },[]);
+  const showNotificationAttendance = () => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.ATTENDANCE_CREATED);
+    closeModalAttendance();
+  };
+  const closeModalAttendance = useCallback(() => {
+    setIsAttendanceModalOpen(false); // Cierra el modal
+  },[]);
+  
+  // SHOW
+  const [ isAttendanceShowModalOpen, setIsAttendanceShowModalOpen] = useState(false);
+  const openShowAttendanceModal = useCallback(() => {
+    setIsAttendanceShowModalOpen(true); // Abre el modal
+  },[]);
+  const closeModalShowAttendance = useCallback(() => {
+    setIsAttendanceShowModalOpen(false); // Cierra el modal
+  },[]);
+  
+  // EDIT
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notificationEdit, setNotificationEdit] = useState(false);
   const [editData, setEditData] = useState(null);
+  const openModal = useCallback(() => {
+    setIsModalOpen(true); // Abre el modal
+  },[]);
+  const showNotificationEdit = useCallback(() => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.CALIFICATIONS_UPDATED);
+    setEditData(null);
+    closeModal();
+  },[]);
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false); // Cierra el modal
+  },[]);
 
-  const fetchClasses = async (id) => {
-    console.log("id en el fetch", id);
-    try {
-      const Classe = await getClassesById(id);
-      setClassData(Classe); // Actualizamos el estado con los datos obtenidos
-      console.log(Classe);
-    } catch (error) {
-      console.log("Error fetching class data: " + error.message);
-    }
+  const showNotification = (message, description) => {
+    notification.success({
+      message: message,
+      description: description,
+      placement: "bottom",
+      showProgress: true,
+      style: { backgroundColor: "#f4fcf2" },
+      pauseOnHover: false,
+    });
   };
-
-  const fetchUpdateCalificationsClass = async (califications) => {
-    try {
-      const response = await createCalifications(califications);
-      return response;
-    } catch (error) {
-      console.error("Error fetching class data: " + error.message);
-    }
-  };
-
-  useEffect(() => {
-    if (id) {
-      fetchClasses(id); // Llamada a la función que obtiene los datos de la clase
-    }
-  }, [id]); // Dependencias en id
 
   useEffect(() => {
     if (notificationEdit) {
@@ -59,55 +77,24 @@ export default function ClassTemplate() {
     }
   }, [notificationEdit, notificationAttendance]);
 
-  const showNotification = (message, description) => {
-    notification.success({
-      message: message,
-      description: description,
-      placement: "bottom",
-      showProgress: true,
-      style: { backgroundColor: "#f4fcf2" },
-      pauseOnHover: false,
-    });
-  };
-  const openModal = () => {
-    setIsModalOpen(true); // Abre el modal
-  };
+  const fetchClasses = useCallback(async (id) => {
+    try {
+      const Classe = await getClassesById(id);
+      setClassData(Classe); // Actualizamos el estado con los datos obtenidos
+    } catch (error) {
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING,error);
+    }
+  },[]);
 
-  const openAttendanceModal = () => {
-    setIsAttendanceModalOpen(true); // Abre el modal
-  }
-
-  const openShowAttendanceModal = () => {
-    setIsAttendanceShowModalOpen(true); // Abre el modal
-  }
-
-  const showNotificationEdit = () => {
-    showNotification("Success", "User edited successfully");
-    fetchUpdateCalificationsClass(editData);
-    setEditData(null);
-    closeModal();
-  };
-
-  const showNotificationAttendance = () => {
-    showNotification("Success", "Attendance created successfully");
-    closeModalAttendance();
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
-  };
-
-  const closeModalAttendance = () => {
-    setIsAttendanceModalOpen(false); // Cierra el modal
-  }
-
-  const closeModalShowAttendance = () => {
-    setIsAttendanceShowModalOpen(false); // Cierra el modal
-  }
+  useEffect(() => {
+    if (id) {
+      fetchClasses(id); // Llamada a la función que obtiene los datos de la clase
+    }
+  }, [id]); // Dependencias en id
 
   // Función para redirigir
   const handleNavigate = () => {
-    navigate(`/classes`);
+    navigate(`${PAGES_URLS.PUBLIC.CLASSES}`); // Redirigimos a la página de clases
   };
 
   // Renderizar solo si classData no es null
@@ -187,8 +174,6 @@ export default function ClassTemplate() {
           closeModal={closeModal}
           notification={setNotificationEdit}
           id={classData.id}
-          editData={editData}
-          setEditData={setEditData}
         />
       </div>
       <hr className="page-divider" />

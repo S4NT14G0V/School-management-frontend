@@ -2,7 +2,7 @@ import React from 'react'
 import './AcademicInfo.css'
 import Logo from '../../assets/logo.png'
 
-export default function AcademicInfo({login}) {
+const AcademicInfo = ({login}) => {
   return (
     <div className={!login ? "academic-info": "login-info"}>
         <img src={Logo} alt="Logo de Hogwarts" />
@@ -10,3 +10,5 @@ export default function AcademicInfo({login}) {
     </div>
   )
 }
+
+export default React.memo(AcademicInfo);
