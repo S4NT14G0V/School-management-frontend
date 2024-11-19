@@ -23,14 +23,7 @@
     word-break: break-word;
     font-size: 1.2em;
     font-weight: 500;
-    background: linear-gradient(
-      to right,
-      rgb(111, 0, 255),
-      rgb(22, 22, 255)
-    ); /* Gradiente de fondo */
-    -webkit-background-clip: text; /* Clipping en WebKit */
-    background-clip: text;
-    color: transparent;
+    color: #0058ca;
   }
 }
 
@@ -52,13 +45,6 @@
     width: 100%;
     text-wrap: wrap;
     word-break: break-word;
-    background: linear-gradient(
-      to right,
-      rgb(111, 0, 255),
-      rgb(22, 22, 255)
-    ); /* Gradiente de fondo */
-    -webkit-background-clip: text; /* Clipping en WebKit */
-    background-clip: text;
-    color: transparent;
+    color:  #0058ca;
   }
 }

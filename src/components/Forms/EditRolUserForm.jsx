@@ -92,8 +92,8 @@ const EditRolUserForm = ({ email, closeModal, notification }) => {
         </Button>
         <Button
           key="submit"
-          style={{ backgroundColor: "#2f1b41", color: "white" }}
-          onClick={()=>handleEdit(emailReceived, formData.rol)}
+          style={{ backgroundColor: "#11538C", color: "white" }}
+          onClick={()=>handleEdit(emailReceived, formData.rol)} 
         >
           Guardar Cambios
         </Button>

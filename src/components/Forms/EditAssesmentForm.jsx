@@ -85,7 +85,7 @@ export default function EditAssesmentForm({ assesmentData, closeModal, notificat
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancel
         </Button>
-        <Button key="submit" type="primary" onClick={handleEdit}>
+        <Button key="submit" type="primary" onClick={handleEdit} style={{backgroundColor: "#11538C"  }}>
           Save Changes
         </Button>
       </div>

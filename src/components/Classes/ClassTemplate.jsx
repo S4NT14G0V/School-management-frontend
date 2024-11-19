@@ -9,7 +9,11 @@ import CreateAttendanceModal from "../Modal/Attendance/createAttendanceModal";
 import ShowAttendanceClassModal from "../Modal/Attendance/showAttendanceClassModal";
 import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
 import Forum from "../Forum/Forum";
-import { MESSAGES_ERROR, MESSAGES_SUCCESS, PAGES_URLS } from "../../config/constants";
+import {
+  MESSAGES_ERROR,
+  MESSAGES_SUCCESS,
+  PAGES_URLS,
+} from "../../config/constants";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();
@@ -17,43 +21,50 @@ export default function ClassTemplate() {
   const [classData, setClassData] = useState(null);
 
   // CREATE
-  const [ isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
+  const [isAttendanceModalOpen, setIsAttendanceModalOpen] = useState(false);
   const [notificationAttendance, setNotificationAttendance] = useState(false);
   const openAttendanceModal = useCallback(() => {
     setIsAttendanceModalOpen(true); // Abre el modal
-  },[]);
+  }, []);
   const showNotificationAttendance = () => {
-    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.ATTENDANCE_CREATED);
+    showNotification(
+      MESSAGES_SUCCESS.TITLE,
+      MESSAGES_SUCCESS.ATTENDANCE_CREATED
+    );
     closeModalAttendance();
   };
   const closeModalAttendance = useCallback(() => {
     setIsAttendanceModalOpen(false); // Cierra el modal
-  },[]);
-  
+  }, []);
+
   // SHOW
-  const [ isAttendanceShowModalOpen, setIsAttendanceShowModalOpen] = useState(false);
+  const [isAttendanceShowModalOpen, setIsAttendanceShowModalOpen] =
+    useState(false);
   const openShowAttendanceModal = useCallback(() => {
     setIsAttendanceShowModalOpen(true); // Abre el modal
-  },[]);
+  }, []);
   const closeModalShowAttendance = useCallback(() => {
     setIsAttendanceShowModalOpen(false); // Cierra el modal
-  },[]);
-  
+  }, []);
+
   // EDIT
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const [editData, setEditData] = useState(null);
   const openModal = useCallback(() => {
     setIsModalOpen(true); // Abre el modal
-  },[]);
+  }, []);
   const showNotificationEdit = useCallback(() => {
-    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.CALIFICATIONS_UPDATED);
+    showNotification(
+      MESSAGES_SUCCESS.TITLE,
+      MESSAGES_SUCCESS.CALIFICATIONS_UPDATED
+    );
     setEditData(null);
     closeModal();
-  },[]);
+  }, []);
   const closeModal = useCallback(() => {
     setIsModalOpen(false); // Cierra el modal
-  },[]);
+  }, []);
 
   const showNotification = (message, description) => {
     notification.success({
@@ -82,9 +93,9 @@ export default function ClassTemplate() {
       const Classe = await getClassesById(id);
       setClassData(Classe); // Actualizamos el estado con los datos obtenidos
     } catch (error) {
-      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING,error);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     if (id) {
@@ -139,44 +150,60 @@ export default function ClassTemplate() {
           Return
         </button>
       </div>
-      <h1>
-        {classData.subject.name} | {classData.group.grade} -{" "}
-        {classData.group.variant}
-      </h1>
-      <hr className="page-divider" />
-
-      {/* Contenedor con barra de desplazamiento */}
       <div
         style={{
-          minHeight: "fit-content", // Altura mínima del contenedor
-          maxHeight: "500px", // Máxima altura del contenedor
-          overflowY: "auto", // Permite el desplazamiento vertical
-          padding: "10px", // Espaciado dentro del contenedor
+          height: "fit-content",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          alignItems: "center",
         }}
       >
-        <AssesmentTable classes={classData} modal={openModal} attendanceModal={openAttendanceModal} attendanceShowModal={openShowAttendanceModal}/>
-        
-        <CreateAttendanceModal
-          isModalOpen={isAttendanceModalOpen}
-          closeModal={closeModalAttendance}
-          notification={setNotificationAttendance}
-          classesId={classData.id}  
-        />
+        <h1>
+          {classData.subject.name} | {classData.group.grade} -{" "}
+          {classData.group.variant}
+        </h1>
+        <hr className="page-divider" />
 
-        <ShowAttendanceClassModal
-          isModalOpen={isAttendanceShowModalOpen}
-          closeModal={closeModalShowAttendance}
-          classesId={classData.id}
-        />
-        
-        <EditModal
-          isModalOpen={isModalOpen}
-          closeModal={closeModal}
-          notification={setNotificationEdit}
-          id={classData.id}
-        />
+        {/* Contenedor con barra de desplazamiento */}
+        <div
+          style={{
+            minHeight: "fit-content", // Altura mínima del contenedor
+            maxHeight: "500px", // Máxima altura del contenedor
+            overflowY: "auto", // Permite el desplazamiento vertical
+            padding: "10px", // Espaciado dentro del contenedor
+            width: "100%", // Ancho del contenedor
+          }}
+        >
+          <AssesmentTable
+            classes={classData}
+            modal={openModal}
+            attendanceModal={openAttendanceModal}
+            attendanceShowModal={openShowAttendanceModal}
+          />
+
+          <CreateAttendanceModal
+            isModalOpen={isAttendanceModalOpen}
+            closeModal={closeModalAttendance}
+            notification={setNotificationAttendance}
+            classesId={classData.id}
+          />
+
+          <ShowAttendanceClassModal
+            isModalOpen={isAttendanceShowModalOpen}
+            closeModal={closeModalShowAttendance}
+            classesId={classData.id}
+          />
+
+          <EditModal
+            isModalOpen={isModalOpen}
+            closeModal={closeModal}
+            notification={setNotificationEdit}
+            id={classData.id}
+          />
+        </div>
       </div>
-      <hr className="page-divider" />
       <Forum Id_Class={classData.id} />
     </>
   );

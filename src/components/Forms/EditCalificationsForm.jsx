@@ -248,7 +248,7 @@ export default function EditCalificationsForm({
         </Button>
         <Button
           key="submit"
-          style={{ backgroundColor: "#2f1b41", color: "white" }}
+          style={{ backgroundColor: "#11538C", color: "white" }} 
           onClick={() => fetchUpdateCalificationsClass()}
         >
           Guardar Cambios

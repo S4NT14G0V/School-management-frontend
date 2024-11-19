@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import "./UserInfo.css";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../services/userService";
 import ArrowDownIcon from "../../assets/arrow_down.svg";
 import LogoutIcon from "../../assets/logout-rounded-icon.svg";
-import { PAGES_URLS } from "../../config/constants";
+import { MESSAGES_ERROR, PAGES_URLS } from "../../config/constants";
+import { useUser } from "../../context/userContext";
 
 const UserInfo = ({ userInfo }) => {
   const [actionsVisible, setActionsVisible] = useState(false);
@@ -11,10 +13,18 @@ const UserInfo = ({ userInfo }) => {
   const navigate = useNavigate();
   const actionsRef = useRef(null); // Crear un ref para el menú de acciones
   const buttonRef = useRef(null); // Ref para el botón de acciones
+  const { setUserDataChat } = useUser();
 
-  const handleLogout = () => {
-    navigate(`${PAGES_URLS.PUBLIC.HOME}`);
-  };
+  const handleLogout = async () => {
+    try{
+      const success = await logout();
+      if(success){
+        navigate(`${PAGES_URLS.PUBLIC.HOME}`);
+      }
+    } catch (error) {
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
+    }
+  };    
 
   const handleActionsToggle = (e) => {
     e.stopPropagation(); // Detiene la propagación del clic al documento

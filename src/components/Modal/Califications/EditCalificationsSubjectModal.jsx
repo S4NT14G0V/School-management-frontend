@@ -10,7 +10,7 @@ const EditCalificationsSubjectModal = ({
 }) => {
   return (
     <BaseModal
-      title="Attendance List of Students"
+      title="Califications of Students"
       isOpen={isModalOpen}
       onClose={closeModal}
       width={1000}

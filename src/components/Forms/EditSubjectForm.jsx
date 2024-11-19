@@ -75,7 +75,7 @@ export default function EditSubjectContent ({ subjectData, closeModal, notificat
         </Button>
         <Button
           key="submit"
-          style={{ backgroundColor: "#2f1b41", color: "white" }}
+          style={{ backgroundColor: "#11538C", color: "white" }}
           onClick={() => handleEdit(formData)}
         >
           Guardar Cambios

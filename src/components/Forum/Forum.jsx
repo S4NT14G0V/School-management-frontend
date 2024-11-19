@@ -57,7 +57,7 @@ const Forum = ({ Id_Class }) => {
   };
 
   return (
-    <div style={{ borderRadius: "5px", width: "90%" }}>
+    <div style={{ borderRadius: "5px", width: "100%", minHeight:"100vh", paddingBlock:"40px" }}>
       <h3 style={{ marginBlock: "20px", fontSize: "18px" }}>Foro</h3>
       <MessageList messages={messages} lastMessageRef={lastMessageRef} roleColors={roleColors} user={user} />
       <MessageInput handleSend={handleSend} handleKeyDown={handleKeyDown} setInput={setInput} input={input} />

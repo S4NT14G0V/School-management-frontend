@@ -132,7 +132,7 @@ export default function CreateFamilyForm({
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancelar
         </Button>
-        <Button key="submit" type="primary" onClick={handleSubmit}>
+        <Button key="submit" type="primary" onClick={handleSubmit}  style={{backgroundColor: "#11538C"  }}>
           Guardar Cambios
         </Button>
       </div>

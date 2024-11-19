@@ -94,8 +94,8 @@ export default function EditGroupStudentForm({
         </Button>
         <Button
           key="submit"
-          style={{ backgroundColor: "#2f1b41", color: "white" }}
-          onClick={() => handleEdit(formData.student.id, formData.group.id)}
+          style={{ backgroundColor: "#11538C", color: "white" }}
+          onClick={() => handleEdit(formData.student.id, formData.group.id)} 
         >
           Guardar Cambios
         </Button>

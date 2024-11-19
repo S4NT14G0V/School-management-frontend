@@ -149,7 +149,7 @@ export default function CreateClassesForm({ closeModal, notification }) {
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancelar
         </Button>
-        <Button key="submit" type="primary" onClick={handleCreateClass}>
+        <Button key="submit" type="primary" onClick={handleCreateClass} style={{backgroundColor: "#11538C"  }}>
           Guardar Cambios
         </Button>
       </div>

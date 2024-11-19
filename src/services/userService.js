@@ -302,3 +302,22 @@ export const validateTeachersAdmins = async () => {
     return null; // Puedes devolver null o manejar el error de otra manera
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await fetch(`${apiUrls.user.logout}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cerrar sesión");
+    }
+    return response.ok;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}

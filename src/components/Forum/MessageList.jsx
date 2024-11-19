@@ -6,7 +6,7 @@ const MessageList = ({ messages, lastMessageRef, roleColors, user }) => {
     return (
         <div
         className="chat-box"
-        style={{ borderRadius: "5px", maxHeight: "400px", overflowY: "auto" }}
+        style={{ borderRadius: "5px", overflowY: "auto" }}
       >
         {messages.map((msg, index) => {
           const isOwnMessage = msg.sender.email === user?.email; // Verifica si el mensaje es del usuario actual

@@ -40,14 +40,14 @@
 }
 
 .sidebar-menu-item:hover {
-  background-color: #f2ecfc;
+  background-color: #0058ca67;
   a {
     color: black;
   }
 }
 
 .item-active {
-  background-color: #f2ecfc;
+  background-color: #0058ca67;
 }
 
 .sidebar-menu-divider {

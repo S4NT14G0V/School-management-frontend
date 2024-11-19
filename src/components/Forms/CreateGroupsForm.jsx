@@ -71,6 +71,7 @@ export default function CreateGroupsForm ({ notification, closeModal }) {
           key="submit"
           type="primary"
           onClick={handleCreateGroup}
+          style={{backgroundColor: "#11538C"  }}
         >
           Guardar Cambios
         </Button>

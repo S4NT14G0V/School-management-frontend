@@ -136,7 +136,7 @@ export default function CreateAttendanceForm({ id_class, notification, closeModa
       <Button
         type="primary"
         onClick={submitAttendance}
-        style={{ marginTop: "20px" }}
+        style={{ marginTop: "20px",backgroundColor: "#11538C"  }}
       >
         Guardar Asistencia
       </Button>
