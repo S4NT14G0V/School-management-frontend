@@ -10,7 +10,6 @@ export default function LoginPage() {
       style={{
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundClip: "cover",
         backgroundImage: `url(${Background})`,
         backgroundSize: "cover",
       }}
