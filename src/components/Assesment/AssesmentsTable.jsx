@@ -5,7 +5,7 @@ import { getAssesmentsByClass } from "@services/assesment";
 import { validateTeachersAdmins } from "@services/userService";
 import { getClassesById } from "@services/ClassService";
 import CreateModal from "@modal/Assesments/createAssesmentModal";
-import EditModal from "@modal/Assesments/EditAssesmentModal";
+import EditModal from "@modal/Assesments/editAssesmentModal";
 import DeleteModal from "@modal/Assesments/deleteAssesmentModal";
 import { MESSAGES_ERROR, MESSAGES_SUCCESS } from "@config/constants";
 
