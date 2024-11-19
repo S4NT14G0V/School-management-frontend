@@ -12,6 +12,7 @@ export default function LoginPage() {
         backgroundPosition: "center",
         backgroundClip: "cover",
         backgroundImage: `url(${Background})`,
+        backgroundSize: "cover",
       }}
     >
       <Login />
