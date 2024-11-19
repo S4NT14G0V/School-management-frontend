@@ -295,7 +295,7 @@ const App = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            background: "rgb(81, 0, 225)",
+            background: "#11538C",
           }}
         >
           Create
@@ -309,7 +309,7 @@ const App = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            background: "rgb(81, 0, 225)",
+            background: "#11538C",
           }}
         >
           Refresh
