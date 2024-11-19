@@ -1,8 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import AcademicInfo from "../AcademicInfo/AcademicInfo";
+import AcademicInfo from "@components/AcademicInfo/AcademicInfo";
+import { URLS } from "@config/constants";
 import "./Login.css";
-import { URLS } from "../../config/constants";
 
 export default function Login() {
 

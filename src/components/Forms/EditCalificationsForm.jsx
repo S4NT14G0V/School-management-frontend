@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Input, Button, notification as notification2 } from "antd";
-import { getAssesmentsByClass } from "../../services/assesment";
-import { useUser } from "../../context/userContext";
-import { getCalificationsByClass, createCalifications } from "../../services/califications";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { useUser } from "@context/userContext";
+import { getCalificationsByClass, createCalifications } from "@services/califications";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditCalificationsForm({
   id,

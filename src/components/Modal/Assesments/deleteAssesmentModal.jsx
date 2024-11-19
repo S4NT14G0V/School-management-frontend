@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal";
-import DeleteAssesmentForm from "../../Forms/DeleteAssesmentForm";
+import DeleteAssesmentForm from "@forms/DeleteAssesmentForm";
 
 const DeleteAssesmentModal = ({
   isModalOpen,

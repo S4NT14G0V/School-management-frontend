@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import "./UserInfo.css";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../services/userService";
-import ArrowDownIcon from "../../assets/arrow_down.svg";
-import LogoutIcon from "../../assets/logout-rounded-icon.svg";
-import { MESSAGES_ERROR, PAGES_URLS } from "../../config/constants";
-import { useUser } from "../../context/userContext";
+import { logout } from "@services/userService";
+import ArrowDownIcon from "@assets/arrow_down.svg";
+import LogoutIcon from "@assets/logout-rounded-icon.svg";
+import { MESSAGES_ERROR, PAGES_URLS } from "@config/constants";
+import { useUser } from "@context/userContext";
+import "./UserInfo.css";
 
 const UserInfo = ({ userInfo }) => {
   const [actionsVisible, setActionsVisible] = useState(false);

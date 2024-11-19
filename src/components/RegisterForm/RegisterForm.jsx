@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./RegisterForm.css";
 import { useNavigate } from "react-router-dom";
-import { getPublicRoles } from "../../services/rolService";
-import { getUserByEmail, updateUser } from "../../services/userService";
-import { TYPE_DOCUMENT_OPTIONS, GENDER_OPTIONS, MESSAGES_ERROR, PAGES_URLS, ROLES } from "../../config/constants";
+import { getPublicRoles } from "@services/rolService";
+import { getUserByEmail, updateUser } from "@services/userService";
+import { TYPE_DOCUMENT_OPTIONS, GENDER_OPTIONS, MESSAGES_ERROR, PAGES_URLS, ROLES } from "@config/constants";
 
 const RegisterForm = () => {
 

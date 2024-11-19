@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Button, notification as notification2 } from "antd";
-import { deleteFamily } from "../../services/family";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { deleteFamily } from "@services/family";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function DeleteFamilyForm ({ FamilyData, notification, closeModal }){
   const [studentName, setStudentName] = useState("");

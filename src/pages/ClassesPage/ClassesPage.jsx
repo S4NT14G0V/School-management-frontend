@@ -1,5 +1,5 @@
 import React from "react";
-import ClassesPersonal  from "../../components/Classes/ClassesPersonal";
+import ClassesPersonal  from "@components/Classes/ClassesPersonal";
 import "./ClassesPage.css";
 
 export default function ClassesPage({ title = "Classes" }) {

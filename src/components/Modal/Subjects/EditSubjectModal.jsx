@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import EditSubjectForm from "../../Forms/EditSubjectForm"; // Importa el contenido del modal
+import EditSubjectForm from "@forms/EditSubjectForm"; // Importa el contenido del modal
 
 const EditSubjectModal = ({ isModalOpen, closeModal, notification, subjectData }) => {
   return (

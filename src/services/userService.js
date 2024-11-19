@@ -1,4 +1,4 @@
-import { apiUrls } from "../config/ApiUrls";
+import { apiUrls } from "@config/ApiUrls";
 
 export const createUser = async (userInfo) => {
   const response = await fetch(apiUrls.user.create, {

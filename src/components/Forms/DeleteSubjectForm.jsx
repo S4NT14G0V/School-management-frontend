@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
-import { deleteSubject } from "../../services/subjectService"; // Importa tu servicio de eliminación
 import { Button, notification as notification2 } from "antd";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { deleteSubject } from "@services/subjectService"; // Importa tu servicio de eliminación
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function DeleteSubjectForm ({ subjectData, closeModal, notification }) {
   const handleDelete = useCallback(async () => {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Table, Select, Button, DatePicker, message, notification as notification2 } from "antd";
-import { getAttendancesByClassAndDate, createAttendance } from "../../services/attendance";
+import { Table, Select, Button, DatePicker, notification as notification2 } from "antd";
+import { getAttendancesByClassAndDate, createAttendance } from "@services/attendance";
+import { MESSAGES_ERROR } from "@config/constants";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { MESSAGES_ERROR } from "../../config/constants";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

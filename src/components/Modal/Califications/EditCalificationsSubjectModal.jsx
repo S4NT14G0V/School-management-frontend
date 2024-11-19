@@ -1,6 +1,6 @@
 import React from "react";
-import EditCalificationsForm from "../../Forms/EditCalificationsForm";
 import BaseModal from "../BaseModal";
+import EditCalificationsForm from "@forms/EditCalificationsForm";
 
 const EditCalificationsSubjectModal = ({
   isModalOpen,

@@ -1,4 +1,4 @@
-import { apiUrls } from "../config/ApiUrls";
+import { apiUrls } from "@config/ApiUrls";
 
 export const getGroups = async () => {
   try {

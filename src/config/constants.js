@@ -1,7 +1,7 @@
-import ItemClassesIcon from "../assets/item-classes.svg";
-import ItemAssesmentsIcon from "../assets/item-assesments.svg";
-import ItemAttendanceIcon from "../assets/item-attendance.svg";
-import ItemCalificationsIcon from "../assets/item-califications.svg";
+import ItemClassesIcon from "@assets/item-classes.svg";
+import ItemAssesmentsIcon from "@assets/item-assesments.svg";
+import ItemAttendanceIcon from "@assets/item-attendance.svg";
+import ItemCalificationsIcon from "@assets/item-califications.svg";
 
 export const MESSAGES_SUCCESS = {
     TITLE: "Success",

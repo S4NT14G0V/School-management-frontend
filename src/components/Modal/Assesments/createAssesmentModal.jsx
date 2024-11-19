@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal";
-import CreateAssesmentForm from "../../Forms/CreateAssesmentForm";
+import CreateAssesmentForm from "@forms/CreateAssesmentForm";
 
 const CreateAssesmentModal = ({ isModalOpen, closeModal, notification, data }) => {
   return (

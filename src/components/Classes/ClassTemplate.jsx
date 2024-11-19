@@ -1,19 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AssesmentTable from "../../components/Assesment/AssesmentsTable";
-import arrowLeftIcon from "../../assets/arrow_left.svg";
+import AssesmentTable from "@components/Assesment/AssesmentsTable";
+import arrowLeftIcon from "@assets/arrow_left.svg";
 import { useParams } from "react-router-dom";
-import { getClassesById } from "../../services/ClassService";
+import { getClassesById } from "@services/ClassService";
 import { notification } from "antd";
-import CreateAttendanceModal from "../Modal/Attendance/createAttendanceModal";
-import ShowAttendanceClassModal from "../Modal/Attendance/showAttendanceClassModal";
-import EditModal from "../Modal/Califications/EditCalificationsSubjectModal";
-import Forum from "../Forum/Forum";
-import {
-  MESSAGES_ERROR,
-  MESSAGES_SUCCESS,
-  PAGES_URLS,
-} from "../../config/constants";
+import CreateAttendanceModal from "@modal/Attendance/createAttendanceModal";
+import ShowAttendanceClassModal from "@modal/Attendance/showAttendanceClassModal";
+import EditModal from "@modal/Califications/EditCalificationsSubjectModal";
+import { MESSAGES_ERROR, MESSAGES_SUCCESS, PAGES_URLS } from "@config/constants";
+import Forum from "@components/Forum/Forum";
 
 export default function ClassTemplate() {
   const navigate = useNavigate();

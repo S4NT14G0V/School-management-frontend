@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { getRoles } from "../../services/rolService"; // Tu servicio para obtener roles
-import { editRolByEmail } from "../../services/userService"; // Servicio para editar rol
 import { Button, notification as notification2 } from "antd";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { getRoles } from "@services/rolService"; // Tu servicio para obtener roles
+import { editRolByEmail } from "@services/userService"; // Servicio para editar rol
+import { MESSAGES_ERROR } from "@config/constants";
 
 const EditRolUserForm = ({ email, closeModal, notification }) => {
   const [roleOptions, setRoleOptions] = useState([]); // Lista de roles

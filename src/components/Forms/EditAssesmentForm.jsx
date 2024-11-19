@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button, Input, DatePicker, notification as notification2 } from "antd";
-import { updateAssesment } from "../../services/assesment";
+import { updateAssesment } from "@services/assesment";
+import { MESSAGES_ERROR } from "@config/constants";
 import dayjs from "dayjs";
-import { MESSAGES_ERROR } from "../../config/constants";
 
 export default function EditAssesmentForm({ assesmentData, closeModal, notification }) {
   const [formData, setFormData] = useState(assesmentData || {});

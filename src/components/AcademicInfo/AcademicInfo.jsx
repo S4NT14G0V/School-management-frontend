@@ -1,6 +1,6 @@
 import React from 'react'
 import './AcademicInfo.css'
-import Logo from '../../assets/logo.png'
+import Logo from '@assets/logo.png'
 
 const AcademicInfo = ({login}) => {
   return (

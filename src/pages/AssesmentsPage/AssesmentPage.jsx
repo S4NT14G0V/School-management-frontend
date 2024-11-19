@@ -1,5 +1,5 @@
 import React from 'react'
-import AssesmentList from '../../components/Assesment/AssesmentsList'
+import AssesmentList from '@components/Assesment/AssesmentsList'
 
 export default function AssesmentPage({title = "Assesment"}) {
   return (

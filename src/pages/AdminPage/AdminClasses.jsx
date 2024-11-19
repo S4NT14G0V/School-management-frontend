@@ -1,5 +1,5 @@
 import React from "react";
-import ClassesAdmin from "../../components/Administration/Classes/ClassesAdmin";
+import ClassesAdmin from "@components/Administration/Classes/ClassesAdmin";
 import "./AdminPage.css";
 
 export default function AdminClasses({ title = "Classes Management"}) {

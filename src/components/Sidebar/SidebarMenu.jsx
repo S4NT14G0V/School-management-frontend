@@ -1,6 +1,6 @@
-import React, {useCallback} from "react";
-import "./SidebarMenu.css";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import "./SidebarMenu.css";
 
 const SidebarMenu = ({ menuItems }) =>{
   const location = useLocation();

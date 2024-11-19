@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
-import { createGroups } from "../../services/groupService";
 import { Button, notification as notification2 } from "antd";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { createGroups } from "@services/groupService";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function CreateGroupsForm ({ notification, closeModal }) {
   const [formData, setFormData] = useState({

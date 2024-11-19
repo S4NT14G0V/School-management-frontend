@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, useReducer } from "react";
-import { Input, DatePicker, Button } from "antd";
-import { notification as notification2 } from "antd";
-import { createAssesment } from "../../services/assesment";
+import React, { useEffect, useCallback, useReducer } from "react";
+import { Input, DatePicker, Button, notification as notification2 } from "antd";
+import { createAssesment } from "@services/assesment";
+import { MESSAGES_ERROR } from "@config/constants";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { MESSAGES_ERROR } from "../../config/constants";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

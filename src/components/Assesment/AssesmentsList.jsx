@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect, useMemo, useCallback } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, notification } from "antd";
-import { getMyAssesment } from "../../services/assesment";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { Button, Input, Space, Table } from "antd";
+import { getMyAssesment } from "@services/assesment";
+import { MESSAGES_ERROR } from "@config/constants";
 
 const AssesmentTable = () => {
   const [searchText, setSearchText] = useState("");

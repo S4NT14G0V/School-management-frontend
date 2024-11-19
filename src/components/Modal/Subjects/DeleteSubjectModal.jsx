@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import DeleteSubjectForm from "../../Forms/DeleteSubjectForm";
+import DeleteSubjectForm from "@forms/DeleteSubjectForm";
 
 const DeleteSubjectModal = ({ isModalOpen, closeModal, notification, subjectData }) => {
   return (

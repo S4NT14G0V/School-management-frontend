@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { getStudents, getParents } from "../../services/userService";
 import { Button, notification as notification2 } from "antd";
-import { updateFamily } from "../../services/family";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { getStudents, getParents } from "@services/userService";
+import { updateFamily } from "@services/family";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditFamilyForm ({ FamilyData, notification, closeModal }) {
   const [formData, setFormData] = useState(FamilyData || {});

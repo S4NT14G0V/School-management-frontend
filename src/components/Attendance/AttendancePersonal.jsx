@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { Table, Tag, DatePicker, message } from "antd";
-import { getMyAttendances } from "../../services/attendance";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { Table, Tag, DatePicker } from "antd";
+import { getMyAttendances } from "@services/attendance";
+import { MESSAGES_ERROR } from "@config/constants";
 
 const { RangePicker } = DatePicker;
 

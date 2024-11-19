@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import CreateSubjectForm from "../../Forms/CreateSubjectForm";
+import CreateSubjectForm from "@forms/CreateSubjectForm";
 
 const CreateSubjectModal = ({ isModalOpen, closeModal, notification }) => {
   return (

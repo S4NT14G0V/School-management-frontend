@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import EditFamilyForm from "../../Forms/EditFamilyForm";
+import EditFamilyForm from "@forms/EditFamilyForm";
 
 const EditFamilyModal = ({
   isModalOpen,

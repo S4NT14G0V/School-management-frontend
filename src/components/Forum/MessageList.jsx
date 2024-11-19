@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tag } from "antd";
-import { ROLES } from '../../config/constants';
+import { ROLES } from '@config/constants';
 
 const MessageList = ({ messages, lastMessageRef, roleColors, user }) => {
     return (

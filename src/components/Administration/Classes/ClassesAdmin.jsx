@@ -1,13 +1,12 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table} from "antd";
-import { useUser } from "../../../context/userContext";
-import EditModal from "../../Modal/Classes/EditClassesModal";
-import DeleteModal from "../../Modal/Classes/DeleteClassesModal";
-import { notification } from "antd";
-import {  getClasses } from "../../../services/ClassService";
-import CreateModal from "../../Modal/Classes/CreateClassesModal";
-import { MESSAGES_SUCCESS, MESSAGES_ERROR } from "../../../config/constants";
+import { Button, Input, Space, Table, notification} from "antd";
+import { useUser } from "@context/userContext";
+import CreateModal from "@modal/Classes/CreateClassesModal";
+import EditModal from "@modal/Classes/EditClassesModal";
+import DeleteModal from "@modal/Classes/DeleteClassesModal";
+import {  getClasses } from "@services/ClassService";
+import { MESSAGES_SUCCESS, MESSAGES_ERROR } from "@config/constants";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");

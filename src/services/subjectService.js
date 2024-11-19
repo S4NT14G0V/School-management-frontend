@@ -1,4 +1,4 @@
-import { apiUrls } from "../config/ApiUrls";
+import { apiUrls } from "@config/ApiUrls";
 
 export const createSubject = async (subject) => {
     const response = await fetch(apiUrls.subject.create, {

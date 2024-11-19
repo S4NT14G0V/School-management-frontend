@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import DeleteFamilyForm from "../../Forms/DeleteFamilyForm";
+import DeleteFamilyForm from "@forms/DeleteFamilyForm";
 
 const DeleteFamilyModal = ({
   isModalOpen,

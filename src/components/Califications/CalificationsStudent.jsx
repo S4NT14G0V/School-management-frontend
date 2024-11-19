@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Divider } from "antd";
-import { getCalificationsByEmail } from "../../services/califications";
+import { getCalificationsByEmail } from "@services/califications";
+import { MESSAGES_ERROR } from "@config/constants";
 import "./CalificationsEdit.css";
-import { MESSAGES_ERROR } from "../../config/constants";
 
 export default function CalificationsStudent() {
   const [dataSource, setDataSource] = useState({});

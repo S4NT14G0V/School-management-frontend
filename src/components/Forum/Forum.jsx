@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import useGroupChat from "../../hooks/useGroupChat";
-import "./Forum.css";
-import { getUserByEmail } from "../../services/userService";
-import { Tag } from "antd";
+import useGroupChat from "@hooks/useGroupChat";
+import { getUserByEmail } from "@services/userService";
+import { ROLECOLORS, MESSAGES_ERROR } from "@config/constants";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
-import { ROLECOLORS, MESSAGES_ERROR } from "../../config/constants";
+import "./Forum.css";
 
 const Forum = ({ Id_Class }) => {
   const { messages, sendMessage } = useGroupChat(Id_Class);

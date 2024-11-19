@@ -1,5 +1,5 @@
 import React from 'react'
-import CalificationsTemplate from '../../components/Califications/CalificationsTemplate'
+import CalificationsTemplate from '@components/Califications/CalificationsTemplate'
 
 export default function CalificationsPage({title = "Califications"}) {
   return (

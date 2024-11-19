@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Button, notification as notification2 } from "antd";
-import { deleteClasses } from "../../services/ClassService";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { deleteClasses } from "@services/ClassService";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function DeleteClassesForm ({ classesData, closeModal, notification }) {
   const [teacherName, setTeacherName] = useState("");

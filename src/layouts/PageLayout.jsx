@@ -1,10 +1,9 @@
 // src/pages/Layouts/PageLayout.js
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../components/Sidebar/Sidebar';
-import { Outlet } from 'react-router-dom'; // Utiliza Outlet para rutas hijas
+import Sidebar from '@components/Sidebar/Sidebar';
+import { MESSAGES_ERROR } from '@config/constants';
+import { getInfo } from '@services/userService';
 import './PageLayout.css';
-import { MESSAGES_ERROR } from '../config/constants';
-import { getInfo } from '../services/userService';
 
 export default function PageLayout({children}) {
   const [userData, setUserData] = useState(null);

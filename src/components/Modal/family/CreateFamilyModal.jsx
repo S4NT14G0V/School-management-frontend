@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import CreateFamilyForm from "../../Forms/CreateFamilyForm";
+import CreateFamilyForm from "@forms/CreateFamilyForm";
 
 const CreateFamilyModal = ({ isModalOpen, closeModal, notification }) => {
   return (

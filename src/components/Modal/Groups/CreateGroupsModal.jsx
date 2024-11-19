@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import CreateGroupForm from "../../Forms/CreateGroupsForm";
+import CreateGroupForm from "@forms/CreateGroupsForm";
 
 const CreateGroupModal = ({ isModalOpen, closeModal, notification }) => {
   return (

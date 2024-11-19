@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { deleteUser } from "../../services/userService"; // Asegúrate de que el servicio esté bien importado
 import { Button, notification as notification2 } from "antd";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { deleteUser } from "@services/userService"; // Asegúrate de que el servicio esté bien importado
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function DeleteUserForm ({ email, closeModal, notification }){
 

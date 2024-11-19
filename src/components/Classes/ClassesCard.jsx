@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Importa el hook useNavigate
+import { PAGES_URLS } from "@config/constants";
 import "./Classes.css";
-import { PAGES_URLS } from "../../config/constants";
 
 const ClassesCard = ({ data = {}}) => {
   const navigate = useNavigate(); // Inicializa el hook de navegación

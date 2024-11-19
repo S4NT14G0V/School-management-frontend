@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
-import EditGroupStudentForm from "../../Forms/EditGroupStudentForm";
+import EditGroupStudentForm from "@forms/EditGroupStudentForm";
 
 const EditGroupStudentModal = ({ isModalOpen, closeModal, notification, groupsData }) => {
   return (

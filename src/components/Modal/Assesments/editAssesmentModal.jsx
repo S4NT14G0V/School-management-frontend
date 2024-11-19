@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal";
-import EditAssesmentForm from "../../Forms/EditAssesmentForm";
+import EditAssesmentForm from "@forms/EditAssesmentForm";
 
 const EditAssesmentModal =({
   isModalOpen,

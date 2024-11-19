@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Select, Button, notification as notification2 } from "antd";
-import { getParents, getStudents } from "../../services/userService";
-import { createFamily } from "../../services/family";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { getParents, getStudents } from "@services/userService";
+import { createFamily } from "@services/family";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function CreateFamilyForm({
   notification,

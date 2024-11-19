@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { updateSubject } from "../../services/subjectService"; // Asegúrate de importar el servicio correctamente
 import { Button, notification as notification2 } from "antd";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { updateSubject } from "@services/subjectService"; // Asegúrate de importar el servicio correctamente
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditSubjectContent ({ subjectData, closeModal, notification }) {
   const [formData, setFormData] = useState(subjectData || {}); // Inicializa con `subjectData`

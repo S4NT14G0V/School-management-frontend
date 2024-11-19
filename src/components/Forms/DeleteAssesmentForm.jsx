@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Button, notification as notification2 } from "antd";
-import { deleteAssesment } from "../../services/assesment";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { deleteAssesment } from "@services/assesment";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function DeleteAssesmentForm({ assesment, closeModal, notification }) {
   const [Description, setDescription] = useState("");

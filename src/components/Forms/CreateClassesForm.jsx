@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button, notification as notification2 } from "antd";
-import { getSubjects } from "../../services/subjectService";
-import { getGroups } from "../../services/groupService";
-import { getTeachers } from "../../services/userService";
-import { createClass } from "../../services/ClassService";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { getSubjects } from "@services/subjectService";
+import { getGroups } from "@services/groupService";
+import { getTeachers } from "@services/userService";
+import { createClass } from "@services/ClassService";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function CreateClassesForm({ closeModal, notification }) {
   const [formData, setFormData] = useState({

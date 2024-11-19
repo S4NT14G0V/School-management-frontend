@@ -1,6 +1,6 @@
 import React from "react";
-import CreateAttendanceForm from "../../Forms/CreateAttendanceForm";
 import BaseModal from "../BaseModal";
+import CreateAttendanceForm from "@forms/CreateAttendanceForm";
 
 const CreateAttendanceModal = ({ isModalOpen, closeModal, notification, classesId }) => {
   return (

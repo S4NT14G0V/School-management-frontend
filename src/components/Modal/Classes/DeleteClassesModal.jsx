@@ -1,6 +1,6 @@
 import React from "react";
 import BaseModal from "../BaseModal"; // Asegúrate de que esté correctamente importado
-import DeleteClassesForm from "../../Forms/DeleteClassesForm";
+import DeleteClassesForm from "@forms/DeleteClassesForm";
 
 const DeleteClassesModal = ({
   isModalOpen,

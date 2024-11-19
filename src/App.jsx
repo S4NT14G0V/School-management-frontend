@@ -1,22 +1,22 @@
 // src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/LoginPage/LoginPage";
-import Classes from "./pages/ClassesPage/ClassesPage";
-import { UserProvider } from "./context/userContext";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import Register from "./pages/RegisterPage/RegisterPage";
-import AdminPage from "./pages/AdminPage/AdminPage";
-import AdminSubject from "./pages/AdminPage/AdminSubject";
-import AdminClasses from "./pages/AdminPage/AdminClasses";
-import AdminGroups from "./pages/AdminPage/AdminGroups";
-import AdminFamily from "./pages/AdminPage/AdminFamily";
-import ClassesSubject from "./pages/ClassesPage/ClassesSubject";
-import PageLayout from "./layouts/PageLayout";
-import Assesments from "./pages/AssesmentsPage/AssesmentPage";
-import Califications from "./pages/CalificationsPage/CalificationsPage";
-import Attendances from "./pages/AttendancesPage/AttendancesPage";
-import { ROLES } from "./config/constants";
+import Login from "@pages/LoginPage/LoginPage";
+import Classes from "@pages/ClassesPage/ClassesPage";
+import { UserProvider } from "@context/userContext";
+import ProtectedRoute from "@routes/ProtectedRoute";
+import Register from "@pages/RegisterPage/RegisterPage";
+import AdminPage from "@pages/AdminPage/AdminPage";
+import AdminSubject from "@pages/AdminPage/AdminSubject";
+import AdminClasses from "@pages/AdminPage/AdminClasses";
+import AdminGroups from "@pages/AdminPage/AdminGroups";
+import AdminFamily from "@pages/AdminPage/AdminFamily";
+import ClassesSubject from "@pages/ClassesPage/ClassesSubject";
+import PageLayout from "@layouts/PageLayout";
+import Assesments from "@pages/AssesmentsPage/AssesmentPage";
+import Califications from "@pages/CalificationsPage/CalificationsPage";
+import Attendances from "@pages/AttendancesPage/AttendancesPage";
+import { ROLES } from "@config/constants";
 
 function App() {
   return (

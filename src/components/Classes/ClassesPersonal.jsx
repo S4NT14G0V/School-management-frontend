@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { Divider } from "antd"; // Importa el componente Divider de Ant Design
+import { getMyClasses } from "@services/ClassService";
+import { MESSAGES_ERROR } from "@config/constants";
 import ClassesCard from "./ClassesCard";
 import "./Classes.css";
-import { getMyClasses } from "../../services/ClassService";
-import { Divider } from "antd"; // Importa el componente Divider de Ant Design
-import { MESSAGES_ERROR } from "../../config/constants";
 
 export default function ClassesPersonal() {
   const [data, setData] = useState([]);

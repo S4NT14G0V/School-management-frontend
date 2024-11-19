@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { validateAdmin, validateUser } from "../services/userService";
+import { validateAdmin, validateUser } from "@services/userService";
 import { useEffect, useState } from "react";
-import { ROLES } from "../config/constants";
+import { ROLES } from "@config/constants";
 import "./ProtectedRoute.css";
 
 export default function ProtectedRoute({ children, role }) {

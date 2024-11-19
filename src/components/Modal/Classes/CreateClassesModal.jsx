@@ -1,6 +1,6 @@
 import React from "react";
-import CreateClassesForm from "../../Forms/CreateClassesForm";
 import BaseModal from "../BaseModal";
+import CreateClassesForm from "@forms/CreateClassesForm";
 
 const CreateClassesModal = ({ isModalOpen, closeModal, notification }) => {
   return (

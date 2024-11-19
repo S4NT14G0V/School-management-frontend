@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import BaseModal from "../BaseModal";
-import AttendanceList from "../../Forms/ShowAttendanceForm";
+import AttendanceList from "@forms/ShowAttendanceForm";
 
 const ShowAttendanceClassModal = ({
   isModalOpen,

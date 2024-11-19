@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button, notification as notification2 } from "antd";
-import { getSubjects } from "../../services/subjectService";
-import { getTeachers } from "../../services/userService";
-import { getGroups } from "../../services/groupService";
-import { updateClasses } from "../../services/ClassService";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { getSubjects } from "@services/subjectService";
+import { getTeachers } from "@services/userService";
+import { getGroups } from "@services/groupService";
+import { updateClasses } from "@services/ClassService";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditClassesForm({
   classesData,

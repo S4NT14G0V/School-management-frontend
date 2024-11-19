@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { getMessagesByClass } from '../services/messages';
-import { MESSAGES_ERROR, URLS } from '../config/constants';
+import { getMessagesByClass } from '@services/messages';
+import { MESSAGES_ERROR, URLS } from '@config/constants';
 
 const useGroupChat = (classId) => {
   const [messages, setMessages] = useState([]);

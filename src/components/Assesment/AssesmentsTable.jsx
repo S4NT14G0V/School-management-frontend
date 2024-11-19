@@ -1,14 +1,13 @@
 import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, notification } from "antd";
-import { useUser } from "../../context/userContext";
-import { getAssesmentsByClass } from "../../services/assesment";
-import { validateTeachersAdmins } from "../../services/userService";
-import { getClassesById } from "../../services/ClassService";
-import EditModal from "../Modal/Assesments/EditAssesmentModal";
-import DeleteModal from "../Modal/Assesments/deleteAssesmentModal";
-import CreateModal from "../Modal/Assesments/createAssesmentModal";
-import { MESSAGES_ERROR, MESSAGES_SUCCESS } from "../../config/constants";
+import { Space, Table, notification } from "antd";
+import { useUser } from "@context/userContext";
+import { getAssesmentsByClass } from "@services/assesment";
+import { validateTeachersAdmins } from "@services/userService";
+import { getClassesById } from "@services/ClassService";
+import CreateModal from "@modal/Assesments/createAssesmentModal";
+import EditModal from "@modal/Assesments/EditAssesmentModal";
+import DeleteModal from "@modal/Assesments/deleteAssesmentModal";
+import { MESSAGES_ERROR, MESSAGES_SUCCESS } from "@config/constants";
 
 const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }) => {
   const searchInput = useRef(null);

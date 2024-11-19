@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { getGroups } from "../../services/groupService";
-import { updateGroupByIds } from "../../services/groupService";
 import { Button, notification as notification2 } from "antd";
-import { MESSAGES_ERROR } from "../../config/constants";
+import { getGroups } from "@services/groupService";
+import { updateGroupByIds } from "@services/groupService";
+import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditGroupStudentForm({
   groupsData,

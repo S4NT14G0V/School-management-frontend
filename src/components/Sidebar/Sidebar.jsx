@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import AcademicInfo from "../AcademicInfo/AcademicInfo";
 import UserInfo from "../UserInfo/UserInfo";
 import SidebarMenu from "./SidebarMenu";
 import Skeleton from "../Skeleton/SkeletonSidebar";
-import { validateAdmin, getInfo } from "../../services/userService";
+import { validateAdmin, getInfo } from "@services/userService";
+import { useUser } from "@context/userContext";
+import UserCogIcon from "@assets/user-cog.svg";
+import BookCogIcon from "@assets/book-cog.svg";
+import FolderCogIcon from "@assets/folder-cog.svg";
+import GroupCogIcon from "@assets/group-cog.svg";
+import FamilyIcon from "@assets/family.svg";
+import { MENUITEMS, MESSAGES_ERROR } from "@config/constants";
 import "./Sidebar.css";
-import { useUser } from "../../context/userContext";
-import UserCogIcon from "../../assets/user-cog.svg";
-import BookCogIcon from "../../assets/book-cog.svg";
-import FolderCogIcon from "../../assets/folder-cog.svg";
-import GroupCogIcon from "../../assets/group-cog.svg";
-import FamilyIcon from "../../assets/family.svg";
-import { MENUITEMS, MESSAGES_ERROR } from "../../config/constants";
 
 const Sidebar = () =>{
   const [loading, setLoading] = useState(true);
