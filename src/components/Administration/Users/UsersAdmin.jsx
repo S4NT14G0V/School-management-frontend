@@ -16,6 +16,7 @@ const App = () => {
   const [data, setData] = useState([]);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [roleEdit, setRoleEdit] = useState(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -37,6 +38,8 @@ const App = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [notificationEdit, setNotificationEdit] = useState(false);
   const openModal = (email) => {
+    const user = data.find((user) => user.email === email);
+    setRoleEdit(user.rol.name);
     if (email === admin) return; // Si es el administrador, no abre el modal
     setSelectedEmail(email); // Establece el email del usuario seleccionado
     setIsModalOpen(true); // Abre el modal
@@ -293,7 +296,7 @@ const App = () => {
         </Space>
       ),
     },
-  ],[admin, getColumnSearchProps]);
+  ],[admin, getColumnSearchProps, openModal, openModalDelete]);
 
   return (
     <>
@@ -321,6 +324,7 @@ const App = () => {
       </div>
       <div style={{ width: "100%", overflowX: "auto" }}>
         <RoleModal
+          role = {roleEdit}
           email={selectedEmail}
           isModalOpen={isModalOpen}
           closeModal={closeModal}

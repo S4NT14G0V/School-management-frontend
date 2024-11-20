@@ -4,9 +4,9 @@ import { getRoles } from "@services/rolService"; // Tu servicio para obtener rol
 import { editRolByEmail } from "@services/userService"; // Servicio para editar rol
 import { MESSAGES_ERROR } from "@config/constants";
 
-const EditRolUserForm = ({ email, closeModal, notification }) => {
+const EditRolUserForm = ({ email, closeModal, notification, role }) => {
   const [roleOptions, setRoleOptions] = useState([]); // Lista de roles
-  const [formData, setFormData] = useState({ rol: "" }); // Formulario para manejar los datos
+  const [formData, setFormData] = useState({ rol: role || "" }); // Formulario para manejar los datos
   const [emailReceived, setEmailReceived] = useState(email); // Email recibido
 
   useEffect(() => {
@@ -27,18 +27,34 @@ const EditRolUserForm = ({ email, closeModal, notification }) => {
     }
   }, [emailReceived]);
 
-  const handleChange = useCallback(
-    (e) => {
-      setFormData({ ...formData, rol: e.target.value });
-    },
-    [formData]
-  );
+  useEffect(() => {
+    setEmailReceived(email);
+  }, [email]);
 
-  const handleEdit = useCallback(async (email, rol) => {
+  // Actualiza el rol inicial cuando cambian las props
+  useEffect(() => {
+    setFormData({ rol: role || "" }); // Actualiza el estado con el nuevo rol
+  }, [role]); // Escucha cambios en 'role'
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, rol: e.target.value });
+  };
+
+  const handleEdit = async (email, rol) => {
+    if (formData.rol === role) {
+      notification2.warning({
+        message: "Warning",
+        description: "There are no changes to save",
+        placement: "bottom",
+        style: { backgroundColor: "#fff7dd" },
+        pauseOnHover: false,
+      });
+      return;
+    }
     try {
-      closeModal( ); // Cierra el modal
+      closeModal(); // Cierra el modal
       const result = await editRolByEmail(email, rol);
-      if (result){
+      if (result) {
         notification(true); // Notificación de éxito
       } else {
         console.log(result);
@@ -54,15 +70,7 @@ const EditRolUserForm = ({ email, closeModal, notification }) => {
     } catch (error) {
       console.error(MESSAGES_ERROR.USER_ROLE_UPDATED, error);
     }
-  }, [closeModal, notification]);
-
-  const roleOptionsMemo = useMemo(() => {
-    return roleOptions.map((option) => (
-      <option key={option.value} value={option.value}>
-        {option.label}
-      </option>
-    ));
-  }, [roleOptions]);
+  };
 
   return (
     <div>
@@ -77,7 +85,11 @@ const EditRolUserForm = ({ email, closeModal, notification }) => {
           <option value="" disabled>
             Seleccione...
           </option>
-          {roleOptionsMemo}
+          {roleOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
       </div>
       <div
@@ -93,7 +105,7 @@ const EditRolUserForm = ({ email, closeModal, notification }) => {
         <Button
           key="submit"
           style={{ backgroundColor: "#11538C", color: "white" }}
-          onClick={()=>handleEdit(emailReceived, formData.rol)} 
+          onClick={() => handleEdit(emailReceived, formData.rol)}
         >
           Guardar Cambios
         </Button>

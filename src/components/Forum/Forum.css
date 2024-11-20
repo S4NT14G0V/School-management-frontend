@@ -4,6 +4,8 @@
     padding: 10px;
     margin-bottom: 10px;
     height: calc(100vh - 160px);
+    display: flex;
+    flex-direction: column;
   }
   input {
     margin-right: 10px;

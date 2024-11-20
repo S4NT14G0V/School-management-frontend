@@ -8,19 +8,29 @@ export default function EditSubjectContent ({ subjectData, closeModal, notificat
 
   useEffect(() => {
     if (subjectData) {
-      setFormData(subjectData); // Actualiza `formData` cuando `subjectData` cambia
+      setFormData(subjectData || {}); // Actualiza `formData` cuando `subjectData` cambia
     }
   }, [subjectData]);
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  }, []);
+  };
 
-  const handleEdit = useCallback(async (subject) => {
+  const handleEdit = async (subject) => {
+    if (formData === subjectData) {
+      notification2.warning({
+        message: "Warning",
+        description: "There are no changes to save",
+        placement: "bottom",
+        style: { backgroundColor: "#fff7dd" },
+        pauseOnHover: false,
+      });
+      return;
+    }
     try {
       closeModal(); // Cierra el modal después de actualizar
       const result = await updateSubject(subject);
@@ -39,7 +49,7 @@ export default function EditSubjectContent ({ subjectData, closeModal, notificat
     } catch (error) {
       console.error(MESSAGES_ERROR.SUBJECT_UPDATED, error);
     }
-  }, [closeModal, notification]);
+  };
 
   return (
     <div className="form-group" style={{ border: "none", marginTop: "5px" }}>
@@ -76,7 +86,7 @@ export default function EditSubjectContent ({ subjectData, closeModal, notificat
         <Button
           key="submit"
           style={{ backgroundColor: "#11538C", color: "white" }}
-          onClick={() => handleEdit(formData)}
+          onClick={() => {handleEdit(formData);}}
         >
           Guardar Cambios
         </Button>

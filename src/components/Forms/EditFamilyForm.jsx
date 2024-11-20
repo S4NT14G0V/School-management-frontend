@@ -11,11 +11,7 @@ export default function EditFamilyForm ({ FamilyData, notification, closeModal }
 
   useEffect(() => {
     if (FamilyData) {
-      setFormData({
-        id: FamilyData.id || 0,
-        parent: FamilyData.parent || {},
-        student: FamilyData.student || {},
-      });
+      setFormData(FamilyData || {});
     }
   }, [FamilyData]);
 
@@ -35,20 +31,30 @@ export default function EditFamilyForm ({ FamilyData, notification, closeModal }
     fetchOptions();
   }, []);
 
-  const handleStudentChange = useCallback((value) => {
+  const handleStudentChange = (value) => {
     const selectedStudent = studentOptions.find((student) => student.id === value);
     setFormData((prevData) => ({
       ...prevData,
       student: selectedStudent || {},
     }));
-  }, [studentOptions]);
+  };
 
-  const handleParentChange = useCallback((value) => {
+  const handleParentChange = (value) => {
     const selectedParent = parentOptions.find((parent) => parent.id === value);
     setFormData((prevData) => ({ ...prevData, parent: selectedParent || {} }));
-  }, [parentOptions]);
+  };
 
-  const handleEdit = useCallback(async (data) => {
+  const handleEdit = async (data) => {
+    if (formData === FamilyData) {
+      notification2.warning({
+        message: "Warning",
+        description: "There are no changes to save",
+        placement: "bottom",
+        style: { backgroundColor: "#fff7dd" },
+        pauseOnHover: false,
+      });
+      return;
+    }
     try {
       closeModal();
       const result = await updateFamily(data);
@@ -67,19 +73,7 @@ export default function EditFamilyForm ({ FamilyData, notification, closeModal }
     } catch (error) {
       console.error(MESSAGES_ERROR.FAMILY_UPDATED, error);
     }
-  }, [notification, closeModal]);
-
-  const studentOptionsMemo = useMemo(() => studentOptions?.map((option) => (
-    <option key={option.id} value={option.id}>
-      {`${option.name} ${option.lastname}`}
-    </option>
-  )), [studentOptions]);
-
-  const parentOptionsMemo = useMemo(() => parentOptions?.map((option) => (
-    <option key={option.id} value={option.id}>
-      {`${option.name} ${option.lastname}`}
-    </option>
-  )), [parentOptions]);
+  };
 
   return (
     <div className="form-group">
@@ -93,7 +87,11 @@ export default function EditFamilyForm ({ FamilyData, notification, closeModal }
         <option value="" disabled>
           Seleccione...
         </option>
-        {studentOptionsMemo}
+        {studentOptions?.map((option) => (
+          <option key={option.id} value={option.id}>
+            {`${option.name} ${option.lastname}`}
+          </option>
+        ))}
       </select>
 
       <label>Padre</label>
@@ -106,7 +104,11 @@ export default function EditFamilyForm ({ FamilyData, notification, closeModal }
         <option value="" disabled>
           Seleccione...
         </option>
-        {parentOptionsMemo}
+        {parentOptions?.map((option) => (
+          <option key={option.id} value={option.id}>
+            {`${option.name} ${option.lastname}`}
+          </option>
+        ))}
       </select>
 
       <div

@@ -33,7 +33,7 @@ export default function DeleteClassesForm ({ classesData, closeModal, notificati
   useEffect(() => {
     if (classesData) {
       setTeacherName(classesData.teacher.name);
-      setGroupVariant(classesData.group.variant);
+      setGroupVariant(`${classesData.group.grade} - ${classesData.group.variant}`);
       setSubjectName(classesData.subject.name);
       setSchedule(classesData.schedule);
     }

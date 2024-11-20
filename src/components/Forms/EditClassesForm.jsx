@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button, notification as notification2 } from "antd";
 import { getSubjects } from "@services/subjectService";
 import { getTeachers } from "@services/userService";
@@ -7,69 +7,100 @@ import { updateClasses } from "@services/ClassService";
 import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditClassesForm({
-  classesData,
+  classesData = {}, // Valor por defecto para evitar undefined
   closeModal,
   notification,
 }) {
-  const [formData, setFormData] = useState(classesData || {});
+  const [formData, setFormData] = useState({
+    teacher: {},
+    group: {},
+    subject: {},
+    schedule: "",
+    ...classesData,
+  });
   const [teacherOptions, setTeacherOptions] = useState([]);
   const [groupOptions, setGroupOptions] = useState([]);
   const [subjectOptions, setSubjectOptions] = useState([]);
 
+  // Actualizar formData si classesData cambia
   useEffect(() => {
-    if (classesData) {
-      setFormData(classesData);
-    }
+    setFormData({
+      teacher: {},
+      group: {},
+      subject: {},
+      schedule: "",
+      ...classesData,
+    });
   }, [classesData]);
 
-  useEffect(() => {
-    fetchOptions();
-  }, []);
-
+  // Cargar opciones
   const fetchOptions = useCallback(async () => {
     try {
-      const teachers = await getTeachers();
-      setTeacherOptions(teachers);
-
-      const groups = await getGroups();
-      setGroupOptions(groups);
-
-      const subjects = await getSubjects();
-      setSubjectOptions(subjects);
+      const [teachers, groups, subjects] = await Promise.all([
+        getTeachers(),
+        getGroups(),
+        getSubjects(),
+      ]);
+      setTeacherOptions(teachers || []);
+      setGroupOptions(groups || []);
+      setSubjectOptions(subjects || []);
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
   }, []);
 
-  const handleTeacherChange = useCallback((value) => {
-    const selectedTeacher = teacherOptions.find(
-      (teacher) => teacher.id === value
-    );
+  useEffect(() => {
+    fetchOptions();
+  }, [fetchOptions]);
+
+  // Cambiar el profesor
+  const handleTeacherChange = (value) => {
+    const selectedTeacher = teacherOptions.find((teacher) => teacher.id === value);
     setFormData((prevData) => ({
       ...prevData,
       teacher: selectedTeacher || {},
     }));
-  }, [teacherOptions]);
+  };
 
-  const handleGroupChange = useCallback((value) => {
+  // Cambiar el grupo
+  const handleGroupChange = (value) => {
     const selectedGroup = groupOptions.find((group) => group.id === value);
-    setFormData((prevData) => ({ ...prevData, group: selectedGroup || {} }));
-  }, [groupOptions]);
+    setFormData((prevData) => ({
+      ...prevData,
+      group: selectedGroup || {},
+    }));
+  };
 
-  const handleSubjectChange = useCallback((value) => {
-    const selectedSubject = subjectOptions.find(
-      (subject) => subject.id === value
-    );
+  // Cambiar la materia
+  const handleSubjectChange = (value) => {
+    const selectedSubject = subjectOptions.find((subject) => subject.id === value);
     setFormData((prevData) => ({
       ...prevData,
       subject: selectedSubject || {},
     }));
-  }, [subjectOptions]);
+  };
 
-  const handleEdit = useCallback(async (classes) => {
+  // Guardar cambios
+  const handleEdit = async () => {
+    const hasChanges =
+      formData.teacher?.id !== classesData.teacher?.id ||
+      formData.group?.id !== classesData.group?.id ||
+      formData.subject?.id !== classesData.subject?.id ||
+      formData.schedule !== classesData.schedule;
+
+    if (!hasChanges) {
+      notification2.warning({
+        message: "Warning",
+        description: "There are no changes to save",
+        placement: "bottom",
+        style: { backgroundColor: "#fff7dd" },
+        pauseOnHover: false,
+      });
+      return;
+    }
+
     try {
-      closeModal();
-      const result = await updateClasses(classes);
+      const result = await updateClasses(formData);
       if (result) {
         notification(true);
       } else {
@@ -82,20 +113,11 @@ export default function EditClassesForm({
           pauseOnHover: false,
         });
       }
-      setFormData({
-        teacher: {},
-        group: {},
-        subject: {},
-        schedule: "",
-      });
+      closeModal();
     } catch (error) {
       console.error(MESSAGES_ERROR.CLASSES_UPDATED, error);
     }
-  }, [notification, closeModal]);
-
-  const teacherOptionsMemo = useMemo(() => teacherOptions, [teacherOptions]);
-  const groupOptionsMemo = useMemo(() => groupOptions, [groupOptions]);
-  const subjectOptionsMemo = useMemo(() => subjectOptions, [subjectOptions]);
+  };
 
   return (
     <div className="form-group">
@@ -109,7 +131,7 @@ export default function EditClassesForm({
         <option value="" disabled>
           Seleccione...
         </option>
-        {teacherOptionsMemo?.map((option) => (
+        {teacherOptions.map((option) => (
           <option key={option.id} value={option.id}>
             {`${option.name} ${option.lastname}`}
           </option>
@@ -126,7 +148,7 @@ export default function EditClassesForm({
         <option value="" disabled>
           Seleccione...
         </option>
-        {groupOptionsMemo?.map((option) => (
+        {groupOptions.map((option) => (
           <option key={option.id} value={option.id}>
             {option.grade + " - " + option.variant}
           </option>
@@ -143,7 +165,7 @@ export default function EditClassesForm({
         <option value="" disabled>
           Seleccione...
         </option>
-        {subjectOptionsMemo?.map((option) => (
+        {subjectOptions.map((option) => (
           <option key={option.id} value={option.id}>
             {option.name}
           </option>
@@ -154,7 +176,7 @@ export default function EditClassesForm({
       <input
         type="text"
         name="schedule"
-        value={formData.schedule}
+        value={formData.schedule || ""}
         onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
       />
       <div
@@ -170,7 +192,7 @@ export default function EditClassesForm({
         <Button
           key="submit"
           style={{ backgroundColor: "#11538C", color: "white" }}
-          onClick={() => handleEdit(formData)}
+          onClick={handleEdit}
         >
           Guardar Cambios
         </Button>

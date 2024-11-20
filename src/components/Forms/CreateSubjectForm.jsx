@@ -84,7 +84,18 @@ export default function CreateSubjectForm ({ notification, closeModal }) {
         <Button
           key="submit"
           style={{ backgroundColor: "#11538C", color: "white" }} 
-          onClick={() => handleCreateSubject(formData)}
+          onClick={() => {
+            if (!formData.name || !formData.description || !formData.picture) {
+              notification2.warning({
+                message: "Information",
+                description: "All fields are required",
+                placement: "bottom",
+                style: { backgroundColor: "#fff7dd" },
+                pauseOnHover: false,
+              });
+              return;
+            }
+            handleCreateSubject(formData)}}
         >
           Guardar Cambios
         </Button>

@@ -13,24 +13,38 @@ export default function EditGroupStudentForm({
   const [groupOptions, setGroupOptions] = useState([]);
 
   useEffect(() => {
+    setFormData(groupsData || {});
+  }, [groupsData]);
+
+  useEffect(() => {
     fetchOptions();
   }, []);
 
-  const fetchOptions = useCallback(async () => {
+  const fetchOptions = async () => {
     try {
       const groups = await getGroups();
       setGroupOptions(groups);
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  }, []);
+  };
 
-  const handleGroupChange = useCallback((value) => {
+  const handleGroupChange = (value) => {
     const selectedGroup = groupOptions.find((group) => group.id === value);
     setFormData((prevData) => ({ ...prevData, group: selectedGroup || {} }));
-  }, [groupOptions]);
+  };
 
-  const handleEdit = useCallback(async (idStudent, idGroup) => {
+  const handleEdit = async (idStudent, idGroup) => {
+    if (formData.group?.id === groupsData.group?.id) {
+      notification2.warning({
+        message: "Warning",
+        description: "There are no changes to save",
+        placement: "bottom",
+        style: { backgroundColor: "#fff7dd" },
+        pauseOnHover: false,
+      });
+      return;
+    }
     try {
       closeModal();
       const result = await updateGroupByIds(idStudent, idGroup);
@@ -49,13 +63,13 @@ export default function EditGroupStudentForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.STUDENT_GROUP_UPDATED, error);
     }
-  }, [notification, closeModal]);
+  };
 
-  const studentName = useMemo(() => {
+  const studentName = () => {
     return formData.student?.name
       ? `${formData.student.name} ${formData.student.lastname}`
       : "Estudiante no válido";
-  }, [formData.student]);
+  };
 
   return (
     <div className="form-group">
@@ -63,7 +77,7 @@ export default function EditGroupStudentForm({
         style={{ display: "block", fontWeight: "500", paddingBlock: "5px" }}
       >
         <strong style={{ textDecoration: "underline" }}>Estudiante:</strong>{" "}
-        {studentName}
+        {studentName()}
       </span>
       <label>Grupo</label>
       <select

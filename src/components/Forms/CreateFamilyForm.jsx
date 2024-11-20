@@ -132,7 +132,19 @@ export default function CreateFamilyForm({
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancelar
         </Button>
-        <Button key="submit" type="primary" onClick={handleSubmit}  style={{backgroundColor: "#11538C"  }}>
+        <Button key="submit" type="primary" onClick={()=>{
+          if (!formData.parent || !formData.student || Object.keys(formData.parent).length === 0 || Object.keys(formData.student).length === 0) {
+            notification2.warning({
+              message: "Information",
+              description: "All fields are required",
+              placement: "bottom",
+              style: { backgroundColor: "#fff7dd" },
+              pauseOnHover: false,
+            });
+            return;
+          }
+          handleSubmit();
+          }}  style={{backgroundColor: "#11538C"  }}>
           Guardar Cambios
         </Button>
       </div>

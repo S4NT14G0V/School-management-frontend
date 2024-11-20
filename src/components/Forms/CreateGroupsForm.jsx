@@ -70,7 +70,18 @@ export default function CreateGroupsForm ({ notification, closeModal }) {
         <Button
           key="submit"
           type="primary"
-          onClick={handleCreateGroup}
+          onClick={()=>{
+            if (!formData.grade || !formData.variant) {
+              notification2.warning({
+                message: "Information",
+                description: "All fields are required",
+                placement: "bottom",
+                style: { backgroundColor: "#fff7dd" },
+                pauseOnHover: false,
+              });
+              return;
+            }
+            handleCreateGroup();}}
           style={{backgroundColor: "#11538C"  }}
         >
           Guardar Cambios

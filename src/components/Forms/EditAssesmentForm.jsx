@@ -14,6 +14,16 @@ export default function EditAssesmentForm({ assesmentData, closeModal, notificat
   }, [assesmentData]);
 
   const handleEdit = useCallback(async () => {
+    if (formData === assesmentData) {
+      notification2.warning({
+        message: "Warning",
+        description: "There are no changes to save",
+        placement: "bottom",
+        style: { backgroundColor: "#fff7dd" },
+        pauseOnHover: false,
+      });
+      return;
+    }
     try {
       closeModal();
       const result = await updateAssesment(formData);

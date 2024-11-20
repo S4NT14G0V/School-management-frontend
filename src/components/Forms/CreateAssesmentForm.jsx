@@ -84,18 +84,21 @@ export default function CreateAssesmentForm({ closeModal, notification, classes 
         name="percent"
         value={formData.percent}
         onChange={handleInputChange}
+        required
       />
 
       <label>Date</label>
       <DatePicker
         value={formData.date ? dayjs(formData.date).tz("America/Bogota") : null}
         onChange={(date, dateString) => handleDateChange(date, dateString, "date")}
+        required
       />
 
       <label>Limit Date</label>
       <DatePicker
         value={formData.limit_date ? dayjs(formData.limit_date).tz("America/Bogota") : null}
         onChange={(date, dateString) => handleDateChange(date, dateString, "limit_date")}
+        required
       />
 
       <label>Description</label>
@@ -104,13 +107,31 @@ export default function CreateAssesmentForm({ closeModal, notification, classes 
         name="description"
         value={formData.description}
         onChange={handleInputChange}
+        required
       />
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancel
         </Button>
-        <Button key="submit" type="primary" style={{ backgroundColor: "#11538C" }} onClick={handleCreateAssesment}>
+        <Button
+          key="submit"
+          type="primary"
+          style={{ backgroundColor: "#11538C" }}
+          onClick={() => {
+            if (!formData.percent || !formData.date || !formData.limit_date || !formData.description) {
+              notification2.warning({
+                message: "Information",
+                description: "All fields are required",
+                placement: "bottom",
+                style: { backgroundColor: "#fff7dd" },
+                pauseOnHover: false,
+              });
+              return;
+            }
+            handleCreateAssesment();
+          }}
+        >
           Save Changes
         </Button>
       </div>

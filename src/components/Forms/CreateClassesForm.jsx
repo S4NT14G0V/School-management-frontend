@@ -9,7 +9,7 @@ import { MESSAGES_ERROR } from "@config/constants";
 export default function CreateClassesForm({ closeModal, notification }) {
   const [formData, setFormData] = useState({
     teacher: {}, // Mantener como objeto completo
-    group: {},   // Mantener como objeto completo
+    group: {}, // Mantener como objeto completo
     subject: {}, // Mantener como objeto completo
     schedule: "",
   });
@@ -57,44 +57,63 @@ export default function CreateClassesForm({ closeModal, notification }) {
     }
   }, [formData, notification, closeModal]);
 
-  const handleTeacherChange = useCallback((value) => {
-    const selectedTeacher = teacherOptions.find((teacher) => teacher.id === value);
-    setFormData((prevData) => ({ ...prevData, teacher: selectedTeacher }));
-  }, [teacherOptions]);
+  const handleTeacherChange = useCallback(
+    (value) => {
+      const selectedTeacher = teacherOptions.find(
+        (teacher) => teacher.id === value
+      );
+      setFormData((prevData) => ({ ...prevData, teacher: selectedTeacher }));
+    },
+    [teacherOptions]
+  );
 
-  const handleGroupChange = useCallback((value) => {
-    const selectedGroup = groupOptions.find((group) => group.id === value);
-    setFormData((prevData) => ({ ...prevData, group: selectedGroup }));
-  }, [groupOptions]);
+  const handleGroupChange = useCallback(
+    (value) => {
+      const selectedGroup = groupOptions.find((group) => group.id === value);
+      setFormData((prevData) => ({ ...prevData, group: selectedGroup }));
+    },
+    [groupOptions]
+  );
 
-  const handleSubjectChange = useCallback((value) => {
-    const selectedSubject = subjectOptions.find((subject) => subject.id === value);
-    setFormData((prevData) => ({ ...prevData, subject: selectedSubject }));
-  }, [subjectOptions]);
+  const handleSubjectChange = useCallback(
+    (value) => {
+      const selectedSubject = subjectOptions.find(
+        (subject) => subject.id === value
+      );
+      setFormData((prevData) => ({ ...prevData, subject: selectedSubject }));
+    },
+    [subjectOptions]
+  );
 
-  const teacherSelectOptions = useMemo(() => (
-    teacherOptions.map((option) => (
-      <option key={option.id} value={option.id}>
-        {`${option.name} ${option.lastname}`}
-      </option>
-    ))
-  ), [teacherOptions]);
+  const teacherSelectOptions = useMemo(
+    () =>
+      teacherOptions.map((option) => (
+        <option key={option.id} value={option.id}>
+          {`${option.name} ${option.lastname}`}
+        </option>
+      )),
+    [teacherOptions]
+  );
 
-  const groupSelectOptions = useMemo(() => (
-    groupOptions.map((option) => (
-      <option key={option.id} value={option.id}>
-        {option.grade + " - " + option.variant}
-      </option>
-    ))
-  ), [groupOptions]);
+  const groupSelectOptions = useMemo(
+    () =>
+      groupOptions.map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.grade + " - " + option.variant}
+        </option>
+      )),
+    [groupOptions]
+  );
 
-  const subjectSelectOptions = useMemo(() => (
-    subjectOptions.map((option) => (
-      <option key={option.id} value={option.id}>
-        {option.name}
-      </option>
-    ))
-  ), [subjectOptions]);
+  const subjectSelectOptions = useMemo(
+    () =>
+      subjectOptions.map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.name}
+        </option>
+      )),
+    [subjectOptions]
+  );
 
   return (
     <div className="form-group">
@@ -145,11 +164,39 @@ export default function CreateClassesForm({ closeModal, notification }) {
         onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
       />
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "20px",
+        }}
+      >
         <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
           Cancelar
         </Button>
-        <Button key="submit" type="primary" onClick={handleCreateClass} style={{backgroundColor: "#11538C"  }}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => {
+            if (
+              !formData.teacher ||
+              !formData.group ||
+              !formData.subject ||
+              !formData.schedule
+            ) {
+              notification2.warning({
+                message: "Information",
+                description: "All fields are required",
+                placement: "bottom",
+                style: { backgroundColor: "#fff7dd" },
+                pauseOnHover: false,
+              });
+              return;
+            }
+            handleCreateClass();
+          }}
+          style={{ backgroundColor: "#11538C" }}
+        >
           Guardar Cambios
         </Button>
       </div>
