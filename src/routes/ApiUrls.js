@@ -58,6 +58,7 @@ export const apiUrls = {
     create:`${baseUrl}/calification/CreateUpdateCalifications`,
     getCalificationsByClass:`${baseUrl}/calification/getCalificationsListByClass`,
     getCalificationsByEmail:`${baseUrl}/calification/getCalificationsByEmail`,
+    getCalificationsSummaryByEmail:`${baseUrl}/calification/getCalificationsSummaryByEmail`,
   },
   messages:{
     sendMessage:`${baseUrl}/messages/send`,

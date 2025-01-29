@@ -62,3 +62,23 @@ export const getCalificationsByEmail = async () => {
   }
 };
 
+
+export const getCalificationsSummaryByEmail = async () => {
+  try {
+    // Enviar la solicitud GET con el email como parámetro de consulta
+    const response = await fetch(apiUrls.califications.getCalificationsSummaryByEmail, {
+      method: "GET",
+      credentials: "include", // Incluye cookies en la petición
+      headers: {
+      "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      return null; // Devuelve null si la respuesta no es OK
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("Error:", error);
+  }
+};
