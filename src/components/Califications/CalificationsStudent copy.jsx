@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Table, Divider } from "antd";
 import { getCalificationsSummaryByEmail } from "../../services/califications";
 import "./CalificationsEdit.css";
 
 export default function CalificationsStudent() {
-  const [dataSource, setDataSource] = useState({});
+  const [dataSource, setDataSource] = useState([]);
   const [pressedButton, setPressedButton] = useState(false);
   const isInitialRender = useRef(true);
 
