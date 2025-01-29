@@ -1,5 +1,5 @@
 import React from "react";
-import CalificationsStudent from "./CalificationsStudent copy";
+import CalificationsStudent from "./CalificationsTest";
 
 export default function CalificationsTemplate() {
   return (
