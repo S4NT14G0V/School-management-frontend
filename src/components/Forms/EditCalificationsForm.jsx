@@ -18,8 +18,18 @@ export default function EditCalificationsForm({
 
   const fetchUpdateCalificationsClass = useCallback(async () => {
     try {
+      console.log("Datos antes de enviar la petición:", data); // Agregar log para verificar datos
+  
+      if (!data || data.length === 0) {
+        console.warn("No hay datos para enviar.");
+        return;
+      }
+  
       closeModal();
       const response = await createCalifications(data);
+  
+      console.log("Respuesta del servidor:", response); // Verificar la respuesta del backend
+  
       if (response) {
         notification(true);
       } else {
@@ -35,7 +45,8 @@ export default function EditCalificationsForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.CALIFICATIONS_UPDATED, error);
     }
-  },[]);
+  }, [data]);
+  
 
   const fetchUsersTable = useCallback(async () => {
     try {
