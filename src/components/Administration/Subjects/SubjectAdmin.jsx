@@ -1,14 +1,12 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Space, Table, Tag, Modal } from "antd";
-import { useUser } from "../../../context/userContext";
-import { getListUserInfo, deleteUser } from "../../../services/userService";
-import EditModal from "../../Modal/Subjects/EditSubjectModal";
-import DeleteModal from "../../Modal/Subjects/DeleteSubjectModal";
-import { notification } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { createSubject, getSubjects } from "../../../services/subjectService";
-import CreateModal from "../../Modal/Subjects/CreateSubjectModal";
+import { Button, Input, Space, Table, notification } from "antd";
+import { useUser } from "@context/userContext";
+import CreateModal from "@modal/Subjects/CreateSubjectModal";
+import EditModal from "@modal/Subjects/EditSubjectModal";
+import DeleteModal from "@modal/Subjects/DeleteSubjectModal";
+import { getSubjects } from "@services/subjectService";
+import { MESSAGES_ERROR, MESSAGES_SUCCESS } from "@config/constants";
 
 const App = () => {
   const [searchText, setSearchText] = useState("");
@@ -16,18 +14,11 @@ const App = () => {
   const searchInput = useRef(null);
   const { admin } = useUser();
   const [data, setData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
-  const [notificationEdit, setNotificationEdit] = useState(false);
-  const [notificationDelete, setNotificationDelete] = useState(false);
-  // create function
-  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
-  const [notificationCreate, setNotificationCreate] = useState(false);
-  const [editData, setEditData] = useState(null);
-  const [deleteData, setDeleteData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const fetchSubjects = async () => {
+  const fetchSubjects = useCallback(async () => {
+    setLoading(true);
     try {
       const subjects = await getSubjects();
       const usersWithKeys = subjects.map((subject) => ({
@@ -36,14 +27,72 @@ const App = () => {
       }));
       setData(usersWithKeys);
     } catch (error) {
-      console.error(error);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING,error);
+    } finally {
+      setLoading(false);
     }
-  };
+  },[]);
 
-  // Efecto para cargar usuarios solo al montar el componente
-  useEffect(() => {
+  // CREATE
+  const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
+  const [notificationCreate, setNotificationCreate] = useState(false);
+  const openModalCreate = () => {
+    setIsModalCreateOpen(true);
+  };
+  const showNotificationCreate = useCallback(() => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.SUBJECT_CREATED);
     fetchSubjects();
-  }, []);
+    setDeleteData(null);
+  },[fetchSubjects]);
+  const closeModalCreate = useCallback(() => {
+    setIsModalCreateOpen(false);
+  },[]);
+  
+  // EDIT
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [notificationEdit, setNotificationEdit] = useState(false);
+  const [editData, setEditData] = useState(null);
+  const openModal = (dataEdit) => {
+    setEditData(dataEdit);
+    setIsModalOpen(true); // Abre el modal
+  };
+  const showNotificationEdit = useCallback(() => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.SUBJECT_UPDATED);
+    fetchSubjects();
+    setEditData(null);
+  },[fetchSubjects]);
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false); // Cierra el modal
+    setSelectedEmail(null); // Limpia el email seleccionado
+  },[]);
+  
+  // DELETE
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [notificationDelete, setNotificationDelete] = useState(false);
+  const [deleteData, setDeleteData] = useState(null);
+  const openModalDelete = (dataDelete) => {
+    setDeleteData(dataDelete);
+    setIsModalDeleteOpen(true); // Abre el modal
+  };
+  const showNotificationDelete = useCallback(() => {
+    showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.SUBJECT_DELETED);
+    fetchSubjects();
+  },[fetchSubjects]);
+  const closeModalDelete = useCallback(() => {
+    setIsModalDeleteOpen(false);
+    setSelectedEmail(null); // Limpia el email seleccionado
+  },[]);
+
+  const showNotification = (message, description) => {
+    notification.success({
+      message: message,
+      description: description,
+      placement: "bottom",
+      showProgress: true,
+      style: { backgroundColor: "#f4fcf2" },
+      pauseOnHover: false,
+    });
+  };
 
   useEffect(() => {
     if (notificationEdit) {
@@ -60,74 +109,23 @@ const App = () => {
     }
   }, [notificationEdit, notificationDelete, notificationCreate]);
 
-  const showNotification = (message, description) => {
-    notification.success({
-      message: message,
-      description: description,
-      placement: "bottom",
-      showProgress: true,
-      style: { backgroundColor: "#f4fcf2" },
-      pauseOnHover: false,
-    });
-  };
+  // Efecto para cargar usuarios solo al montar el componente
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
 
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+  const handleSearch = useCallback((selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
-  };
+  },[]);
 
-  const handleReset = (clearFilters) => {
+  const handleReset = useCallback((clearFilters) => {
     clearFilters();
     setSearchText("");
-  };
+  },[]);
 
-  const openModal = (dataEdit) => {
-    setEditData(dataEdit);
-    setIsModalOpen(true); // Abre el modal
-  };
-
-  const openModalDelete = (dataDelete) => {
-    setDeleteData(dataDelete);
-    setIsModalDeleteOpen(true); // Abre el modal
-  };
-
-  const openModalCreate = () => {
-    setIsModalCreateOpen(true);
-  };
-
-  const showNotificationDelete = () => {
-    showNotification("Success", "User deleted successfully");
-    fetchSubjects();
-  };
-
-  const showNotificationEdit = () => {
-    showNotification("Success", "User edited successfully");
-    fetchSubjects();
-    setEditData(null);
-  };
-
-  const showNotificationCreate = () => {
-    showNotification("Success", "User created successfully");
-    fetchSubjects();
-    setDeleteData(null);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
-    setSelectedEmail(null); // Limpia el email seleccionado
-  };
-
-  const closeModalDelete = () => {
-    setIsModalDeleteOpen(false);
-    setSelectedEmail(null); // Limpia el email seleccionado
-  };
-
-  const closeModalCreate = () => {
-    setIsModalCreateOpen(false);
-  };
-
-  const getColumnSearchProps = (dataIndex) => ({
+  const getColumnSearchProps = useMemo(()=>(dataIndex) => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -216,9 +214,9 @@ const App = () => {
     },
     render: (text) =>
       searchedColumn === dataIndex ? (text ? text : "") : text,
-  });
+  }),[handleReset, handleSearch, searchedColumn]);
 
-  const columns = [
+  const columns = useMemo(()=>[
     {
       title: "Name",
       dataIndex: "name",
@@ -256,7 +254,7 @@ const App = () => {
         </Space>
       ),
     },
-  ];
+  ], [admin, getColumnSearchProps]);
 
   return (
     <>
@@ -319,6 +317,7 @@ const App = () => {
         <Table
           columns={columns}
           dataSource={data}
+          loading={loading}
           pagination={{
             pageSize: "7",
             position: ["topCenter"],

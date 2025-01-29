@@ -1,6 +1,6 @@
 import React from "react";
+import ClassTemplate from "@components/Classes/ClassTemplate";
 import "./ClassesSubject.css";
-import ClassTemplate from "../../components/Classes/ClassTemplate";
 
 export default function ClassesSubject() {
   return (

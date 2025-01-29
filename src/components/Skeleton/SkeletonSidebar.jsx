@@ -2,7 +2,7 @@
 import React from "react";
 import "./SkeletonSidebar.css"; // Archivo CSS para los estilos del esqueleto
 
-export default function Skeleton({children}) {
+const Skeleton = ({children}) => {
   return (
     <div className="skeleton-container">
       {children}
@@ -10,3 +10,4 @@ export default function Skeleton({children}) {
   );
 };
 
+export default React.memo(Skeleton);

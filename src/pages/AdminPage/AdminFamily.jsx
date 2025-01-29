@@ -1,5 +1,5 @@
 import React from "react";
-import FamilyAdmin from "../../components/Administration/Family/FamilyAdmin";
+import FamilyAdmin from "@components/Administration/Family/FamilyAdmin";
 import "./AdminPage.css";
 
 export default function AdminClasses({ title = "Family Management"}) {

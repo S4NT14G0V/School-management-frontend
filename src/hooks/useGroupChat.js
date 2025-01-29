@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { getMessagesByClass } from '../services/messages';
+import { getMessagesByClass } from '@services/messages';
+import { MESSAGES_ERROR, URLS } from '@config/constants';
 
 const useGroupChat = (classId) => {
   const [messages, setMessages] = useState([]);
@@ -13,7 +14,7 @@ const useGroupChat = (classId) => {
         const messagesOld = await getMessagesByClass(classId);
         setMessages(messagesOld);
       } catch (error) {
-        console.error("Error fetching messages: " + error.message);
+        console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
       }
     };
 
@@ -23,46 +24,39 @@ const useGroupChat = (classId) => {
   }, [classId]);
 
   useEffect(() => {
-    console.log("Connecting to WebSocket...");
-    const socketUrl = 'http://localhost:8080/ws';
+    const socketUrl = `${URLS.SOCKET_URL}`;
 
     const client = new Client({
       webSocketFactory: () => new SockJS(socketUrl),
       reconnectDelay: 5000, // Intenta reconectar cada 5 segundos
       onConnect: () => {
-        console.log("Connected to WebSocket");
-
         client.subscribe('/topic/group', (msg) => {
-            console.log("Mensaje recibido en el cliente:", msg.body); // Verificación de recepción
             if (msg.body) {
               setMessages((prev) => [...prev, JSON.parse(msg.body)]);
             }
           });
-          
-
         setStompClient(client); // Guardar cliente sólo si la conexión es exitosa
       },
       onStompError: (error) => {
-        console.error("Error in WebSocket connection: ", error);
+        console.error(MESSAGES_ERROR.WEBSOCKET_CONNECTION, error);
       }
     });
 
     client.activate(); // Activa la conexión STOMP
 
     return () => {
-      if (client) client.deactivate(() => console.log("Disconnected from WebSocket"));
+      if (client) client.deactivate();
     };
   }, [classId]);
 
   const sendMessage = (message) => {
     if (stompClient && stompClient.connected && message.content.trim() !== '') {
-      console.log("Sending message:", message);
       stompClient.publish({
         destination: '/app/send',
         body: JSON.stringify(message),
       });
     } else {
-      console.log("STOMP client not connected or message empty");
+      console.log(MESSAGES_ERROR.WEBSOCKET_CONNECTION);
     }
   };
 

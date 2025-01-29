@@ -1,5 +1,5 @@
 import React from 'react'
-import GroupsAdmin from '../../components/Administration/Groups/GroupsAdmin'
+import GroupsAdmin from '@components/Administration/Groups/GroupsAdmin'
 
 export default function AdminGroups({ title = "Groups Management" }) {
   return (

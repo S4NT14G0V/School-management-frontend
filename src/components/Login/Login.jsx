@@ -1,19 +1,20 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import AcademicInfo from "../AcademicInfo/AcademicInfo";
+import AcademicInfo from "@components/AcademicInfo/AcademicInfo";
+import GoogleIcon from "@assets/google-icon.svg";
+import { URLS } from "@config/constants";
 import "./Login.css";
 
 export default function Login() {
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = URLS.GOOGLE_LOGIN;
   };
   
   return (
     <div className="login-container">
       <AcademicInfo login />
       <button className="login-button" onClick={handleGoogleLogin}>
-        <img src="src/assets/google-icon.svg" alt="Google Icon" />
+        <img src={GoogleIcon} alt="Google Icon" />
         Continue with Google
       </button>
     </div>

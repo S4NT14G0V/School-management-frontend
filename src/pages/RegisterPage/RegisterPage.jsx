@@ -1,7 +1,7 @@
 import React from "react";
+import RegisterForm from "@components/RegisterForm/RegisterForm";
+import Title from "@components/Title/Title"
 import "./RegisterPage.css";
-import RegisterForm from "../../components/RegisterForm/RegisterForm";
-import Title from "../../components/Title/Title"
 
 export default function RegisterPage() {
   return (

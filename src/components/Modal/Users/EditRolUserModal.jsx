@@ -1,0 +1,23 @@
+import React from "react";
+import BaseModal from "../BaseModal"; // Asegúrate de que BaseModal esté correctamente importado
+import EditRolUserForm from "@forms/EditRolUserForm"; // Importa el contenido del modal
+
+const EditRolUserModal = ({ isModalOpen, closeModal, notification, email, role }) => {
+  return (
+    <BaseModal
+      title="Editar Rol"
+      isOpen={isModalOpen}
+      onClose={closeModal}
+      width={400}
+    >
+      <EditRolUserForm
+        email={email}
+        notification={notification}
+        closeModal={closeModal}
+        role={role}
+      />
+    </BaseModal>
+  );
+}
+
+export default React.memo(EditRolUserModal);

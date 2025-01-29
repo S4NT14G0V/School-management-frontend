@@ -1,5 +1,5 @@
 import React from "react";
-import UserAdmin from "../../components/Administration/Users/UsersAdmin";
+import UserAdmin from "@components/Administration/Users/UsersAdmin";
 import "./AdminPage.css";
 
 export default function AdminPage({ title = "Admin Page" }) {

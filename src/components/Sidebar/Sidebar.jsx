@@ -3,53 +3,23 @@ import AcademicInfo from "../AcademicInfo/AcademicInfo";
 import UserInfo from "../UserInfo/UserInfo";
 import SidebarMenu from "./SidebarMenu";
 import Skeleton from "../Skeleton/SkeletonSidebar";
-import { validateAdmin, getInfo } from "../../services/userService";
+import { validateAdmin, getInfo } from "@services/userService";
+import { useUser } from "@context/userContext";
+import UserCogIcon from "@assets/user-cog.svg";
+import BookCogIcon from "@assets/book-cog.svg";
+import FolderCogIcon from "@assets/folder-cog.svg";
+import GroupCogIcon from "@assets/group-cog.svg";
+import FamilyIcon from "@assets/family.svg";
+import { MENUITEMS, MESSAGES_ERROR } from "@config/constants";
 import "./Sidebar.css";
-import { useUser } from "../../context/userContext";
-import ItemClassesIcon from "../../assets/item-classes.svg";
-import ItemAssesmentsIcon from "../../assets/item-assesments.svg";
-import ItemAttendanceIcon from "../../assets/item-attendance.svg";
-import ItemCalificationsIcon from "../../assets/item-califications.svg";
-import UserCogIcon from "../../assets/user-cog.svg";
-import BookCogIcon from "../../assets/book-cog.svg";
-import FolderCogIcon from "../../assets/folder-cog.svg";
-import GroupCogIcon from "../../assets/group-cog.svg";
-import FamilyIcon from "../../assets/family.svg";
 
-export default function Sidebar() {
+const Sidebar = () =>{
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const { email, setUserDataChat } = useUser();
 
   useEffect(() => {
-    const newMenuItems = [
-      {
-        src: ItemClassesIcon ,
-        alt: "button-classes",
-        label: "Classes",
-        href: `/classes`,
-      },
-      {
-        src: ItemAssesmentsIcon,
-        alt: "button-assesments",
-        label: "Assesments",
-        href: `/assesments`,
-      },
-      {
-        src: ItemAttendanceIcon,
-        alt: "button-attendance",
-        label: "Attendance",
-        href: "/attendances",
-      },
-      {
-        src: ItemCalificationsIcon,
-        alt: "button-califications",
-        label: "Califications",
-        href: `/califications`,
-      },
-    ];
-
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -59,12 +29,11 @@ export default function Sidebar() {
         setUserInfo(userData);
 
         // Luego validamos si es admin
-
         const adminData = await validateAdmin();
-
         if (adminData) {
           email(userData.email);
-          newMenuItems.push(
+          const newMenuItems = [
+            ...MENUITEMS,
             {
               src: UserCogIcon,
               alt: "button-administration",
@@ -94,13 +63,13 @@ export default function Sidebar() {
               label: "Family Management",
               href: `/admin/family`,
             },
-            
-          );
+          ];
+          setMenuItems(newMenuItems);
+        } else {
+          setMenuItems(MENUITEMS);
         }
-
-        setMenuItems(newMenuItems);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
       } finally {
         // Añade un retraso de 3 segundos antes de cambiar loading a false
         setTimeout(() => setLoading(false), 1000);
@@ -108,7 +77,6 @@ export default function Sidebar() {
     };
 
     fetchData();
-    console.log('Cookies actuales:', document.cookie);
   }, []);
 
   return (
@@ -129,3 +97,5 @@ export default function Sidebar() {
     </div>
   );
 }
+
+export default Sidebar;

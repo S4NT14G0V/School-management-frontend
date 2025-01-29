@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { Divider } from "antd"; // Importa el componente Divider de Ant Design
+import { getMyClasses } from "@services/ClassService";
+import { MESSAGES_ERROR } from "@config/constants";
 import ClassesCard from "./ClassesCard";
 import "./Classes.css";
-import { getMyClasses } from "../../services/ClassService";
-import { Divider } from "antd"; // Importa el componente Divider de Ant Design
 
 export default function ClassesPersonal() {
   const [data, setData] = useState([]);
 
-  const fetchClasses = async () => {
+  const fetchClasses = useCallback(async () => {
     try {
       const data = await getMyClasses();
       const usersWithKeys = data.map((clase) => ({
@@ -16,9 +17,9 @@ export default function ClassesPersonal() {
       }));
       setData(usersWithKeys);
     } catch (error) {
-      console.log("Error fetching user data: " + error.message);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING,error);
     }
-  };
+  },[]);
 
   useEffect(() => {
     fetchClasses();

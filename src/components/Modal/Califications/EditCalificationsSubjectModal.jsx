@@ -1,49 +1,23 @@
-import { Modal, Button } from "antd";
-import CalificationsEditableTable from "../../Califications/CalificationsEdit";
+import React from "react";
+import BaseModal from "../BaseModal";
+import EditCalificationsForm from "@forms/EditCalificationsForm";
 
-export default function EditModal({
+const EditCalificationsSubjectModal = ({
   isModalOpen,
   closeModal,
   notification,
   id,
-  editData,
-  setEditData
-}) {
-
-  const handleEdit = async () => {
-    notification(true);
-  };
-
+}) => {
   return (
-    <Modal
-      title="Editar Calificaciones de Estudiantes"
-      centered
-      open={isModalOpen}
-      onCancel={closeModal}
-      footer={null}
+    <BaseModal
+      title="Califications of Students"
+      isOpen={isModalOpen}
+      onClose={closeModal}
       width={1000}
     >
-      <div className="form-group">
-        <CalificationsEditableTable id={id} setEditData={setEditData} />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "20px",
-        }}
-      >
-        <Button key="back" onClick={closeModal} style={{ marginRight: "10px" }}>
-          Cancelar
-        </Button>
-        <Button
-          key="submit"
-          style={{ backgroundColor: "#2f1b41", color: "white" }}
-          onClick={handleEdit}
-        >
-          Guardar Cambios
-        </Button>
-      </div>
-    </Modal>
+      <EditCalificationsForm id={id} notification={notification} closeModal={closeModal} />
+    </BaseModal>
   );
 }
+
+export default React.memo(EditCalificationsSubjectModal);

@@ -1,18 +1,18 @@
 import React from "react";
-import { Modal} from "antd";
-import AttendanceForm from "../../Attendance/AttendanceForm";
+import BaseModal from "../BaseModal";
+import CreateAttendanceForm from "@forms/CreateAttendanceForm";
 
-export default function CreateAttendanceModal({ isModalOpen, closeModal, notification, classesId }) {
+const CreateAttendanceModal = ({ isModalOpen, closeModal, notification, classesId }) => {
   return (
-    <Modal
-      title="Attendance"
-      centered
-      open={isModalOpen}
-      onCancel={closeModal}
-      footer={null}
+    <BaseModal
+      title="Create a New Attendance"
+      isOpen={isModalOpen}
+      onClose={closeModal}
       width={500}
     >
-      <AttendanceForm classId={classesId} notification={notification} closeModal={closeModal} isModalOpen={isModalOpen}/>
-    </Modal>
+      <CreateAttendanceForm id_class={classesId} notification={notification} closeModal={closeModal}/>
+    </BaseModal>
   );
 }
+
+export default React.memo(CreateAttendanceModal);

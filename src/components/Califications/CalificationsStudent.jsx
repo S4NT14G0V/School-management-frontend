@@ -1,26 +1,29 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Divider } from "antd";
-import { getCalificationsByEmail } from "../../services/califications";
+import { getCalificationsByEmail } from "@services/califications";
+import { MESSAGES_ERROR } from "@config/constants";
 import "./CalificationsEdit.css";
 
 export default function CalificationsStudent() {
   const [dataSource, setDataSource] = useState({});
-  const [pressedButton, setPressedButton] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const isInitialRender = useRef(true);
-
-  const fetchCalificationsStudent = async () => {
+  // Función para obtener las calificaciones
+  const fetchCalificationsStudent = useCallback(async () => {
+    setLoading(true);
     try {
       const califications = await getCalificationsByEmail();
       return califications;
     } catch (error) {
-      console.error("Error fetching califications:", error);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
       return [];
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
-  // Agrupa las calificaciones por estudiante y por materia
-  const transformData = (califications) => {
+  // Transformar y agrupar datos
+  const transformData = useCallback((califications) => {
     const groupedData = {};
 
     califications.forEach((studentCalif) => {
@@ -46,33 +49,27 @@ export default function CalificationsStudent() {
     });
 
     return groupedData;
-  };
+  }, []);
+
+  // Cargar datos al montar el componente o al actualizar
+  const loadData = useCallback(async () => {
+    try {
+      const userData = await fetchCalificationsStudent();
+      if (userData.length > 0) {
+        const groupedData = transformData(userData);
+        setDataSource(groupedData);
+      }
+    } catch (error) {
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
+    }
+  }, [fetchCalificationsStudent, transformData]);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const userData = await fetchCalificationsStudent();
-        if (userData && userData.length > 0) {
-          const groupedData = transformData(userData);
-          setDataSource(groupedData);
-        }
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    };
+    loadData();
+  }, [loadData]);
 
-    if (isInitialRender.current) {
-      loadData();
-      isInitialRender.current = false;
-    }
-
-    if (pressedButton) {
-      loadData();
-      setPressedButton(false);
-    }
-  }, [pressedButton]);
-
-  const calculateTotals = (data) => {
+  // Calcular totales
+  const calculateTotals = useCallback((data) => {
     const totalPercent = data.reduce((sum, item) => sum + item.percent, 0);
     const weightedSum = data.reduce(
       (sum, item) => sum + item.calification * (item.percent / 100),
@@ -83,37 +80,40 @@ export default function CalificationsStudent() {
     const total = `${totalPercent}`;
 
     return { total, weightedAverage };
-  };
+  }, []);
 
-  const columns = [
-    { title: "Descripción", dataIndex: "description", key: "description" },
-    {
-      title: "Porcentaje",
-      dataIndex: "percent",
-      key: "percent",
-      render: (text, record) => (
-        <span
-          style={{
-            textAlign: "center",
-            display: "block",
-            fontWeight: String(record.key).includes("total") ? "bold" : "normal",
-          }}
-        >
-          {text}%
-        </span>
-      ),
-    },
-    {
-      title: "Calificación",
-      dataIndex: "calification",
-      key: "calification",
-      render: (_, record) => (
-        <span style={{ textAlign: "center", display: "block" }}>
-          {record.calification}
-        </span>
-      ),
-    },
-  ];
+  const columns = useMemo(
+    () => [
+      { title: "Descripción", dataIndex: "description", key: "description" },
+      {
+        title: "Porcentaje",
+        dataIndex: "percent",
+        key: "percent",
+        render: (text, record) => (
+          <span
+            style={{
+              textAlign: "center",
+              display: "block",
+              fontWeight: String(record.key).includes("total") ? "bold" : "normal",
+            }}
+          >
+            {text}%
+          </span>
+        ),
+      },
+      {
+        title: "Calificación",
+        dataIndex: "calification",
+        key: "calification",
+        render: (_, record) => (
+          <span style={{ textAlign: "center", display: "block" }}>
+            {record.calification}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
     <>
@@ -127,7 +127,7 @@ export default function CalificationsStudent() {
         }}
       >
         <button
-          onClick={() => setPressedButton(true)}
+          onClick={loadData}
           style={{
             width: "80px",
             height: "30px",
@@ -177,6 +177,7 @@ export default function CalificationsStudent() {
                     bordered
                     dataSource={dataWithTotal}
                     columns={columns}
+                    loading={loading}
                     rowClassName="editable-row"
                     pagination={false}
                     style={{ marginBottom: "20px" }}

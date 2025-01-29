@@ -1,8 +1,8 @@
 import React from "react";
-import "./SidebarMenu.css";
 import { Link, useLocation } from "react-router-dom";
+import "./SidebarMenu.css";
 
-export default function SidebarMenu({ menuItems }) {
+const SidebarMenu = ({ menuItems }) =>{
   const location = useLocation();
 
   // Encuentra el índice del primer elemento que contiene "admin" en su href
@@ -42,3 +42,5 @@ export default function SidebarMenu({ menuItems }) {
     </div>
   );
 }
+
+export default React.memo(SidebarMenu);

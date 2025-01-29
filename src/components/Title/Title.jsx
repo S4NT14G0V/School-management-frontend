@@ -1,7 +1,7 @@
 import React from 'react'
 import "./Title.css"
 
-export default function Title({children}) {
+const Title = ({children}) => {
   return (
     <div>
       <h1 className="title">
@@ -10,3 +10,5 @@ export default function Title({children}) {
     </div>
   )
 }
+
+export default React.memo(Title);

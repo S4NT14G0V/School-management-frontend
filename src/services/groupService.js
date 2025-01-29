@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "@config/ApiUrls";
 
 export const getGroups = async () => {
   try {
@@ -22,7 +22,6 @@ export const getGroups = async () => {
 
 export const createGroups = async (group) => {
   try {
-    console.log("group:", group);
     const response = await fetch(apiUrls.group.create, {
       method: "POST",
       credentials: "include", // Incluye cookies en la petición

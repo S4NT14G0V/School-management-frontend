@@ -1,5 +1,5 @@
 import React from 'react'
-import AttendanceTable from '../../components/Attendance/AttendancePersonal.jsx'
+import AttendanceTable from '@components/Attendance/AttendancePersonal.jsx'
 
 export default function AttendancesPage({title = "Attendances"}) {
   return (

@@ -40,15 +40,15 @@
 
 *::-webkit-scrollbar-thumb {
   border-radius: 20px;
-  background-color: #4D0C96;
+  background-color: #0058ca;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #8314FF;
+  background-color: #0058ca;
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background-color: #8314FF;
+  background-color: #0058ca;
 }
 
 a {
@@ -80,16 +80,11 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #ff0000;
   cursor: pointer;
   transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border: none;
+  outline: none;
 }
 
 @media (prefers-color-scheme: light) {

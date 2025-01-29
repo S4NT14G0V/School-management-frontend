@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "@config/ApiUrls";
 
 export const createUser = async (userInfo) => {
   const response = await fetch(apiUrls.user.create, {
@@ -107,6 +107,7 @@ export const updateUser = async (userInfo) => {
     if (!response.ok) {
       throw new Error("Error al actualizar el usuario");
     }
+    return response.ok;
   } catch (error) {
     console.error("Error:", error);
   }
@@ -121,7 +122,6 @@ export const getUsers = async () => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de Users:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener los usuarios");
@@ -143,7 +143,6 @@ export const getParents = async () => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de Users:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener los usuarios");
@@ -165,7 +164,6 @@ export const getStudents = async () => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de Users:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener los usuarios");
@@ -209,12 +207,10 @@ export const getListUserInfo = async () => {
         "Content-Type": "application/json",
       },
     });
-    console.log("Respuesta de Users para Editar:", response); // Verifica la respuesta del servidor
     if (!response.ok) {
       const errorMessage = await response.text();
       throw new Error("Error al obtener los usuarios");
     }
-    console.log("Data recibida:", response); // Verifica los datos recibidos
     return await response.json();
   } catch (error) {
     console.error("Error:", error);
@@ -226,6 +222,7 @@ export const deleteUser = async (email) => {
       method: "DELETE",
       credentials: "include", // Incluye cookies en la petición
       headers: {
+        user: email,
         "Content-Type": "application/json",
       },
     });
@@ -235,7 +232,7 @@ export const deleteUser = async (email) => {
       throw new Error("Error al eliminar el usuario");
     }
 
-    return { success: true }; // Si es exitoso
+    return response.ok;
   } catch (error) {
     console.error("Error al eliminar el usuario:", error.message);
     return { success: false, message: error.message };
@@ -256,6 +253,7 @@ export const editRolByEmail = async (email, rol) => {
     if (!response.ok) {
       throw new Error("Error al editar el usuario");
     }
+    return response.ok;
   } catch (error) {
     console.error("Error:", error);
   }
@@ -304,3 +302,22 @@ export const validateTeachersAdmins = async () => {
     return null; // Puedes devolver null o manejar el error de otra manera
   }
 };
+
+export const logout = async () => {
+  try {
+    const response = await fetch(`${apiUrls.user.logout}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al cerrar sesión");
+    }
+    return response.ok;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}

@@ -9,7 +9,7 @@
 
 .page-container{
     min-height: 100dvh;
-    max-height: 100dvh;
+    max-height: 200dvh;
     overflow: hidden;
     overflow-y: auto;
     flex: 1;

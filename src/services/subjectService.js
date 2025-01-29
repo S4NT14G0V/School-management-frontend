@@ -1,4 +1,4 @@
-import { apiUrls } from "../routes/ApiUrls";
+import { apiUrls } from "@config/ApiUrls";
 
 export const createSubject = async (subject) => {
     const response = await fetch(apiUrls.subject.create, {
@@ -27,7 +27,6 @@ export const getSubjects = async () => {
           "Content-Type": "application/json",
         },
       });
-      console.log("Respuesta de subjects:", response); // Verifica la respuesta del servidor
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error("Error al obtener los subjects");
