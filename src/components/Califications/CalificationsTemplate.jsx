@@ -1,5 +1,4 @@
-import React from "react";
-import CalificationsStudent from "./CalificationsTest";
+import CalificationsStudent from "./CalificationsStudent";
 
 export default function CalificationsTemplate() {
   return (

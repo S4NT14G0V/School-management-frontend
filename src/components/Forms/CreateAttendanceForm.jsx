@@ -39,7 +39,7 @@ export default function CreateAttendanceForm({
     }
   }, [idClass, date]);
 
-  const fetchAttendancesClassAndDate = useCallback(async (id, selectedDate) => {
+  const fetchAttendancesClassAndDate = async (id, selectedDate) => {
     try {
       const response = await getAttendancesByClassAndDate(id, selectedDate);
       const mappedAttendance = response.reduce((acc, attendanceItem) => {
@@ -52,10 +52,9 @@ export default function CreateAttendanceForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  }, []);
+  };
 
-  const fetchCreateAttendance = useCallback(
-    async (attendanceData) => {
+  const fetchCreateAttendance = async (attendanceData) => {
       try {
         closeModal();
         console.log("attendanceData", attendanceData);
@@ -77,18 +76,16 @@ export default function CreateAttendanceForm({
       } catch (error) {
         console.error(MESSAGES_ERROR.ATTENDANCE_CREATED, error);
       }
-    },
-    [notification, closeModal]
-  );
+  };
 
-  const handleAttendanceChange = useCallback((studentId, value) => {
+  const handleAttendanceChange = (studentId, value) => {
     setAttendance((prev) => ({
       ...prev,
       [studentId]: value,
     }));
-  }, []);
+  };
 
-  const submitAttendance = useCallback(() => {
+  const submitAttendance = () => {
     if (!date) {
       return;
     }
@@ -105,10 +102,9 @@ export default function CreateAttendanceForm({
     }));
 
     fetchCreateAttendance(attendanceData);
-  }, [date, attendance, idClass, fetchCreateAttendance]);
+  };
 
-  const columns = useMemo(
-    () => [
+  const columns = () => [
       {
         title: "Estudiante",
         dataIndex: "name",
@@ -135,14 +131,9 @@ export default function CreateAttendanceForm({
           </Select>
         ),
       },
-    ],
-    [attendance, handleAttendanceChange]
-  );
+    ];
 
-  const data = useMemo(
-    () => (attendancesForDate.length > 0 ? attendancesForDate : students),
-    [attendancesForDate, students]
-  );
+  const data = () => (attendancesForDate.length > 0 ? attendancesForDate : students);
 
   return (
     <>

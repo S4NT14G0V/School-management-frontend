@@ -9,7 +9,7 @@ export default function DeleteClassesForm ({ classesData, closeModal, notificati
   const [subjectName, setSubjectName] = useState("");
   const [schedule, setSchedule] = useState("");
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     try {
       closeModal(); // Cierra el modal después de eliminar
       const result = await deleteClasses(classesData.id);
@@ -28,7 +28,7 @@ export default function DeleteClassesForm ({ classesData, closeModal, notificati
     } catch (error) {
       console.error(MESSAGES_ERROR.CLASSES_DELETED, error);
     }
-  }, [classesData.id, closeModal, notification]);
+  };
 
   useEffect(() => {
     if (classesData) {
@@ -39,7 +39,7 @@ export default function DeleteClassesForm ({ classesData, closeModal, notificati
     }
   }, [classesData]);
 
-  const classInfo = useMemo(() => (
+  const classInfo = () => (
     <>
       <div
         style={{
@@ -90,7 +90,7 @@ export default function DeleteClassesForm ({ classesData, closeModal, notificati
         <span style={{ fontWeight: "500" }}>{schedule}</span>
       </div>
     </>
-  ), [teacherName, groupVariant, subjectName, schedule]);
+  );
 
   return (
     <>

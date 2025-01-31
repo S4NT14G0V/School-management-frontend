@@ -10,7 +10,7 @@ export default function CreateSubjectForm ({ notification, closeModal }) {
     picture: '',
   });
 
-  const handleCreateSubject = useCallback(async (subject) => {
+  const handleCreateSubject = async (subject) => {
     try {
       closeModal(); // Cerrar el modal después de procesar
       const response = await createSubject(subject); // Espera el resultado
@@ -34,17 +34,17 @@ export default function CreateSubjectForm ({ notification, closeModal }) {
     } catch (error) {
       console.error(MESSAGES_ERROR.SUBJECT_CREATED, error);
     }
-  }, [notification, closeModal]);
+  };
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  }, []);
+  };
 
-  const formElements = useMemo(() => (
+  const formElements = () => (
     <>
       <label>Nombre de la Materia</label>
       <input
@@ -71,7 +71,7 @@ export default function CreateSubjectForm ({ notification, closeModal }) {
         onChange={handleInputChange}
       />
     </>
-  ), [formData, handleInputChange]);
+  );
 
   return (
     <div className="form-group" style={{ border: "none", marginTop: "5px" }}>

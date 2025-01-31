@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Input, Button, notification as notification2 } from "antd";
 import { useUser } from "@context/userContext";
-import { getCalificationsByClass, createCalifications } from "@services/califications";
+import {
+  getCalificationsByClass,
+  createCalifications,
+} from "@services/califications";
 import { MESSAGES_ERROR } from "@config/constants";
 
 export default function EditCalificationsForm({
@@ -16,20 +19,20 @@ export default function EditCalificationsForm({
   const [update, setUpdate] = useState(false);
   const [data, setData] = useState([]);
 
-  const fetchUpdateCalificationsClass = useCallback(async () => {
+  const fetchUpdateCalificationsClass = async () => {
     try {
       console.log("Datos antes de enviar la petición:", data); // Agregar log para verificar datos
-  
+
       if (!data || data.length === 0) {
         console.warn("No hay datos para enviar.");
         return;
       }
-  
+
       closeModal();
       const response = await createCalifications(data);
-  
+
       console.log("Respuesta del servidor:", response); // Verificar la respuesta del backend
-  
+
       if (response) {
         notification(true);
       } else {
@@ -45,10 +48,9 @@ export default function EditCalificationsForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.CALIFICATIONS_UPDATED, error);
     }
-  }, [data]);
-  
+  };
 
-  const fetchUsersTable = useCallback(async () => {
+  const fetchUsersTable = async () => {
     try {
       const users = await getCalificationsByClass(id);
       return users;
@@ -56,9 +58,9 @@ export default function EditCalificationsForm({
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
       return [];
     }
-  }, [id]);
+  };
 
-  const transformData = useCallback((students, assessments) => {
+  const transformData = (students, assessments) => {
     const studentMap = {};
     students.forEach((studentCalif) => {
       const studentId = studentCalif.student.id;
@@ -86,16 +88,16 @@ export default function EditCalificationsForm({
 
     transformedData.forEach((student) => {
       assessments.forEach((assessment) => {
-        if (!student.hasOwnProperty(assessment.id)) {
+        if (!Object.prototype.hasOwnProperty.call(student, assessment.id)) {
           student[assessment.id] = ""; // Calificación vacía para las evaluaciones nuevas
         }
       });
     });
 
     return transformedData;
-  }, []);
+  };
 
-  const revertDataTransformation = useCallback((data) => {
+  const revertDataTransformation = (data) => {
     const transformedData = [];
     data.forEach((item) => {
       Object.keys(item)
@@ -120,9 +122,9 @@ export default function EditCalificationsForm({
     });
 
     return transformedData;
-  }, []);
+  };
 
-  const handleFieldChange = useCallback((e, key, assessmentId) => {
+  const handleFieldChange = (e, key, assessmentId) => {
     const value = Math.max(0, Math.min(5, e.target.value)); // Limitar el valor entre 0 y 5
     setDataSource((prevData) => {
       const newData = [...prevData];
@@ -138,13 +140,13 @@ export default function EditCalificationsForm({
       }
       return newData;
     });
-  }, [revertDataTransformation]);
+  };
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const usersData = await fetchUsersTable();
-        if (update){
+        if (update) {
           setUpdate(false);
         }
         const assessments = assesmentData || {};
@@ -185,19 +187,27 @@ export default function EditCalificationsForm({
     if (id) {
       loadData();
     }
-  }, [id, assesmentData, update, fetchUsersTable, transformData, handleFieldChange]);
+  }, [
+    id,
+    assesmentData,
+    update,
+    fetchUsersTable,
+    transformData,
+    handleFieldChange,
+  ]);
 
   useEffect(() => {
     const dataReverse = revertDataTransformation(dataSource);
     setData(dataReverse);
   }, [dataSource, revertDataTransformation]);
 
-  const filteredData = useMemo(() => dataSource.filter(
-    (item) =>
-      `${item.name} ${item.lastname}`
-        .toLowerCase()
-        .includes(searchText.toLowerCase()) // Filtrar por nombre y apellido
-  ), [dataSource, searchText]);
+  const filteredData = () =>
+    dataSource.filter(
+      (item) =>
+        `${item.name} ${item.lastname}`
+          .toLowerCase()
+          .includes(searchText.toLowerCase()) // Filtrar por nombre y apellido
+    );
 
   return (
     <div
@@ -244,7 +254,12 @@ export default function EditCalificationsForm({
         columns={columns}
         rowClassName="editable-row"
         pagination={false}
-        style={{ minWidth: "100%", minHeight: "fit-content", marginBlock: "20px", flex:1 }}
+        style={{
+          minWidth: "100%",
+          minHeight: "fit-content",
+          marginBlock: "20px",
+          flex: 1,
+        }}
       />
       <div
         style={{
@@ -258,7 +273,7 @@ export default function EditCalificationsForm({
         </Button>
         <Button
           key="submit"
-          style={{ backgroundColor: "#11538C", color: "white" }} 
+          style={{ backgroundColor: "#11538C", color: "white" }}
           onClick={() => fetchUpdateCalificationsClass()}
         >
           Guardar Cambios

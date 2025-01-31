@@ -14,7 +14,7 @@ export default function DeleteAssesmentForm({ assesment, closeModal, notificatio
     }
   }, [assesment]);
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     try {
       closeModal(); // Cierra el modal después de eliminar
       const result = await deleteAssesment(assesment.id);
@@ -33,9 +33,9 @@ export default function DeleteAssesmentForm({ assesment, closeModal, notificatio
     } catch (error) {
       console.error(MESSAGES_ERROR.ASSESMENT_DELETED, error);
     }
-  }, [assesment, closeModal, notification]);
+  };
 
-  const descriptionElement = useMemo(() => (
+  const descriptionElement = () => (
     <div
       style={{
         display: "flex",
@@ -48,9 +48,9 @@ export default function DeleteAssesmentForm({ assesment, closeModal, notificatio
       <strong style={{ textDecoration: "underline" }}>Description :</strong>
       <span style={{ fontWeight: "500" }}>{Description}</span>
     </div>
-  ), [Description]);
+  );
 
-  const percentElement = useMemo(() => (
+  const percentElement = () => (
     <div
       style={{
         display: "flex",
@@ -63,7 +63,7 @@ export default function DeleteAssesmentForm({ assesment, closeModal, notificatio
       <strong style={{ textDecoration: "underline" }}>Percent:</strong>
       <span style={{ fontWeight: "500" }}>{Percent}</span>
     </div>
-  ), [Percent]);
+  );
 
   return (
     <>

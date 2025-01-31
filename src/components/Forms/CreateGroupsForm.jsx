@@ -9,7 +9,7 @@ export default function CreateGroupsForm ({ notification, closeModal }) {
     variant: "",
   });
 
-  const handleCreateGroup = useCallback(async () => {
+  const handleCreateGroup = async () => {
     try {
       const formDataToSend = {
         ...formData,
@@ -36,12 +36,12 @@ export default function CreateGroupsForm ({ notification, closeModal }) {
     } catch (error) {
       console.error(MESSAGES_ERROR.GROUP_CREATED, error);
     }
-  }, [formData, notification, closeModal]);
+  };
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-  }, []);
+  };
 
   return (
     <div className="form-group">

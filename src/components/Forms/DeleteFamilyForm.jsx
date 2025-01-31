@@ -7,7 +7,7 @@ export default function DeleteFamilyForm ({ FamilyData, notification, closeModal
   const [studentName, setStudentName] = useState("");
   const [parentName, setParentName] = useState("");
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     try {
       closeModal(); // Cierra el modal después de eliminar
       const result = await deleteFamily(FamilyData.id);
@@ -26,7 +26,7 @@ export default function DeleteFamilyForm ({ FamilyData, notification, closeModal
     } catch (error) {
       console.error(MESSAGES_ERROR.FAMILY_DELETED, error);
     }
-  }, [FamilyData.id, notification, closeModal]);
+  };
 
   useEffect(() => {
     if (FamilyData) {
@@ -35,8 +35,8 @@ export default function DeleteFamilyForm ({ FamilyData, notification, closeModal
     }
   }, [FamilyData]);
 
-  const memoizedStudentName = useMemo(() => studentName, [studentName]);
-  const memoizedParentName = useMemo(() => parentName, [parentName]);
+  const memoizedStudentName = () => studentName;
+  const memoizedParentName = () => parentName;
 
   return (
     <>
