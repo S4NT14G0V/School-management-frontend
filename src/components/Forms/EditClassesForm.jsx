@@ -34,7 +34,7 @@ export default function EditClassesForm({
   }, [classesData]);
 
   // Cargar opciones
-  const fetchOptions = async () => {
+  const fetchOptions = useCallback(async () => {
     try {
       const [teachers, groups, subjects] = await Promise.all([
         getTeachers(),
@@ -47,7 +47,7 @@ export default function EditClassesForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchOptions();

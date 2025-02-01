@@ -39,7 +39,7 @@ export default function CreateAttendanceForm({
     }
   }, [idClass, date]);
 
-  const fetchAttendancesClassAndDate = async (id, selectedDate) => {
+  const fetchAttendancesClassAndDate = useCallback(async (id, selectedDate) => {
     try {
       const response = await getAttendancesByClassAndDate(id, selectedDate);
       const mappedAttendance = response.reduce((acc, attendanceItem) => {
@@ -52,9 +52,10 @@ export default function CreateAttendanceForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  };
+  }, []);
 
-  const fetchCreateAttendance = async (attendanceData) => {
+  const fetchCreateAttendance = useCallback(
+    async (attendanceData) => {
       try {
         closeModal();
         console.log("attendanceData", attendanceData);
@@ -76,16 +77,18 @@ export default function CreateAttendanceForm({
       } catch (error) {
         console.error(MESSAGES_ERROR.ATTENDANCE_CREATED, error);
       }
-  };
+    },
+    [notification, closeModal]
+  );
 
-  const handleAttendanceChange = (studentId, value) => {
+  const handleAttendanceChange = useCallback((studentId, value) => {
     setAttendance((prev) => ({
       ...prev,
       [studentId]: value,
     }));
-  };
+  }, []);
 
-  const submitAttendance = () => {
+  const submitAttendance = useCallback(() => {
     if (!date) {
       return;
     }
@@ -102,9 +105,10 @@ export default function CreateAttendanceForm({
     }));
 
     fetchCreateAttendance(attendanceData);
-  };
+  }, [date, attendance, idClass, fetchCreateAttendance]);
 
-  const columns = () => [
+  const columns = useMemo(
+    () => [
       {
         title: "Estudiante",
         dataIndex: "name",
@@ -131,9 +135,14 @@ export default function CreateAttendanceForm({
           </Select>
         ),
       },
-    ];
+    ],
+    [attendance, handleAttendanceChange]
+  );
 
-  const data = () => (attendancesForDate.length > 0 ? attendancesForDate : students);
+  const data = useMemo(
+    () => (attendancesForDate.length > 0 ? attendancesForDate : students),
+    [attendancesForDate, students]
+  );
 
   return (
     <>

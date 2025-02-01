@@ -21,7 +21,7 @@ export default function CreateClassesForm({ closeModal, notification }) {
     fetchOptions();
   }, []);
 
-  const fetchOptions = async () => {
+  const fetchOptions = useCallback(async () => {
     try {
       const teachers = await getTeachers();
       setTeacherOptions(teachers);
@@ -34,9 +34,9 @@ export default function CreateClassesForm({ closeModal, notification }) {
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  };
+  }, []);
 
-  const handleCreateClass = async () => {
+  const handleCreateClass = useCallback(async () => {
     try {
       closeModal(); // Cerrar el modal
       const result = await createClass(formData);
@@ -55,47 +55,65 @@ export default function CreateClassesForm({ closeModal, notification }) {
     } catch (error) {
       console.error(MESSAGES_ERROR.CLASSES_CREATED, error);
     }
-  };
+  }, [formData, notification, closeModal]);
 
-  const handleTeacherChange = (value) => {
+  const handleTeacherChange = useCallback(
+    (value) => {
       const selectedTeacher = teacherOptions.find(
         (teacher) => teacher.id === value
       );
       setFormData((prevData) => ({ ...prevData, teacher: selectedTeacher }));
-    };
+    },
+    [teacherOptions]
+  );
 
-  const handleGroupChange = (value) => {
+  const handleGroupChange = useCallback(
+    (value) => {
       const selectedGroup = groupOptions.find((group) => group.id === value);
       setFormData((prevData) => ({ ...prevData, group: selectedGroup }));
-    };
+    },
+    [groupOptions]
+  );
 
-  const handleSubjectChange = (value) => {
+  const handleSubjectChange = useCallback(
+    (value) => {
       const selectedSubject = subjectOptions.find(
         (subject) => subject.id === value
       );
       setFormData((prevData) => ({ ...prevData, subject: selectedSubject }));
-    };
+    },
+    [subjectOptions]
+  );
 
-  const teacherSelectOptions = () =>
+  const teacherSelectOptions = useMemo(
+    () =>
       teacherOptions.map((option) => (
         <option key={option.id} value={option.id}>
           {`${option.name} ${option.lastname}`}
         </option>
-      ));
+      )),
+    [teacherOptions]
+  );
 
-  const groupSelectOptions = () =>
+  const groupSelectOptions = useMemo(
+    () =>
       groupOptions.map((option) => (
         <option key={option.id} value={option.id}>
           {option.grade + " - " + option.variant}
         </option>
-      ));
+      )),
+    [groupOptions]
+  );
 
-  const subjectSelectOptions = () =>
+  const subjectSelectOptions = useMemo(
+    () =>
       subjectOptions.map((option) => (
         <option key={option.id} value={option.id}>
           {option.name}
         </option>
-      ));
+      )),
+    [subjectOptions]
+  );
 
   return (
     <div className="form-group">

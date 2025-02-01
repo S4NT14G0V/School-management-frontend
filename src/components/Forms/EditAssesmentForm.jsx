@@ -13,7 +13,7 @@ export default function EditAssesmentForm({ assesmentData, closeModal, notificat
     }
   }, [assesmentData]);
 
-  const handleEdit = async () => {
+  const handleEdit = useCallback(async () => {
     if (formData === assesmentData) {
       notification2.warning({
         message: "Warning",
@@ -42,22 +42,22 @@ export default function EditAssesmentForm({ assesmentData, closeModal, notificat
     } catch (error) {
       console.error(MESSAGES_ERROR.ASSESMENT_UPDATED, error);
     }
-  };
+  }, [formData, closeModal, notification]);
 
-  const handleDateChange = (date, dateString, field) => {
+  const handleDateChange = useCallback((date, dateString, field) => {
     const dateInColombia = date
       ? dayjs(date).tz("America/Bogota").format("YYYY-MM-DD")
       : "";
     setFormData((prevData) => ({ ...prevData, [field]: dateInColombia }));
-  };
+  }, []);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
+  }, []);
 
-  const dateValue = () => formData.date ? dayjs(formData.date).tz("America/Bogota") : null;
-  const limitDateValue = () => formData.limit_date ? dayjs(formData.limit_date).tz("America/Bogota") : null;
+  const dateValue = useMemo(() => formData.date ? dayjs(formData.date).tz("America/Bogota") : null, [formData.date]);
+  const limitDateValue = useMemo(() => formData.limit_date ? dayjs(formData.limit_date).tz("America/Bogota") : null, [formData.limit_date]);
 
   return (
     <div className="form-group">

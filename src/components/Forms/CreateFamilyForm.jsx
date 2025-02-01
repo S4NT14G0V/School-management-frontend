@@ -19,7 +19,7 @@ export default function CreateFamilyForm({
     fetchOptions();
   }, []);
 
-  const fetchOptions = async () => {
+  const fetchOptions = useCallback(async () => {
     try {
       const parents = await getParents();
       setParentOptions(parents);
@@ -29,17 +29,17 @@ export default function CreateFamilyForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     }
-  };
+  }, []);
 
-  const handleParentChange = (value) => {
+  const handleParentChange = useCallback((value) => {
     const selectedParent = parentOptions.find((parent) => parent.id === value);
     setFormData((prevData) => ({
       ...prevData,
       parent: selectedParent || {},
     }));
-  };
+  }, [parentOptions]);
 
-  const handleStudentChange = (value) => {
+  const handleStudentChange = useCallback((value) => {
     const selectedStudent = studentOptions.find(
       (student) => student.id === value
     );
@@ -47,9 +47,9 @@ export default function CreateFamilyForm({
       ...prevData,
       student: selectedStudent || {},
     }));
-  };
+  }, [studentOptions]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     try {
       closeModal(); // Cerrar el modal
       const result = await createFamily(formData);
@@ -72,23 +72,23 @@ export default function CreateFamilyForm({
     } catch (error) {
       console.error(MESSAGES_ERROR.FAMILY_CREATED, error);
     }
-  };
+  }, [formData, notification, closeModal]);
 
-  const parentSelectOptions = () => (
+  const parentSelectOptions = useMemo(() => (
     parentOptions.map((option) => (
       <Select.Option key={option.id} value={option.id}>
         {`${option.name} ${option.lastname}`}
       </Select.Option>
     ))
-  );
+  ), [parentOptions]);
 
-  const studentSelectOptions = () => (
+  const studentSelectOptions = useMemo(() => (
     studentOptions.map((option) => (
       <Select.Option key={option.id} value={option.id}>
         {`${option.name} ${option.lastname}`}
       </Select.Option>
     ))
-  );
+  ), [studentOptions]);
 
   return (
     <div className="form-group">

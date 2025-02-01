@@ -1,0 +1,159 @@
+import React, { useState, useEffect, useRef } from "react";
+import { Table, Divider } from "antd";
+import { getCalificationsByEmail } from "../../services/califications";
+import "./CalificationsEdit.css";
+
+export default function CalificationsStudent() {
+  const [dataSource, setDataSource] = useState({});
+  const [pressedButton, setPressedButton] = useState(false);
+  const isInitialRender = useRef(true);
+
+  const fetchCalificationsStudent = async () => {
+    try {
+      const califications = await getCalificationsByEmail();
+      return califications;
+    } catch (error) {
+      console.error("Error fetching califications:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const userData = await fetchCalificationsStudent();
+        if (userData && userData.length > 0) {
+          setDataSource(userData);
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
+
+    if (isInitialRender.current) {
+      loadData();
+      isInitialRender.current = false;
+    }
+
+    if (pressedButton) {
+      loadData();
+      setPressedButton(false);
+    }
+  }, [pressedButton]);
+
+  const columns = [
+    { title: "Materia", dataIndex: "subject", key: "subject" },
+    { title: "Promedio", dataIndex: "average", key: "average", render: (text) => text.toFixed(2) },
+  ];
+
+  return (
+    <>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          gap: "1rem",
+          width: "100%",
+          paddingInline: "7.5%",
+        }}
+      >
+        <button
+          onClick={() => setPressedButton(true)}
+          style={{
+            width: "80px",
+            height: "30px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "14px",
+            fontWeight: "400",
+          }}
+        >
+          Refresh
+        </button>
+      </div>
+      <div
+        style={{
+          width: "85%",
+          height: "100%",
+          overflowY: "auto",
+          paddingInline: "20px",
+        }}
+      >
+        {dataSource.map((studentData) => (
+          <div key={studentData.student}>
+            <Divider orientation="left" style={{ fontSize: "18px" }}>
+              {studentData.student}
+            </Divider>
+            <Table
+              bordered
+              dataSource={studentData.subjects}
+              columns={columns}
+              pagination={false}
+              style={{ marginBottom: "20px" }}
+            />
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
+
+------------------------
+@GetMapping("/getCalificationsByEmail")
+public List<Map<String, Object>> getCalificationsByEmail(@CookieValue(name = "JWT") String token) {
+    String email = jwtService.extractEmailFromToken(token);
+    String rolName = userService.GetRolByEmail(email).getName();
+    
+    List<String> emails = new ArrayList<>();
+    if ("Student".equals(rolName)) {
+        emails.add(email);
+    } else if ("Parent".equals(rolName)) {
+        List<StudentsXParentsModel> sons = studentXParentService.obtainSonsList(email);
+        for (StudentsXParentsModel son : sons) {
+            emails.add(son.getStudent().getEmail());
+        }
+    }
+    
+    List<Map<String, Object>> result = new ArrayList<>();
+    for (String studentEmail : emails) {
+        result.add(getCalificationsSummary(studentEmail));
+    }
+    return result;
+}
+
+private Map<String, Object> getCalificationsSummary(String email) {
+    UserModel student = userRepo.findByEmail(email);
+    UserxGroupModel userGroup = userXGroupRepo.findByStudent(student);
+    
+    if (userGroup == null) {
+        return Map.of("student", student.getName() + " " + student.getLastname(), "subjects", List.of());
+    }
+    
+    GroupModel group = userGroup.getGroup();
+    List<ClassModel> classesList = classRepo.findByGroup(group);
+    
+    Map<String, List<Double>> subjectGrades = new HashMap<>();
+    for (ClassModel classModel : classesList) {
+        List<CalificationModel> studentCalifications = 
+            calificationRepo.findByStudent_EmailAndAssesment_Classes_Id(email, classModel.getId());
+        
+        String subjectName = classModel.getSubject().getName();
+        if (!subjectGrades.containsKey(subjectName)) {
+            subjectGrades.put(subjectName, new ArrayList<>());
+        }
+        
+        for (CalificationModel calification : studentCalifications) {
+            subjectGrades.get(subjectName).add(calification.getCalification());
+        }
+    }
+    
+    List<Map<String, Object>> subjects = new ArrayList<>();
+    for (Map.Entry<String, List<Double>> entry : subjectGrades.entrySet()) {
+        double average = entry.getValue().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        subjects.add(Map.of("subject", entry.getKey(), "average", average));
+    }
+    
+    return Map.of("student", student.getName() + " " + student.getLastname(), "subjects", subjects);
+}

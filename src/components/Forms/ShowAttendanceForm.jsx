@@ -9,7 +9,7 @@ export default function ShowAttendanceForm({ id_class }) {
   const [attendances, setAttendances] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchAttendances = async () => {
+  const fetchAttendances = useCallback(async () => {
     setLoading(true);
     try {
       const response = await getAttendancesByClass(id_class);
@@ -25,13 +25,14 @@ export default function ShowAttendanceForm({ id_class }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id_class]);
 
   useEffect(() => {
     fetchAttendances();
   }, [fetchAttendances]);
 
-  const handleDateFilter = async (dates) => {
+  const handleDateFilter = useCallback(
+    async (dates) => {
       if (!dates || dates.length === 0) {
         fetchAttendances();
         return;
@@ -58,9 +59,12 @@ export default function ShowAttendanceForm({ id_class }) {
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [fetchAttendances, id_class]
+  );
 
-  const columns = () => [
+  const columns = useMemo(
+    () => [
       {
         title: "Estudiante",
         dataIndex: "studentName",
@@ -81,7 +85,9 @@ export default function ShowAttendanceForm({ id_class }) {
         dataIndex: "date",
         key: "date",
       },
-    ];
+    ],
+    []
+  );
 
   return (
     <div className="form-group">

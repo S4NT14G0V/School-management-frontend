@@ -38,7 +38,7 @@ export default function CreateAssesmentForm({ closeModal, notification, classes 
     dispatch({ type: "RESET_FORM", classes });
   }, [classes]);
 
-  const handleCreateAssesment = async () => {
+  const handleCreateAssesment = useCallback(async () => {
     if (!formData.classes) {
       return;
     }
@@ -64,18 +64,18 @@ export default function CreateAssesmentForm({ closeModal, notification, classes 
     } catch (error) {
       console.error(MESSAGES_ERROR.ASSESMENT_CREATED, error);
     }
-  };
+  }, [formData, closeModal, notification, classes]);
   
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     dispatch({ type: "SET_FORM_DATA", field: name, value });
-  };
+  }, []);
 
-  const handleDateChange = (date, dateString, field) => {
+  const handleDateChange = useCallback((date, dateString, field) => {
     const dateInColombia = date ? dayjs(date).tz("America/Bogota").format("YYYY-MM-DD") : "";
     dispatch({ type: "SET_FORM_DATA", field, value: dateInColombia });
-  };
+  }, []);
 
   return (
     <div className="form-group">

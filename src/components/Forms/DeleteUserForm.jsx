@@ -7,7 +7,7 @@ export default function DeleteUserForm ({ email, closeModal, notification }){
 
   const[emailReceived, setEmailReceived] = useState(email);
 
-  const handleDelete = async (email) => {
+  const handleDelete = useCallback(async (email) => {
     try {
       closeModal(); // Cierra el modal después de procesar
       const result = await deleteUser(email); // Espera el resultado
@@ -27,7 +27,7 @@ export default function DeleteUserForm ({ email, closeModal, notification }){
     } catch (error) {
       console.error(MESSAGES_ERROR.USER_DELETED, error);
     }
-  };
+  }, [closeModal, notification]);
 
   return (
     <div>

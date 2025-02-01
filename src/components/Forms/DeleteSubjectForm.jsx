@@ -4,8 +4,7 @@ import { deleteSubject } from "@services/subjectService"; // Importa tu servicio
 import { MESSAGES_ERROR } from "@config/constants";
 
 export default function DeleteSubjectForm ({ subjectData, closeModal, notification }) {
-  
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     try {
       closeModal(); // Cierra el modal después de eliminar
       // Esperamos la respuesta de deleteSubject
@@ -25,7 +24,8 @@ export default function DeleteSubjectForm ({ subjectData, closeModal, notificati
     } catch (error) {
       console.error(MESSAGES_ERROR.SUBJECT_DELETED, error);
     }
-  };
+  }, [subjectData.id, closeModal, notification]);
+  
 
   return (
     <div>
