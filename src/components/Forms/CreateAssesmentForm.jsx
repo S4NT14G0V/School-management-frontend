@@ -10,7 +10,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const initialFormData = {
-  classes: "",
+  classes: null,
   percent: 0,
   date: "",
   limit_date: "",
@@ -31,7 +31,7 @@ const formReducer = (state, action) => {
 export default function CreateAssesmentForm({ closeModal, notification, classes }) {
   const [formData, dispatch] = useReducer(formReducer, {
     ...initialFormData,
-    classes: classes || "",
+    classes: classes.id || null,
   });
 
   useEffect(() => {
@@ -48,6 +48,7 @@ export default function CreateAssesmentForm({ closeModal, notification, classes 
         dispatch({ type: "RESET_FORM", classes });
       }, 200);
       const response = await createAssesment(formData);
+      console.log(formData.classes);
       if (response && response.status === 200) {
         notification(true);
       } else {

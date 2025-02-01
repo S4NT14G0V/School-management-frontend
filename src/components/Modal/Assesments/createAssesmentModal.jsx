@@ -18,4 +18,4 @@ const CreateAssesmentModal = ({ isModalOpen, closeModal, notification, data }) =
   );
 }
 
-export default React.memo(CreateAssesmentModal);
+export default CreateAssesmentModal;

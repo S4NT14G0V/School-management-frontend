@@ -82,9 +82,9 @@ export const ROLES = {
 };
 
 export const URLS = {
-    GOOGLE_LOGIN: "https://backend-hogwarts.onrender.com/oauth2/authorization/google",
-    BASE_URL: "https://backend-hogwarts.onrender.com",
-    SOCKET_URL: "https://backend-hogwarts.onrender.com/ws",
+    GOOGLE_LOGIN: "http://localhost:8080/oauth2/authorization/google",
+    BASE_URL: "http://localhost:8080",
+    SOCKET_URL: "http://localhost:8080/ws",
 };
 
 export const TYPE_DOCUMENT_OPTIONS = [

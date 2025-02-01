@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Space, Table, notification } from "antd";
 import { useUser } from "@context/userContext";
 import { getAssesmentsByClass } from "@services/assesment";
@@ -17,10 +17,10 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
   const [classesData] = useState(classes);
   const [loading, setLoading] = useState(true);
   
-  const fetchAssesment = useCallback(async ( id) => {
+  const fetchAssesment = async (id) => {
     setLoading(true);
     try {
-      const Assesments = await getAssesmentsByClass( id);
+      const Assesments = await getAssesmentsByClass(id);
       const usersWithKeys = Assesments.map((Assesment) => ({
         ...Assesment,
         key: Assesment.id, // Usa una propiedad única como key
@@ -28,11 +28,11 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
       setData(usersWithKeys);
       setAssesmentData(Assesments);
     } catch (error) {
-      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING,error);
+      console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
     } finally {
       setLoading(false);
     }
-  },[]);
+  };
 
   // CREATE
   const [notificationCreate, setNotificationCreate] = useState(false);
@@ -41,11 +41,11 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
   const openModalCreate = () => {
     setIsModalCreateOpen(true);
   };
-  const showNotificationCreate = useCallback(() => {
+  const showNotificationCreate = () => {
     fetchAssesment(classesData.id);
     showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.ASSESMENT_CREATED);
     setData(null);
-  },[fetchAssesment]);
+  };
   
   // EDIT
   const [notificationEdit, setNotificationEdit] = useState(false);
@@ -55,11 +55,11 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
     setIsModalEditOpen(true);
     setEditData(record);
   };
-  const showNotificationEdit = useCallback(() => {
-    fetchAssesment( classesData.id);
+  const showNotificationEdit = () => {
+    fetchAssesment(classesData.id);
     showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.ASSESMENT_UPDATED);
     setData(null);
-  },[fetchAssesment]);
+  };
   
   //DELETE
   const [notificationDelete, setNotificationDelete] = useState(false);
@@ -69,11 +69,11 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
     setIsModalDeleteOpen(true);
     setDeleteData(record);
   };
-  const showNotificationDelete = useCallback(() => {
+  const showNotificationDelete = () => {
     showNotification(MESSAGES_SUCCESS.TITLE, MESSAGES_SUCCESS.ASSESMENT_DELETED);
-    fetchAssesment( classesData.id);
+    fetchAssesment(classesData.id);
     setData(null);
-  },[fetchAssesment]);
+  };
   
   const showNotification = (message, description) => {
     notification.success({
@@ -101,11 +101,9 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
     }
   }, [notificationCreate, notificationDelete, notificationEdit]);
 
-  
-
-  const fetchClasses = useCallback(async (id) => {
+  const fetchClasses = async (id) => {
     try {
-      const Classe = await getClassesById( id);
+      const Classe = await getClassesById(id);
       setClass(Classe);
     } catch (error) {
       notification.error({
@@ -113,9 +111,9 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
         description: "Error fetching class data: " + error.message,
       });
     }
-  },[]);
+  };
 
-  const fetchAdminValidation = useCallback(async () => {
+  const fetchAdminValidation = async () => {
     try {
       const validation = await validateTeachersAdmins();
       setIsAdmin(validation);
@@ -125,15 +123,15 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
         description: "Error fetching admin validation: " + error.message,
       });
     }
-  },[]);
+  };
 
   useEffect(() => {
-    fetchAssesment(classesData.id),
-    fetchAdminValidation(),
-    fetchClasses(classesData.id)
-  }, [fetchAdminValidation, fetchAssesment, fetchClasses, classesData.id]);
+    fetchAssesment(classesData.id);
+    fetchAdminValidation();
+    fetchClasses(classesData.id);
+  }, [classesData.id]);
 
-  const columns = useMemo(() => [
+  const columns = [
     {
       title: "Percent",
       dataIndex: "percent",
@@ -185,7 +183,7 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
           },
         ]
       : []),
-  ], [isAdmin]);
+  ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -305,4 +303,4 @@ const AssesmentTable = ({ classes, modal, attendanceModal, attendanceShowModal }
   );
 };
 
-export default React.memo(AssesmentTable);
+export default AssesmentTable;
