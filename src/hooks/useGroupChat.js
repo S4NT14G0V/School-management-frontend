@@ -30,7 +30,7 @@ const useGroupChat = (classId) => {
       webSocketFactory: () => new SockJS(socketUrl),
       reconnectDelay: 5000, // Intenta reconectar cada 5 segundos
       onConnect: () => {
-        client.subscribe('/topic/group', (msg) => {
+        client.subscribe(`/topic/class/${classId}`, (msg) => {
             if (msg.body) {
               setMessages((prev) => [...prev, JSON.parse(msg.body)]);
             }
@@ -52,7 +52,7 @@ const useGroupChat = (classId) => {
   const sendMessage = (message) => {
     if (stompClient && stompClient.connected && message.content.trim() !== '') {
       stompClient.publish({
-        destination: '/app/send',
+        destination: `/app/send/${classId}`,
         body: JSON.stringify(message),
       });
     } else {
