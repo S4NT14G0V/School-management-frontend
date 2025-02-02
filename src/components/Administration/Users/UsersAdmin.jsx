@@ -11,7 +11,7 @@ import { useUser } from "@context/userContext";
 import { getListUserInfo } from "@services/userService";
 import RoleModal from "@modal/Users/EditRolUserModal";
 import DeleteModal from "@modal/Users/DeleteUserModal";
-import SendMessageModal from "@modal/Message/SendMessageModal";
+import SendMessageModal from "@modal/Message/sendMessageModal";
 import { MESSAGES_SUCCESS, MESSAGES_ERROR, ROLES } from "@config/constants";
 import "./UsersAdmin.css";
 
