@@ -23,6 +23,7 @@ export const MESSAGES_SUCCESS = {
     STUDENT_GROUP_UPDATED: 'Group updated successfully',
     ATTENDANCE_CREATED: 'Attendance created successfully',
     CALIFICATIONS_UPDATED: 'Califications updated successfully',
+    MESSAGE_SENT: 'Message sent successfully',
 };
 
 export const MESSAGES_ERROR = {
@@ -47,6 +48,7 @@ export const MESSAGES_ERROR = {
     CALIFICATIONS_UPDATED: 'Error updating califications',
     STANDARD_ERROR_FETCHING: 'Error fetching the data',
     WEBSOCKET_CONNECTION: 'Error in WebSocket connection',
+    MESSAGE_SENT: 'Error sending message',
 };
 
 export const PAGES_URLS = {

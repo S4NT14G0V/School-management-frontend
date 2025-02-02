@@ -303,6 +303,26 @@ export const validateTeachersAdmins = async () => {
   }
 };
 
+export const sendCustomMessage = async (email, title, message) => {
+  try {
+    const response = await fetch(apiUrls.user.sendCustomMessage, {
+      method: "PUT",
+      credentials: "include", // Incluye cookies en la petición
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, title, message }), // Asegúrate de que el cuerpo esté correctamente formateado
+    });
+    if (!response.ok) {
+      throw new Error("Error al enviar el mensaje personalizado");
+    }
+    return response.ok;
+  } catch (error) {
+    console.error("Error:", error);
+    return false;
+  }
+};
+
 export const logout = async () => {
   try {
     const response = await fetch(`${apiUrls.user.logout}`, {

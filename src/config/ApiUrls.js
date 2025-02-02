@@ -4,7 +4,6 @@ const baseUrl = `${URLS.BASE_URL}`;
 
 export const apiUrls = {
   user: {
-  
     all: `${baseUrl}/user/getAll`,
     create: `${baseUrl}/user/create`,
     validateUser:`${baseUrl}/user/validateUser`,
@@ -20,6 +19,7 @@ export const apiUrls = {
     getParents:`${baseUrl}/user/getParents`,
     getStudents:`${baseUrl}/user/getStudents`,
     logout:`${baseUrl}/logout`,
+    sendCustomMessage:`${baseUrl}/user/sendCustomMessage`,
   },
 
   rol:{
