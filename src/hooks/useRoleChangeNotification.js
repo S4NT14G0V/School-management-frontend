@@ -23,7 +23,7 @@ const useRoleChangeNotification = (email) => {
               setNotifications((prev) => [...prev, notification]);
               // Recargar la página cuando se recibe una notificación
               setTimeout(() => {
-                window.location.reload();
+                window.location.href = '/classes';
               }, 5000);
             } catch (error) {
               console.error("Error parsing notification message:", error);
