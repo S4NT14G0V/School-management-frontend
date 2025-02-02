@@ -2,7 +2,7 @@ import React from "react";
 import BaseModal from "../BaseModal";
 import SendMessageForm from "@forms/SendMessageForm";
 
-const SendMessageModal = ({ isModalOpen, closeModal, notification }) => {
+const SendMessageModal = ({ isModalOpen, closeModal, notification, userData }) => {
   return (
     <BaseModal
       title="Send a Message to a Specific User"
@@ -10,7 +10,7 @@ const SendMessageModal = ({ isModalOpen, closeModal, notification }) => {
       onClose={closeModal}
       width={500}
     >
-      <SendMessageForm notification={notification} closeModal={closeModal}/>
+      <SendMessageForm notification={notification} closeModal={closeModal} userData={userData}/>
     </BaseModal>
   );
 }

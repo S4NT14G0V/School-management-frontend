@@ -13,7 +13,7 @@ import FamilyIcon from "@assets/family.svg";
 import { MENUITEMS, MESSAGES_ERROR } from "@config/constants";
 import "./Sidebar.css";
 
-const Sidebar = () =>{
+const Sidebar = () => {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
@@ -57,7 +57,8 @@ const Sidebar = () =>{
               alt: "button-administration-3",
               label: "Groups Management",
               href: `/admin/groups`,
-            },{
+            },
+            {
               src: FamilyIcon,
               alt: "button-administration-3",
               label: "Family Management",
@@ -81,7 +82,7 @@ const Sidebar = () =>{
 
   return (
     <div className="sidebar">
-      {loading ? ( // Cambiamos aquí a una sola condición con operador ternario
+      {loading ? (
         <Skeleton>
           <AcademicInfo />
           <SidebarMenu menuItems={menuItems} />
@@ -96,6 +97,6 @@ const Sidebar = () =>{
       )}
     </div>
   );
-}
+};
 
 export default Sidebar;

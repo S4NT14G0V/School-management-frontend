@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Select, Button, Input, notification as notification2 } from "antd";
-import { getUsers, sendCustomMessage } from "@services/userService";
+import { sendCustomMessage } from "@services/userService";
 import { MESSAGES_ERROR } from "@config/constants";
 
-export default function SendMessageForm({ notification, closeModal }) {
+export default function SendMessageForm({ notification, closeModal, userData }) {
     const [usersOptions, setUsersOptions] = useState([]);
     const [formData, setFormData] = useState({
         email: "",
@@ -13,26 +13,24 @@ export default function SendMessageForm({ notification, closeModal }) {
 
     useEffect(() => {
         fetchOptions();
-    }, []);
+    }, [userData]);
 
     const fetchOptions = useCallback(async () => {
         try {
-            const users = await getUsers();
-            setUsersOptions(users);
+            setUsersOptions(userData);
         } catch (error) {
             console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
         }
-    }, []);
+    }, [userData]);
 
     const handleUserChange = useCallback(
         (value) => {
-            const selectedUser = usersOptions.find((user) => user.id === value);
             setFormData((prevData) => ({
                 ...prevData,
-                email: selectedUser ? selectedUser.email : "",
+                email: value,
             }));
         },
-        [usersOptions]
+        []
     );
 
     const handleInputChange = useCallback((e) => {
@@ -46,7 +44,7 @@ export default function SendMessageForm({ notification, closeModal }) {
     const handleSubmit = useCallback(async () => {
         try {
             closeModal();
-            const result = await sendCustomMessage(formData.email, formData.title, formData.message); // Pass correct parameters
+            const result = await sendCustomMessage(formData.email, formData.title, formData.message);
             if (result) {
                 notification(true);
             } else {
@@ -83,9 +81,9 @@ export default function SendMessageForm({ notification, closeModal }) {
                 }
                 style={{ width: "100%" }}
             >
-                {usersOptions.map((option) => (
-                    <Select.Option key={option.id} value={option.id}>
-                        {`${option.email}`}
+                {usersOptions.map((email) => (
+                    <Select.Option key={email} value={email}>
+                        {email}
                     </Select.Option>
                 ))}
             </Select>

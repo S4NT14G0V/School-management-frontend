@@ -4,6 +4,7 @@ export const sendMessage = async (message) => {
     try {
       const response = await fetch(apiUrls.messages.sendMessage, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -30,6 +31,7 @@ export const getMessagesByClass = async (classId) => {
       `${apiUrls.messages.getMessagesByClass}/${classId}`,
       {
         method: "GET",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -43,6 +45,30 @@ export const getMessagesByClass = async (classId) => {
     return await response.json();
   } catch (error) {
     console.error("Error en getMessagesByClass:", error);
+    return [];
+  }
+};
+
+export const getActiveUsersGeneral = async () => {
+  try {
+    const response = await fetch(
+      `${apiUrls.activeUsers.general}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Error al obtener los mensajes");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error en getActiveUsersGeneral:", error);
     return [];
   }
 };

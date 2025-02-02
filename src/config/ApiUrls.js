@@ -78,5 +78,8 @@ export const apiUrls = {
     getAttendancesByClassAndDate:`${baseUrl}/attendance/getAttendancesByClassId_Date`,
     getMyAttendances:`${baseUrl}/attendance/getMyAttendances`,
     create: `${baseUrl}/attendance/createAttendances`,
+  },
+  activeUsers:{
+    general:`${baseUrl}/activeUsers/general`,
   }
 };

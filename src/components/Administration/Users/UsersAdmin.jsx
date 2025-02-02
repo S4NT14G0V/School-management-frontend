@@ -13,6 +13,7 @@ import RoleModal from "@modal/Users/EditRolUserModal";
 import DeleteModal from "@modal/Users/DeleteUserModal";
 import SendMessageModal from "@modal/Message/sendMessageModal";
 import { MESSAGES_SUCCESS, MESSAGES_ERROR, ROLES } from "@config/constants";
+import useActiveUsersGeneral from "@hooks/useActiveUsersGeneral";
 import "./UsersAdmin.css";
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [roleEdit, setRoleEdit] = useState(null);
+  const { activeUsers } = useActiveUsersGeneral();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -389,6 +391,7 @@ const App = () => {
           isModalOpen={isModalSendMessageOpen}
           closeModal={closeSendMessageModal}
           notification={setNotificationSendMessage}
+          userData={activeUsers}
         />
         <Table
           columns={columns}
@@ -398,6 +401,31 @@ const App = () => {
           scroll={{ x: "max-content" }} // Habilita el scroll horizontal si es necesario
         />
       </div>
+      <div
+            style={{
+              position: "absolute",
+              top: "5px",
+              right: "5px",
+              width: "275px",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "end",
+              alignItems: "center",
+              fontSize: "0.85rem",
+              padding: "0 20px 2px 0",
+            }}
+          >
+            <div
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                backgroundColor: "#00ff00",
+                marginRight: "5px",
+              }}
+            ></div>
+            <p><span style={{fontWeight:"600"}}>Active Users:</span> {activeUsers.length}</p>
+          </div>
     </>
   );
 };
