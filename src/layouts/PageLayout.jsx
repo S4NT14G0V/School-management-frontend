@@ -50,6 +50,12 @@ const PageLayout = ({ children }) => {
         notification.open({
           message: message.title,
           description: message.message,
+          duration: 10,
+          style: {
+            backgroundColor: '#f0f0f0', // Color de fondo
+            borderLeft: '3px solid rgb(76, 0, 253)', // Borde
+            color: '#000', // Color del texto
+          },
         });
       });
       setMessageNotifications([]); // Limpiar las notificaciones después de mostrarlas
