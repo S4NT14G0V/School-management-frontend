@@ -37,7 +37,7 @@ const PageLayout = ({ children }) => {
     if (notifications && notifications.length > 0) {
       notifications.forEach(notificationItem => {
         notification.open({
-          message: <bold>{notificationItem.title}</bold>,
+          message: <span style={{fontWeight: 700}}>{notificationItem.title}</span>,
           description: notificationItem.message,
           style: {
             backgroundColor: '#f0f0f0', // Color de fondo
@@ -53,7 +53,7 @@ const PageLayout = ({ children }) => {
     if (messageNotifications && messageNotifications.length > 0) {
       messageNotifications.forEach(message => {
         notification.open({
-          message: <bold>{message.title}</bold>,
+          message: <span style={{fontWeight: 700}}>{message.title}</span>,
           description: message.message,
           duration: 10,
           style: {
