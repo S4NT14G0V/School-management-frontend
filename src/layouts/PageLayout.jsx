@@ -48,7 +48,7 @@ const PageLayout = ({ children }) => {
     if (messageNotifications && messageNotifications.length > 0) {
       messageNotifications.forEach(message => {
         notification.open({
-          message: message.title,
+          message: <bold>{message.title}</bold>,
           description: message.message,
           duration: 10,
           style: {
