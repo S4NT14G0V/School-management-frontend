@@ -18,8 +18,10 @@ const UserInfo = ({ userInfo }) => {
   const handleLogout = async () => {
     try{
       const success = await logout();
-      if(success){
-        navigate(`${PAGES_URLS.PUBLIC.HOME}`);
+      if (success) {
+        setTimeout(() => {
+          navigate(`${PAGES_URLS.PUBLIC.HOME}`);
+        }, 5000);
       }
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
