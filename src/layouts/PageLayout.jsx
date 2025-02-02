@@ -41,7 +41,7 @@ const PageLayout = ({ children }) => {
           description: notificationItem.message,
           style: {
             backgroundColor: '#f0f0f0', // Color de fondo
-            borderLeft: '5px solidrgb(202, 121, 0)', // Borde
+            borderLeft: '5px solid rgb(202, 121, 0)', // Borde
             color: '#000', // Color del texto
           }
         });
