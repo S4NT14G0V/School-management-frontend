@@ -18,7 +18,6 @@ export const apiUrls = {
     validateTeachersAdmins:`${baseUrl}/user/validateTeachersAdmins`,
     getParents:`${baseUrl}/user/getParents`,
     getStudents:`${baseUrl}/user/getStudents`,
-    logout:`${baseUrl}/logout`,
     sendCustomMessage:`${baseUrl}/user/sendCustomMessage`,
   },
 
@@ -81,5 +80,6 @@ export const apiUrls = {
   },
   activeUsers:{
     general:`${baseUrl}/activeUsers/general`,
+    logout:`${baseUrl}/activeUsers/logout`,
   }
 };

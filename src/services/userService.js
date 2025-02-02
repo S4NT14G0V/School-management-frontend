@@ -325,7 +325,7 @@ export const sendCustomMessage = async (email, title, message) => {
 
 export const logout = async () => {
   try {
-    const response = await fetch(`${apiUrls.user.logout}`, {
+    const response = await fetch(`${apiUrls.activeUsers.logout}`, {
       method: "GET",
       credentials: "include",
       headers: {

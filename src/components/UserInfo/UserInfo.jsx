@@ -19,9 +19,7 @@ const UserInfo = ({ userInfo }) => {
     try{
       const success = await logout();
       if (success) {
-        setTimeout(() => {
           navigate(`${PAGES_URLS.PUBLIC.HOME}`);
-        }, 5000);
       }
     } catch (error) {
       console.error(MESSAGES_ERROR.STANDARD_ERROR_FETCHING, error);
