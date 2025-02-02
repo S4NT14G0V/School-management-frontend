@@ -37,8 +37,13 @@ const PageLayout = ({ children }) => {
     if (notifications && notifications.length > 0) {
       notifications.forEach(notificationItem => {
         notification.open({
-          message: notificationItem.title,
+          message: <bold>{notificationItem.title}</bold>,
           description: notificationItem.message,
+          style: {
+            backgroundColor: '#f0f0f0', // Color de fondo
+            borderLeft: '5px solidrgb(202, 121, 0)', // Borde
+            color: '#000', // Color del texto
+          }
         });
       });
     }
