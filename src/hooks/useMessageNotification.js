@@ -21,13 +21,12 @@ const useMessageNotification = (email) => {
             try {
               const notification = JSON.parse(msg.body); // Asegúrate de que el mensaje se parsea correctamente
               setNotifications((prev) => [...prev, notification]);
-              console.log(notification.title);
 
               // Redirigir si el título contiene "eliminación"
               if (
                 notification.title &&
                 notification.title.includes(
-                  "%COLOR:#E4080A%Eliminación de Cuenta"
+                  "%CONFIG:{\"borderColor\":\"#E4080A\"}%Eliminación de Cuenta"
                 ) &&
                 notification.message &&
                 notification.message.includes(

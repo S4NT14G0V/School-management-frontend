@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Table, Divider } from "antd";
-import { getCalificationsSummaryByEmail, getCalificationsByEmail } from "@services/califications";
+import {
+  getCalificationsSummaryByEmail,
+  getCalificationsByEmail,
+  downloadCalifications,
+} from "@services/califications";
+import { validateTeachersAdmins } from "@services/userService";
+
 import "./CalificationsEdit.css";
 
 export default function CalificationsStudent() {
@@ -9,6 +15,34 @@ export default function CalificationsStudent() {
   const [loading, setLoading] = useState(false);
 
   const rowColors = useMemo(() => ["#0058ca67", "#72b0ff99"], []);
+
+  const [validUser, setValidUser] = useState(false);
+
+  const validate = async () => {
+    try {
+      const valid = await validateTeachersAdmins();
+      if (valid) {
+        setValidUser(true);
+      } else {
+        throw new Error("User not valid.");
+      }
+    } catch (error) {
+      //console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    validate();
+  }, []);
+
+  const download = async () => {
+    try {
+      if (validUser) {
+        downloadCalifications();
+      }
+    } catch (error) {
+      //console.error("Error fetching data:", error);
+    }
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -41,7 +75,9 @@ export default function CalificationsStudent() {
             group: `${calification.assesment.classes.group.grade}-${calification.assesment.classes.group.variant}`,
           };
 
-          const studentIndex = acc.findIndex((item) => item.studentId === studentId);
+          const studentIndex = acc.findIndex(
+            (item) => item.studentId === studentId
+          );
           if (studentIndex === -1) {
             acc.push({ studentId, studentInfo, assessments: [assessment] });
           } else {
@@ -52,7 +88,7 @@ export default function CalificationsStudent() {
         }, [])
       );
     } catch (error) {
-      console.error("Error fetching data:", error);
+      //console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
@@ -74,28 +110,85 @@ export default function CalificationsStudent() {
   ];
 
   const assessmentColumns = [
-    { title: "Tarea", dataIndex: "description", key: "description", width: "70%" },
-    { title: "Porcentaje", dataIndex: "percent", key: "percent", width: "15%", render: (text) => `${text}%` },
-    { title: "Calificación", dataIndex: "calification", key: "calification", width: "15%" },
+    {
+      title: "Tarea",
+      dataIndex: "description",
+      key: "description",
+      width: "70%",
+    },
+    {
+      title: "Porcentaje",
+      dataIndex: "percent",
+      key: "percent",
+      width: "15%",
+      render: (text) => `${text}%`,
+    },
+    {
+      title: "Calificación",
+      dataIndex: "calification",
+      key: "calification",
+      width: "15%",
+    },
   ];
 
   const showStudentInfo = assessments.length >= 2;
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "end", gap: "1rem", width: "100%", paddingInline: "7.5%" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+          gap: "1rem",
+          width: "100%",
+          paddingInline: "7.5%",
+        }}
+      >
+        {validUser && (
+          <button
+            style={{
+              width: "fit-content",
+              paddingInline: "20px",
+              fontSize: "0.8rem",
+            }}
+            onClick={() => download()}
+          >
+            Download
+          </button>
+        )}
         <button
           onClick={fetchData}
-          style={{ width: "80px", height: "30px", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "14px", fontWeight: "400" }}
+          style={{
+            width: "80px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "14px",
+            fontWeight: "400",
+          }}
         >
           Refresh
         </button>
       </div>
-      <div style={{ width: "85%", height: "100%", overflowY: "auto", paddingInline: "0" }}>
+      <div
+        style={{
+          width: "85%",
+          height: "100%",
+          overflowY: "auto",
+          paddingInline: "0",
+        }}
+      >
         {assessments.map(({ studentId, studentInfo, assessments }) => (
           <div key={studentId} style={{ padding: "2rem" }}>
             {showStudentInfo && (
-              <Divider orientation="left" style={{ fontSize: "18px", position: "relative", paddingLeft: "1rem" }}>
+              <Divider
+                orientation="left"
+                style={{
+                  fontSize: "18px",
+                  position: "relative",
+                  paddingLeft: "1rem",
+                }}
+              >
                 <span
                   style={{
                     marginLeft: "1rem",
@@ -111,13 +204,24 @@ export default function CalificationsStudent() {
                 >
                   {assessments[0]?.group}
                 </span>
-                {`${studentInfo.name.charAt(0).toUpperCase()}${studentInfo.name.slice(1).toLowerCase()} 
-                  ${studentInfo.lastname.split(" ").map(name => name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()).join(" ")}`}
+                {`${studentInfo.name.charAt(0).toUpperCase()}${studentInfo.name
+                  .slice(1)
+                  .toLowerCase()} 
+                  ${studentInfo.lastname
+                    .split(" ")
+                    .map(
+                      (name) =>
+                        name.charAt(0).toUpperCase() +
+                        name.slice(1).toLowerCase()
+                    )
+                    .join(" ")}`}
               </Divider>
             )}
             <Table
               bordered
-              dataSource={subjects.find((s) => s.studentId === studentId)?.subjects || []}
+              dataSource={
+                subjects.find((s) => s.studentId === studentId)?.subjects || []
+              }
               columns={summaryColumns}
               loading={loading}
               pagination={false}
@@ -139,7 +243,7 @@ export default function CalificationsStudent() {
                   );
                 },
               }}
-              rowClassName={(record, index) => `subject-row-${index % 2}`}
+              rowClassName={(_, index) => `subject-row-${index % 2}`}
               style={{ width: "100%" }}
             />
           </div>

@@ -14,7 +14,7 @@ export default function DeleteUserForm({ email, closeModal, notification }) {
         const result = await deleteUser(email); // Espera el resultado
         const resultMessage = await sendCustomMessage(
           email,
-          "%COLOR:#E4080A%Eliminación de Cuenta",
+          "%CONFIG:{\"borderColor\":\"#E4080A\"}%Eliminación de Cuenta",
           "¡Tu cuenta ha sido Eliminada! Por favor contacta con un administrador si piensas que se trata de un error"
         ); // Envía un mensaje al usuario
 
