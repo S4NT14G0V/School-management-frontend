@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { MESSAGES_ERROR, URLS } from '@config/constants';
+import { useEffect, useState, useRef } from "react";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { MESSAGES_ERROR, URLS } from "@config/constants";
 
 const useMessageNotification = (email) => {
   const [notifications, setNotifications] = useState([]);
@@ -21,6 +21,23 @@ const useMessageNotification = (email) => {
             try {
               const notification = JSON.parse(msg.body); // Asegúrate de que el mensaje se parsea correctamente
               setNotifications((prev) => [...prev, notification]);
+              console.log(notification.title);
+
+              // Redirigir si el título contiene "eliminación"
+              if (
+                notification.title &&
+                notification.title.includes(
+                  "%COLOR:#E4080A%Eliminación de Cuenta"
+                ) &&
+                notification.message &&
+                notification.message.includes(
+                  "¡Tu cuenta ha sido Eliminada! Por favor contacta con un administrador si piensas que se trata de un error"
+                )
+              ) {
+                setTimeout(() => {
+                  window.location.href = "/";
+                }, 10000);
+              }
             } catch (error) {
               console.error("Error parsing notification message:", error);
             }
@@ -30,7 +47,7 @@ const useMessageNotification = (email) => {
       },
       onStompError: (error) => {
         console.error(MESSAGES_ERROR.WEBSOCKET_CONNECTION, error);
-      }
+      },
     });
 
     client.activate(); // Activa la conexión STOMP

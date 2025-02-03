@@ -52,14 +52,29 @@ const PageLayout = ({ children }) => {
   useEffect(() => {
     if (messageNotifications && messageNotifications.length > 0) {
       messageNotifications.forEach(message => {
+        let borderColor = '#0058ca'; // Default color
+        let title = message.title;
+        let messageContent = message.message;
+
+        const colorMatch = messageContent.match(/%COLOR:#([0-9a-fA-F]{6})%/);
+        if (colorMatch) {
+          borderColor = `#${colorMatch[1]}`;
+          messageContent = messageContent.replace(/%COLOR:#[0-9a-fA-F]{6}%/, '');
+        }
+
+        const titleMatch = title.match(/%COLOR:#([0-9a-fA-F]{6})%/);
+        if (titleMatch) {
+          borderColor = `#${titleMatch[1]}`;
+          title = title.replace(/%COLOR:#[0-9a-fA-F]{6}%/, '');
+        }
+
         notification.open({
-          message: <span style={{fontWeight: 700}}>{message.title}</span>,
-          description: message.message,
+          message: <span style={{fontWeight: 700}}>{title}</span>,
+          description: messageContent,
           duration: 10,
           style: {
-            backgroundColor: '#f0f0f0', // Color de fondo
-            borderLeft: '5px solid #0058ca', // Borde
-            color: '#000', // Color del texto
+            borderLeft: `5px solid ${borderColor}`, // Borde
+            color: borderColor, // Color del texto
           },
         });
       });

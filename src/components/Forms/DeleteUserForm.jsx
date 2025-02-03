@@ -2,32 +2,40 @@ import React, { useCallback, useState } from "react";
 import { Button, notification as notification2 } from "antd";
 import { deleteUser } from "@services/userService"; // Asegúrate de que el servicio esté bien importado
 import { MESSAGES_ERROR } from "@config/constants";
+import { sendCustomMessage } from "@services/userService";
 
-export default function DeleteUserForm ({ email, closeModal, notification }){
+export default function DeleteUserForm({ email, closeModal, notification }) {
+  const [emailReceived, setEmailReceived] = useState(email);
 
-  const[emailReceived, setEmailReceived] = useState(email);
+  const handleDelete = useCallback(
+    async (email) => {
+      try {
+        closeModal(); // Cierra el modal después de procesar
+        const result = await deleteUser(email); // Espera el resultado
+        const resultMessage = await sendCustomMessage(
+          email,
+          "%COLOR:#E4080A%Eliminación de Cuenta",
+          "¡Tu cuenta ha sido Eliminada! Por favor contacta con un administrador si piensas que se trata de un error"
+        ); // Envía un mensaje al usuario
 
-  const handleDelete = useCallback(async (email) => {
-    try {
-      closeModal(); // Cierra el modal después de procesar
-      const result = await deleteUser(email); // Espera el resultado
-      
-      if (result) {
-        notification(true); // Muestra notificación de éxito
-      } else {
-        notification2.error({
-          message: MESSAGES_ERROR.TITLE,
-          description: MESSAGES_ERROR.USER_DELETED,
-          placement: "bottom",
-          showProgress: true,
-          style: { backgroundColor: "#ffd9d9" },
-          pauseOnHover: false,
-        });
+        if (result && resultMessage) {
+          notification(true); // Muestra notificación de éxito
+        } else {
+          notification2.error({
+            message: MESSAGES_ERROR.TITLE,
+            description: MESSAGES_ERROR.USER_DELETED,
+            placement: "bottom",
+            showProgress: true,
+            style: { backgroundColor: "#ffd9d9" },
+            pauseOnHover: false,
+          });
+        }
+      } catch (error) {
+        console.error(MESSAGES_ERROR.USER_DELETED, error);
       }
-    } catch (error) {
-      console.error(MESSAGES_ERROR.USER_DELETED, error);
-    }
-  }, [closeModal, notification]);
+    },
+    [closeModal, notification]
+  );
 
   return (
     <div>
@@ -61,4 +69,4 @@ export default function DeleteUserForm ({ email, closeModal, notification }){
       </div>
     </div>
   );
-};
+}

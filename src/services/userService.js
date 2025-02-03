@@ -222,8 +222,8 @@ export const deleteUser = async (email) => {
       method: "DELETE",
       credentials: "include", // Incluye cookies en la petición
       headers: {
-        user: email,
         "Content-Type": "application/json",
+        user: email,
       },
     });
     const success = await response.json(); // La respuesta es un booleano
