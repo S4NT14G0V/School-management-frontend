@@ -31,7 +31,7 @@ const formReducer = (state, action) => {
 export default function CreateAssesmentForm({ closeModal, notification, classes }) {
   const [formData, dispatch] = useReducer(formReducer, {
     ...initialFormData,
-    classes: classes.id || null,
+    classes: classes?.id || null,
   });
 
   useEffect(() => {
