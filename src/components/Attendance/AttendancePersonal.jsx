@@ -85,8 +85,21 @@ const AttendanceTable = () => {
   
   return (
     <div>
-      <div style={{ marginBottom: "20px" }}>
+      <div style={{ display: "flex",justifyContent: "space-between",marginBottom: "20px" }}>
         <RangePicker onChange={handleDateFilter} />
+        <button
+          onClick={fetchAttendances}
+          style={{
+            width: "80px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "14px",
+            fontWeight: "400",
+          }}
+        >
+          Refresh
+        </button>
       </div>
       <Table
         columns={columns}
